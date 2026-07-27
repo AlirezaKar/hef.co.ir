@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -14,6 +15,8 @@ from .forms import (
 )
 from .models import LoginAttempt, SiteContent, User, UserScanSetting
 from .utils import apply_network_identity, get_client_ip
+
+AUTH_BACKEND = settings.AUTHENTICATION_BACKENDS[0]
 
 
 def _record_login_attempt(*, username_tried, user, request, successful):
@@ -53,7 +56,7 @@ def signup_view(request):
         user.save()
         apply_network_identity(user, request, force_mac=True)
         UserScanSetting.objects.get_or_create(user=user)
-        login(request, user)
+        login(request, user, backend=AUTH_BACKEND)
         messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
         return redirect("report:home")
     return render(request, "account/signup.html", {"form": form})
@@ -75,7 +78,7 @@ def login_view(request):
                 request=request,
                 successful=True,
             )
-            login(request, user)
+            login(request, user, backend=AUTH_BACKEND)
             apply_network_identity(user, request, force_mac=not bool(user.mac_address))
             UserScanSetting.objects.get_or_create(user=user)
             messages.success(request, "ورود موفقیت‌آمیز بود.")
@@ -126,10 +129,26 @@ def profile_view(request):
 def settings_view(request):
     setting, _ = UserScanSetting.objects.get_or_create(user=request.user)
     form = ScanSettingForm(request.POST or None, instance=setting)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "تنظیمات اسکن ذخیره شد.")
-        return redirect("account:settings")
+
+    if request.method == "POST":
+        action = request.POST.get("action", "save")
+        if action == "scan_now":
+            from apps.app_report.services import force_rescan, scan_user_reports
+
+            version = force_rescan(request.user)
+            setting.refresh_from_db()
+            count = len(scan_user_reports(request.user.username))
+            messages.success(
+                request,
+                f"اسکن انجام شد. {count} فایل یافت شد (نسخه {version}).",
+            )
+            return redirect("account:settings")
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "تنظیمات اسکن ذخیره شد.")
+            return redirect("account:settings")
+
     return render(request, "account/settings.html", {"form": form, "setting": setting})
 
 

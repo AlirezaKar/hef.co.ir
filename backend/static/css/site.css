@@ -250,6 +250,8 @@ body {
 .profile-field { margin-bottom: 14px; }
 .profile-field label { display: block; font-weight: 600; margin-bottom: 6px; }
 .profile-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.settings-scan-now { margin-top: 18px; }
+.settings-scan-now .btn-teal { width: auto; min-width: 180px; text-transform: none; }
 .hidden { display: none !important; }
 
 .content-grid {

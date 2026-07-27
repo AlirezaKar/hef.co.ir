@@ -78,6 +78,16 @@ def user_report_dir(username: str) -> Path:
     return reports_root() / safe
 
 
+def ensure_user_report_dir(username: str) -> Path:
+    """
+    Ensure data/reports/{username}/ exists.
+    Creates the folder (and parents) when missing.
+    """
+    folder = user_report_dir(username)
+    folder.mkdir(parents=True, exist_ok=True)
+    return folder
+
+
 def classify_filename(filename: str, username: str) -> Optional[str]:
     for report_type, pattern in (
         ("index", INDEX_RE),
@@ -153,9 +163,25 @@ def maybe_rescan(user) -> int:
     if not due:
         return setting.scan_version
 
-    fingerprint = folder_fingerprint(user.username)
+    return _apply_scan(setting, user.username, bump_always=False)
+
+
+def force_rescan(user) -> int:
+    """Immediate folder scan (ignores schedule). Always bumps scan_version."""
+    from apps.app_account.models import UserScanSetting
+
+    setting, _ = UserScanSetting.objects.get_or_create(user=user)
+    return _apply_scan(setting, user.username, bump_always=True)
+
+
+def _apply_scan(setting, username: str, *, bump_always: bool) -> int:
+    from apps.app_account.models import UserScanSetting
+
+    now = timezone.now()
+    fingerprint = folder_fingerprint(username)
+    changed = fingerprint != (setting.last_fingerprint or "")
     update_fields = {"last_scan_at": now, "last_fingerprint": fingerprint}
-    if fingerprint != (setting.last_fingerprint or ""):
+    if bump_always or changed:
         UserScanSetting.objects.filter(pk=setting.pk).update(
             **update_fields,
             scan_version=F("scan_version") + 1,

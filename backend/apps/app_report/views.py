@@ -79,8 +79,7 @@ def reports_index_view(request):
                 {
                     "title": "گزارش یافت نشد",
                     "message": (
-                        f"فایل فهرست گزارش‌ها برای کاربر «{username}» "
-                        f"در مسیر data/reports/{username}/ پیدا نشد."
+                        f"فایل فهرست گزارش‌ها برای کاربر «{username}» پیدا نشد."
                     ),
                 },
             )
