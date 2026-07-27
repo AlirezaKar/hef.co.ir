@@ -91,7 +91,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-LANGUAGE_CODE = "fa"
+LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Tehran"
 USE_I18N = True
 USE_TZ = True

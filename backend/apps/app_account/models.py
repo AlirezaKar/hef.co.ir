@@ -24,31 +24,31 @@ class User(AbstractUser):
         HDD = "hdd", "HDD"
         GENERATED = "generated", "تولیدشده"
 
-    email = models.EmailField("ایمیل", unique=True)
-    phone_number = models.CharField("شماره تلفن", max_length=11)
+    email = models.EmailField("email address", unique=True)
+    phone_number = models.CharField("phone number", max_length=11)
     picture = models.ImageField(
-        "تصویر پروفایل",
+        "profile picture",
         upload_to=profile_picture_upload_to,
         blank=True,
         null=True,
     )
-    national_id = models.CharField("کد ملی", max_length=10, blank=True)
-    ip_address = models.GenericIPAddressField("آدرس IP", blank=True, null=True)
-    mac_address = models.CharField("آدرس MAC", max_length=32, blank=True)
+    national_id = models.CharField("national ID", max_length=10, blank=True)
+    ip_address = models.GenericIPAddressField("IP address", blank=True, null=True)
+    mac_address = models.CharField("MAC address", max_length=32, blank=True)
     mac_source = models.CharField(
-        "منبع MAC",
+        "MAC source",
         max_length=16,
         choices=MacSource.choices,
         blank=True,
     )
-    click_count = models.PositiveIntegerField("تعداد کلیک‌ها", default=0)
-    login_attempt_count = models.PositiveIntegerField("تعداد تلاش‌های ورود", default=0)
+    click_count = models.PositiveIntegerField("click count", default=0)
+    login_attempt_count = models.PositiveIntegerField("login attempt count", default=0)
 
     REQUIRED_FIELDS = ["email", "phone_number"]
 
     class Meta:
-        verbose_name = "کاربر"
-        verbose_name_plural = "کاربران"
+        verbose_name = "user"
+        verbose_name_plural = "users"
 
     def __str__(self):
         return self.username
