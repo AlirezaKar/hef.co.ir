@@ -37,7 +37,7 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 copy .env.sample .env   # or: cp .env.sample .env
-mkdir data\reports
+# Edit backend/.env — set DJANGO_SECRET_KEY (required). Keep DEBUG=True only for local use.
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
@@ -45,6 +45,7 @@ python manage.py runserver
 
 Open `http://127.0.0.1:8000/`.
 
+Sensitive settings (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`) live in `backend/.env` only — never commit that file.
 ## Reports
 
 Place files under `data/reports/{username}/` matching:

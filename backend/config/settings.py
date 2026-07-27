@@ -1,10 +1,13 @@
 """
 Django settings for HEF Report Portal.
+
+Sensitive values are loaded from backend/.env — never commit real secrets.
 """
 
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,18 +15,37 @@ PROJECT_ROOT = BASE_DIR.parent
 
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure--e_thv62*ozk@i!s(bw@-7i8zcde2c743c$&0#$h0=(km^gwrd",
-)
 
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
+def env_required(name: str) -> str:
+    value = os.getenv(name)
+    if value is None or not str(value).strip():
+        raise ImproperlyConfigured(
+            f"Missing required environment variable: {name}. "
+            f"Copy backend/.env.sample to backend/.env and set a value."
+        )
+    return value.strip()
+
+
+def env_bool(name: str, default: bool = False) -> bool:
+    raw = os.getenv(name)
+    if raw is None or not str(raw).strip():
+        return default
+    return str(raw).strip().lower() in ("1", "true", "yes", "on")
+
+
+SECRET_KEY = env_required("DJANGO_SECRET_KEY")
+DEBUG = env_bool("DJANGO_DEBUG", default=False)
 
 ALLOWED_HOSTS = [
     h.strip()
-    for h in os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+    for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
     if h.strip()
 ]
+if not ALLOWED_HOSTS:
+    raise ImproperlyConfigured(
+        "DJANGO_ALLOWED_HOSTS is empty. Set it in backend/.env "
+        "(e.g. localhost,127.0.0.1)."
+    )
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -38,6 +60,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -100,10 +123,24 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Serve project static files reliably (works even when DEBUG is False)
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+WHITENOISE_USE_FINDERS = DEBUG
+WHITENOISE_AUTOREFRESH = DEBUG
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-REPORTS_ROOT = PROJECT_ROOT / "data" / "reports"
+# Optional override; default is <project>/data/reports
+_reports_root = os.getenv("REPORTS_ROOT", "").strip()
+REPORTS_ROOT = Path(_reports_root) if _reports_root else (PROJECT_ROOT / "data" / "reports")
 
 LOGIN_URL = "account:login"
 LOGIN_REDIRECT_URL = "report:home"
