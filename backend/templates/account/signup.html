@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}ثبت‌نام | پورتال گزارش HEF{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+
+{% block body %}
+<div class="auth-wrap">
+  <div class="auth-card auth-card-wide">
+    <h1>ایجاد حساب کاربری</h1>
+    <p class="auth-sub">اطلاعات زیر را برای ساخت حساب وارد کنید</p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <label class="field-label" for="id_username">{{ form.username.label }}</label>
+      {{ form.username }}
+      {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <label class="field-label" for="id_email">{{ form.email.label }}</label>
+      {{ form.email }}
+      {% if form.email.help_text %}<p class="field-help">{{ form.email.help_text }}</p>{% endif %}
+      {% for e in form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <label class="field-label" for="id_phone_number">{{ form.phone_number.label }}</label>
+      {{ form.phone_number }}
+      {% for e in form.phone_number.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <label class="field-label" for="id_password1">{{ form.password1.label }}</label>
+      {{ form.password1 }}
+      {% if form.password1.help_text %}<p class="field-help">{{ form.password1.help_text }}</p>{% endif %}
+      {% for e in form.password1.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <label class="field-label" for="id_password2">{{ form.password2.label }}</label>
+      {{ form.password2 }}
+      {% if form.password2.help_text %}<p class="field-help">{{ form.password2.help_text }}</p>{% endif %}
+      {% for e in form.password2.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <button type="submit" class="btn-primary">ایجاد حساب</button>
+    </form>
+
+    <p class="auth-footer">قبلاً حساب دارید؟ <a href="{% url 'account:login' %}">ورود</a></p>
+  </div>
+</div>
+{% endblock %}

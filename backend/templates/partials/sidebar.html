@@ -1,0 +1,53 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">H</div>
+    <div class="brand-text">
+      <strong>HEF</strong>
+      <span>پورتال گزارش</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">اصلی</div>
+      <a href="{% url 'report:home' %}" class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+        <span class="nav-icon">⌂</span>
+        <span class="nav-label">خانه</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">حساب</div>
+      <a href="{% url 'account:profile' %}" class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+        <span class="nav-icon">☺</span>
+        <span class="nav-label">پروفایل</span>
+      </a>
+      <a href="{% url 'account:settings' %}" class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+        <span class="nav-icon">⚙</span>
+        <span class="nav-label">تنظیمات</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">گزارش</div>
+      <a href="{% url 'report:index' %}" class="nav-item {% if 'report' in request.path %}active{% endif %}">
+        <span class="nav-icon">▣</span>
+        <span class="nav-label">گزارش‌ها</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">اطلاعات</div>
+      <a href="{% url 'account:about' %}" class="nav-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+        <span class="nav-icon">ℹ</span>
+        <span class="nav-label">درباره ما</span>
+      </a>
+      <a href="{% url 'account:contact' %}" class="nav-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+        <span class="nav-icon">✉</span>
+        <span class="nav-label">تماس با ما</span>
+      </a>
+    </div>
+  </nav>
+
+  <button type="button" class="sidebar-collapse" id="sidebarCollapse" title="جمع کردن">«</button>
+</aside>

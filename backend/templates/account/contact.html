@@ -1,0 +1,47 @@
+{% extends "base_app.html" %}
+
+{% block title %}تماس با ما | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}تماس با ما{% endblock %}
+
+{% block content %}
+<section class="contact-page">
+  <div class="contact-hero">
+    <h2>تماس با ما</h2>
+    <p>سؤالی دارید؟ پیام خود را برای ما بنویسید.</p>
+    <form method="post" class="contact-form" novalidate>
+      {% csrf_token %}
+      <div class="contact-row">
+        <div class="profile-field">
+          <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+          {{ form.email }}
+          {% for e in form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="profile-field">
+          <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+          {{ form.name }}
+          {% for e in form.name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="profile-field">
+        <label for="{{ form.message.id_for_label }}">{{ form.message.label }}</label>
+        {{ form.message }}
+      </div>
+      <button type="submit" class="btn-teal">ارسال</button>
+    </form>
+  </div>
+
+  <div class="contact-info-band">
+    {% if items %}
+      {% for item in items %}
+        <div class="contact-info-col">
+          <div class="contact-circle">{% if item.icon %}{{ item.icon }}{% else %}•{% endif %}</div>
+          <h3>{{ item.key }}</h3>
+          <p>{{ item.value|linebreaksbr }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="muted text-center w-100">اطلاعات تماس از پنل مدیریت قابل افزودن است.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base_app.html" %}
+
+{% block title %}خانه | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}خانه{% endblock %}
+
+{% block content %}
+<section class="home-page">
+  <h2>خوش آمدید{% if user.get_full_name %}، {{ user.get_full_name }}{% endif %}</h2>
+  <p class="muted">از منوی کناری به بخش‌های سایت بروید.</p>
+
+  <div class="home-links">
+    <a href="{% url 'account:profile' %}">پروفایل</a>
+    <a href="{% url 'account:settings' %}">تنظیمات</a>
+    <a href="{% url 'report:index' %}">گزارش‌ها</a>
+    <a href="{% url 'account:about' %}">درباره ما</a>
+    <a href="{% url 'account:contact' %}">تماس با ما</a>
+  </div>
+
+  <div class="home-hint">
+    <h3>نوار کناری</h3>
+    <p>نوار سمت راست شامل پروفایل، تنظیمات، گزارش‌ها، درباره ما و تماس است و با دکمه جمع‌شدن قابل جمع کردن است.</p>
+  </div>
+</section>
+{% endblock %}

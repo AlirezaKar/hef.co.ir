@@ -1,0 +1,30 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ page_title }} | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}{{ page_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .report-frame-wrap { background: #0a0a1a; border-radius: 12px; overflow: hidden; min-height: 70vh; }
+  .report-frame-wrap iframe { width: 100%; min-height: 80vh; border: 0; background: #0a0a1a; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-toolbar">
+  <span class="muted">فایل: {{ filename }}</span>
+  <a class="btn-outline-sm" href="{% url 'report:index' %}">بازگشت به فهرست</a>
+</div>
+<div class="report-frame-wrap">
+  <iframe id="reportFrame" title="گزارش" src="{{ iframe_src }}"></iframe>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  window.HEF_SCAN = {
+    version: {{ scan_version|default:0 }},
+    endpoint: "{% url 'report:scan_version' %}",
+  };
+</script>
+{% endblock %}

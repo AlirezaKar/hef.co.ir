@@ -1,0 +1,23 @@
+{% extends "base_app.html" %}
+
+{% block title %}تنظیمات | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}تنظیمات{% endblock %}
+
+{% block content %}
+<section class="settings-panel">
+  <h2>زمان‌بندی به‌روزرسانی گزارش‌ها</h2>
+  <p class="muted">پوشه گزارش‌ها بر اساس بازه انتخابی مجدداً اسکن می‌شود.</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="profile-field">
+      <label for="{{ form.interval.id_for_label }}">{{ form.interval.label }}</label>
+      {{ form.interval }}
+    </div>
+    {% if setting.last_scan_at %}
+      <p class="muted">آخرین اسکن: {{ setting.last_scan_at }}</p>
+    {% endif %}
+    <p class="muted">نسخه اسکن فعلی: {{ setting.scan_version }}</p>
+    <button type="submit" class="btn-primary-light">ذخیره تنظیمات</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}bg-slate-100 text-slate-900{% endblock %}
+
+{% block body %}
+<div class="app-shell" id="appShell">
+  {% include "partials/sidebar.html" %}
+  <div class="app-main">
+    <header class="app-topbar">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="باز و بسته کردن منو">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">{% block page_heading %}{% endblock %}</div>
+      <div class="topbar-user">
+        {% if user.picture %}
+          <img src="{{ user.picture.url }}" alt="" class="avatar">
+        {% else %}
+          <span class="avatar avatar-fallback">{{ user.username|slice:":1"|upper }}</span>
+        {% endif %}
+        <span>{{ user.get_full_name|default:user.username }}</span>
+      </div>
+    </header>
+    <main class="app-content">
+      {% block content %}{% endblock %}
+    </main>
+    {% include "partials/footer.html" %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}ورود | پورتال گزارش HEF{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+
+{% block body %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>ورود به حساب کاربری</h1>
+    <p class="auth-sub">نام کاربری یا ایمیل و رمز عبور خود را وارد کنید</p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <label class="field-label" for="id_username">{{ form.username.label }}</label>
+      {{ form.username }}
+      {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <label class="field-label" for="id_password">{{ form.password.label }}</label>
+      {{ form.password }}
+      {% for e in form.password.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
+      <button type="submit" class="btn-primary">ورود</button>
+    </form>
+
+    <p class="auth-footer">حساب ندارید؟ <a href="{% url 'account:signup' %}">ثبت‌نام</a></p>
+  </div>
+</div>
+{% endblock %}

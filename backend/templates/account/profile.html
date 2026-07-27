@@ -1,0 +1,39 @@
+{% extends "base_app.html" %}
+
+{% block title %}پروفایل | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}پروفایل{% endblock %}
+
+{% block content %}
+<section class="profile-layout">
+  <div class="profile-media">
+    <div class="profile-photo">
+      {% if user.picture %}
+        <img src="{{ user.picture.url }}" alt="تصویر پروفایل">
+      {% else %}
+        <div class="photo-placeholder">بدون تصویر</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="profile-form-panel">
+    <h2>ویرایش اطلاعات</h2>
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="profile-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% for e in field.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        </div>
+      {% endfor %}
+      <div class="profile-actions">
+        <button type="submit" class="btn-outline">ویرایش پروفایل</button>
+        <button type="submit" form="logoutForm" class="btn-danger">خروج از حساب</button>
+      </div>
+    </form>
+    <form id="logoutForm" method="post" action="{% url 'account:logout' %}" class="hidden">
+      {% csrf_token %}
+    </form>
+  </div>
+</section>
+{% endblock %}

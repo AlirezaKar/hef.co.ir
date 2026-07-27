@@ -1,0 +1,23 @@
+{% extends "base_app.html" %}
+
+{% block title %}درباره ما | پورتال گزارش HEF{% endblock %}
+{% block page_heading %}درباره ما{% endblock %}
+
+{% block content %}
+<section class="content-page">
+  <h2>درباره ما</h2>
+  {% if items %}
+    <div class="content-grid">
+      {% for item in items %}
+        <article class="content-item">
+          {% if item.icon %}<div class="content-icon">{{ item.icon }}</div>{% endif %}
+          <h3>{{ item.key }}</h3>
+          <p>{{ item.value|linebreaksbr }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">هنوز محتوایی از پنل مدیریت ثبت نشده است.</p>
+  {% endif %}
+</section>
+{% endblock %}
