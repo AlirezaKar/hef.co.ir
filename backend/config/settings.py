@@ -68,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.app_account.middleware.ClickTrackingMiddleware",
+    "config.middleware.FriendlyErrorMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -153,3 +154,6 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Profile picture constraints
 PROFILE_PICTURE_MAX_SIZE = 5 * 1024 * 1024  # 5 MB
+
+# Friendly CSRF error page (no technical details)
+CSRF_FAILURE_VIEW = "config.error_views.csrf_failure"

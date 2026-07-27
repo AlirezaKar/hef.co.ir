@@ -29,7 +29,7 @@ def _raw_url(filename: str) -> str:
 def _load_report_html(username: str, filename: str) -> str:
     path = safe_resolve_report(username, filename)
     if path is None:
-        raise Http404("گزارش یافت نشد.")
+        raise Http404("گزارش یافت نشد")
     html = read_report_html(path)
     if classify_filename(filename, username) == "index":
         html = rewrite_index_hrefs(html, username, _file_url)
@@ -46,7 +46,7 @@ font-family:Tahoma,sans-serif}}
 .hef-report-bar a{{background:#e4e4e7;color:#111;text-decoration:none;padding:8px 12px;
 border-radius:8px;font-size:13px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25)}}
 </style>
-<div class="hef-report-bar"><a href="{index_url}">بازگشت به فهرست گزارش‌ها</a></div>
+<div class="hef-report-bar"><a href="{index_url}" target="_top">بازگشت به فهرست گزارش‌ها</a></div>
 """
     lower = html.lower()
     body_idx = lower.find("<body")

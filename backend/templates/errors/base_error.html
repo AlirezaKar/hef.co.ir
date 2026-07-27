@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} | پورتال گزارش HEF</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <style>
+    .error-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(226,232,240,.65), rgba(241,245,249,.95)),
+        radial-gradient(circle at 10% 0%, #dbeafe, transparent 40%);
+      font-family: Tahoma, Vazirmatn, sans-serif;
+    }
+    .error-card {
+      max-width: 480px;
+      width: 100%;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+    }
+    .error-code {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 8px;
+    }
+    .error-card h1 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+    }
+    .error-card p {
+      color: #64748b;
+      margin: 0 0 20px;
+      line-height: 1.7;
+    }
+    .error-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .error-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      padding: 10px 16px;
+      text-decoration: none;
+      font-weight: 600;
+      background: #0f172a;
+      color: #fff;
+    }
+    .error-actions a.secondary {
+      background: transparent;
+      color: #4338ca;
+      border: 1px solid #6366f1;
+    }
+  </style>
+  <script>
+    // If this error page was loaded inside an iframe (e.g. reports embed),
+    // break out so navigation is not nested inside another layout.
+    if (window.top !== window.self) {
+      window.top.location.replace(window.location.href);
+    }
+  </script>
+</head>
+<body>
+  <div class="error-page">
+    <div class="error-card">
+      <div class="error-code">{{ status_code }}</div>
+      <h1>{{ title }}</h1>
+      <p>{{ message }}</p>
+      <div class="error-actions">
+        <a href="{% url 'report:home' %}" target="_top">خانه</a>
+        <a class="secondary" href="{% url 'report:index' %}" target="_top">گزارش‌ها</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

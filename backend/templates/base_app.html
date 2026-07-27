@@ -3,6 +3,15 @@
 
 {% block body_class %}bg-slate-100 text-slate-900{% endblock %}
 
+{% block extra_head %}
+<script>
+  // App chrome must never render inside an iframe (prevents nested layouts).
+  if (window.top !== window.self) {
+    window.top.location.replace(window.location.href);
+  }
+</script>
+{% endblock %}
+
 {% block body %}
 <div class="app-shell" id="appShell">
   {% include "partials/sidebar.html" %}
