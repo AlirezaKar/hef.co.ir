@@ -94,6 +94,7 @@ class SiteContent(models.Model):
     class Page(models.TextChoices):
         ABOUT = "about", "درباره ما"
         CONTACT = "contact", "تماس با ما"
+        FAQ = "faq", "سؤالات متداول"
 
     page = models.CharField("صفحه", max_length=20, choices=Page.choices)
     key = models.CharField("کلید", max_length=100)
@@ -109,6 +110,65 @@ class SiteContent(models.Model):
 
     def __str__(self):
         return f"{self.get_page_display()}: {self.key}"
+
+
+class AboutPage(models.Model):
+    """Singleton rich About content edited with TinyMCE (landing + /about/)."""
+
+    title = models.CharField("عنوان", max_length=200, default="درباره ما")
+    body = models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE")
+    updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "صفحه درباره ما"
+        verbose_name_plural = "صفحه درباره ما"
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class PageVisit(models.Model):
+    """Visit log for every page load — authenticated user or anonymous."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="page_visits",
+        verbose_name="کاربر",
+    )
+    visitor_label = models.CharField(
+        "برچسب بازدیدکننده",
+        max_length=150,
+        default="anonymous",
+        help_text="نام کاربری یا anonymous",
+    )
+    ip_address = models.GenericIPAddressField("آدرس IP", blank=True, null=True)
+    mac_address = models.CharField("آدرس MAC", max_length=32, blank=True)
+    path = models.CharField("مسیر", max_length=500)
+    user_agent = models.CharField("User-Agent", max_length=500, blank=True)
+    created_at = models.DateTimeField("زمان", default=timezone.now, db_index=True)
+
+    class Meta:
+        verbose_name = "بازدید صفحه"
+        verbose_name_plural = "بازدیدهای صفحه"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.visitor_label} — {self.path}"
 
 
 class TradingAccount(models.Model):

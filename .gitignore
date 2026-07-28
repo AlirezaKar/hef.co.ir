@@ -21,6 +21,8 @@ db.sqlite3-journal
 staticfiles/
 backend/media/profile_picture/*
 !backend/media/profile_picture/.gitkeep
+backend/media/about_uploads/*
+!backend/media/about_uploads/.gitkeep
 
 # Environment
 .env
@@ -39,9 +41,12 @@ htmlcov/
 .pytest_cache/
 .mypy_cache/
 
-# Dev
+# Dev / local
 secret.txt
 text.txt
 example/
 data/
 data_sample/
+New folder/
+*.bak
+*.tmp

@@ -41,7 +41,11 @@
       <button type="submit" class="btn-primary">ایجاد حساب</button>
     </form>
 
-    <p class="auth-footer">قبلاً حساب دارید؟ <a href="{% url 'account:login' %}">ورود</a></p>
+    <p class="auth-footer">
+      قبلاً حساب دارید؟ <a href="{% url 'account:login' %}">ورود</a>
+      ·
+      <a href="{% url 'account:landing' %}">درباره ما</a>
+    </p>
   </div>
 </div>
 {% endblock %}

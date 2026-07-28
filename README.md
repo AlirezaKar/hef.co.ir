@@ -8,6 +8,7 @@ Persian Django portal for viewing pre-generated trading history `.htm` files.
 - Tailwind CSS (CDN) + Bootstrap RTL (CDN)
 - SQLite (development)
 - Pillow (profile pictures → WebP)
+- django-tinymce (rich About page editor in admin)
 
 ## Project layout
 
@@ -15,12 +16,14 @@ Persian Django portal for viewing pre-generated trading history `.htm` files.
 hef.co.ir/
   backend/           # Django project
     apps/
-      app_account/   # users, auth, profile, trading accounts, about, contact
+      app_account/   # users, auth, landing/about, FAQ, contact, visits, trading accounts
       app_report/    # home + history loading
-    media/profile_picture/
+    media/
+      profile_picture/
+      about_uploads/   # TinyMCE uploads
     templates/
   data/History/History-{trading_acc_username}/   # Index/Daily/Weekly/Monthly .htm files
-  example/           # UI / sample references
+  example/           # UI / sample references (local only)
 ```
 
 ## Setup
@@ -43,7 +46,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`.
+Open `http://127.0.0.1:8000/` — public **About** landing (not logged in). Login/signup from there. After login you land on `/home/`.
 
 Sensitive settings (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`) live in `backend/.env` only — never commit that file.
 
@@ -59,7 +62,13 @@ Place files under `data/History/History-{trading_acc_username}/` matching:
 
 Users create or link **trading accounts** (شماره حساب + نام کارگزاری). History is scanned on demand when a trading account is opened — there is no timed scheduler.
 
-The site **loads** these files; it does not generate history HTML. Filenames are case-sensitive.
+Opening a trading account loads its Index in a **new tab** as plain HTML. Daily/Weekly/… links also open in new tabs; their return button goes back to that account’s Index. The Index return button (top) goes to the portal home.
+
+## Content & tracking
+
+- **About (landing + `/about/`)**: rich HTML via Django admin → **صفحه درباره ما** (TinyMCE). Optional key/value extras still via **Site content** (`about`).
+- **FAQ (`/faq/`)** and **Contact**: **Site content** key/value items (`faq`, `contact`).
+- **Page visits**: every meaningful GET is stored (`PageVisit`) — authenticated users linked to their User; anonymous visitors labeled `anonymous`. Login attempts support date/time filters in admin.
 
 ## Notes
 
@@ -67,4 +76,3 @@ The site **loads** these files; it does not generate history HTML. Filenames are
 - Signup requires: username, email, password, confirm password, phone number.
 - Login accepts username **or** email.
 - Profile picture uploads are stored as `.webp` in `backend/media/profile_picture/`.
-- About / Contact content is managed in Django admin via **Site content** key/value items.

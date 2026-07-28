@@ -26,7 +26,11 @@
       <button type="submit" class="btn-primary">ورود</button>
     </form>
 
-    <p class="auth-footer">حساب ندارید؟ <a href="{% url 'account:signup' %}">ثبت‌نام</a></p>
+    <p class="auth-footer">
+      حساب ندارید؟ <a href="{% url 'account:signup' %}">ثبت‌نام</a>
+      ·
+      <a href="{% url 'account:landing' %}">درباره ما</a>
+    </p>
   </div>
 </div>
 {% endblock %}

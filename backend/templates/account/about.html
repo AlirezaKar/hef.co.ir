@@ -5,9 +5,15 @@
 
 {% block content %}
 <section class="content-page">
-  <h2>درباره ما</h2>
+  <h2>{{ about.title }}</h2>
+  {% if about.body %}
+    <div class="rich-content">
+      {{ about.body|safe }}
+    </div>
+  {% endif %}
+
   {% if items %}
-    <div class="content-grid">
+    <div class="content-grid" style="margin-top:1.5rem;">
       {% for item in items %}
         <article class="content-item">
           {% if item.icon %}<div class="content-icon">{{ item.icon }}</div>{% endif %}
@@ -16,7 +22,7 @@
         </article>
       {% endfor %}
     </div>
-  {% else %}
+  {% elif not about.body %}
     <p class="muted">هنوز محتوایی از پنل مدیریت ثبت نشده است.</p>
   {% endif %}
 </section>

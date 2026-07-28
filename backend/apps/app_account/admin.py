@@ -1,11 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.utils.html import format_html
 from django.contrib.auth.models import Group
-from .models import LoginAttempt, SiteContent, TradingAccount, User
+from django.utils.html import format_html
+from tinymce.widgets import TinyMCE
+
+from .admin_filters import DateTimeFromToFilter
+from .models import AboutPage, LoginAttempt, PageVisit, SiteContent, TradingAccount, User
 
 
 admin.site.unregister(Group)
+
 
 class LoginAttemptInline(admin.TabularInline):
     model = LoginAttempt
@@ -137,7 +141,12 @@ class LoginAttemptAdmin(admin.ModelAdmin):
         "successful_badge",
         "created_at",
     )
-    list_filter = ("successful", "created_at")
+    list_filter = (
+        "successful",
+        DateTimeFromToFilter,
+        ("created_at", admin.DateFieldListFilter),
+    )
+    date_hierarchy = "created_at"
     search_fields = ("username_tried", "ip_address", "user__username")
     readonly_fields = (
         "user",
@@ -146,6 +155,7 @@ class LoginAttemptAdmin(admin.ModelAdmin):
         "successful",
         "created_at",
     )
+    ordering = ("-created_at",)
 
     def has_add_permission(self, request):
         return False
@@ -172,9 +182,69 @@ class SiteContentAdmin(admin.ModelAdmin):
     list_editable = ("order", "is_active")
 
 
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    list_display = ("title", "updated_at")
+    readonly_fields = ("updated_at",)
+
+    def has_add_permission(self, request):
+        return not AboutPage.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "body":
+            kwargs["widget"] = TinyMCE(attrs={"cols": 80, "rows": 30})
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+@admin.register(PageVisit)
+class PageVisitAdmin(admin.ModelAdmin):
+    list_display = (
+        "visitor_label",
+        "user",
+        "ip_address",
+        "mac_address",
+        "path",
+        "created_at",
+    )
+    list_filter = (
+        DateTimeFromToFilter,
+        ("created_at", admin.DateFieldListFilter),
+        "visitor_label",
+    )
+    date_hierarchy = "created_at"
+    search_fields = (
+        "visitor_label",
+        "ip_address",
+        "mac_address",
+        "path",
+        "user__username",
+    )
+    readonly_fields = (
+        "user",
+        "visitor_label",
+        "ip_address",
+        "mac_address",
+        "path",
+        "user_agent",
+        "created_at",
+    )
+    ordering = ("-created_at",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(TradingAccount)
 class TradingAccountAdmin(admin.ModelAdmin):
     list_display = ("trading_acc_username", "broker", "created_at", "updated_at")
     search_fields = ("trading_acc_username", "broker", "users__username")
     filter_horizontal = ("users",)
     readonly_fields = ("created_at", "updated_at")
+    list_filter = (("created_at", admin.DateFieldListFilter),)
+    date_hierarchy = "created_at"

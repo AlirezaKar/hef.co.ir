@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "tinymce",
     "apps.app_account.apps.AppAccountConfig",
     "apps.app_report.apps.AppReportConfig",
 ]
@@ -145,7 +146,7 @@ HISTORY_ROOT = Path(_history_root) if _history_root else (PROJECT_ROOT / "data" 
 
 LOGIN_URL = "account:login"
 LOGIN_REDIRECT_URL = "report:home"
-LOGOUT_REDIRECT_URL = "account:login"
+LOGOUT_REDIRECT_URL = "account:landing"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -157,3 +158,30 @@ PROFILE_PICTURE_MAX_SIZE = 5 * 1024 * 1024  # 5 MB
 
 # Friendly CSRF error page (no technical details)
 CSRF_FAILURE_VIEW = "config.error_views.csrf_failure"
+
+# TinyMCE (admin About page editor)
+TINYMCE_DEFAULT_CONFIG = {
+    "height": 500,
+    "menubar": "file edit view insert format tools table help",
+    "plugins": (
+        "advlist autolink lists link image charmap preview anchor "
+        "searchreplace visualblocks code fullscreen insertdatetime media "
+        "table code help wordcount directionality"
+    ),
+    "toolbar": (
+        "undo redo | blocks | bold italic underline forecolor backcolor | "
+        "alignleft aligncenter alignright alignjustify | "
+        "bullist numlist outdent indent | link image media | "
+        "ltr rtl | removeformat | code | help"
+    ),
+    "directionality": "rtl",
+    "branding": False,
+    "relative_urls": False,
+    "remove_script_host": False,
+    "convert_urls": True,
+    "images_upload_url": "/uploads/tinymce/",
+    "automatic_uploads": True,
+    "file_picker_types": "image media file",
+    "content_style": "body { font-family: Vazirmatn, Tahoma, sans-serif; direction: rtl; }",
+}
+TINYMCE_COMPRESSOR = False

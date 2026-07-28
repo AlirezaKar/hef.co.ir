@@ -32,7 +32,7 @@ HREF_VALUE_RE = re.compile(
 
 
 def rewrite_index_hrefs(html: str, trading_acc_username: str, file_url_builder) -> str:
-    """Rewrite relative history hrefs to Django URLs; open each in a new tab/page."""
+    """Rewrite relative history hrefs to Django URLs; open in the same tab."""
 
     def repl(match: re.Match) -> str:
         quote = match.group(1)
@@ -44,15 +44,15 @@ def rewrite_index_hrefs(html: str, trading_acc_username: str, file_url_builder) 
 
     html = HREF_VALUE_RE.sub(repl, html)
 
-    def add_new_tab_attrs(match: re.Match) -> str:
+    def same_tab_attrs(match: re.Match) -> str:
         tag = match.group(0)
         tag = re.sub(r'\s+target=(["\'])[^"\']*\1', "", tag, flags=re.IGNORECASE)
         tag = re.sub(r'\s+rel=(["\'])[^"\']*\1', "", tag, flags=re.IGNORECASE)
-        return tag[:-1] + ' target="_blank" rel="noopener noreferrer">'
+        return tag
 
     return re.sub(
         r'''<a\b[^>]*\bhref=(["'])/history/file/[^"']+\1[^>]*>''',
-        add_new_tab_attrs,
+        same_tab_attrs,
         html,
         flags=re.IGNORECASE,
     )
@@ -81,28 +81,31 @@ def rewrite_home_button(html: str, url: str, *, target: str | None = None) -> st
 
 def ensure_index_home_button(html: str, home_url: str) -> str:
     """
-    Ensure the Index page has a return-to-home control pointing at the portal home.
-    Rewrites an existing button when present; otherwise injects one before </body>.
+    Ensure the Index page has a return-to-home control at the top of <body>.
+    Existing buttons are removed/rewritten and placed at the top.
     """
-    if HOME_ANCHOR_RE.search(html):
-        return rewrite_home_button(html, home_url, target="_self")
-
     button = (
+        f'<div id="hef-index-home" style="padding:12px 16px;text-align:right;'
+        f'direction:rtl;background:#0f172a;">'
         f'<a href="{home_url}" '
-        f'style="display:inline-block;margin:12px;padding:8px 14px;'
+        f'style="display:inline-block;padding:8px 14px;'
         f'background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;'
         f'font-family:Tahoma,sans-serif;">'
-        f"بازگشت به صفحه اصلی</a>"
+        f"بازگشت به صفحه اصلی</a></div>"
     )
-    if re.search(r"</body\s*>", html, flags=re.IGNORECASE):
+
+    # Drop any existing native home anchors so we don't duplicate
+    html = HOME_ANCHOR_RE.sub("", html)
+
+    if re.search(r"<body\b[^>]*>", html, flags=re.IGNORECASE):
         return re.sub(
-            r"</body\s*>",
-            button + "</body>",
+            r"(<body\b[^>]*>)",
+            r"\1" + button,
             html,
             count=1,
             flags=re.IGNORECASE,
         )
-    return html + button
+    return button + html
 
 
 # Backward-compatible alias used by older call sites

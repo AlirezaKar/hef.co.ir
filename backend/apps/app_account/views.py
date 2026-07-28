@@ -1,9 +1,16 @@
+import uuid
+from pathlib import Path
+
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
 from django.db.models import F
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_POST
 
 from .forms import (
@@ -12,7 +19,7 @@ from .forms import (
     ProfileForm,
     SignupForm,
 )
-from .models import LoginAttempt, SiteContent, User
+from .models import AboutPage, LoginAttempt, SiteContent, User
 from .utils import apply_network_identity, get_client_ip
 
 AUTH_BACKEND = settings.AUTHENTICATION_BACKENDS[0]
@@ -30,7 +37,6 @@ def _record_login_attempt(*, username_tried, user, request, successful):
             login_attempt_count=F("login_attempt_count") + 1
         )
     elif not successful:
-        # Still bump count if we can resolve the account by identifier
         matched = User.objects.filter(username__iexact=username_tried).first()
         if matched is None and "@" in username_tried:
             matched = User.objects.filter(email__iexact=username_tried).first()
@@ -40,6 +46,19 @@ def _record_login_attempt(*, username_tried, user, request, successful):
             )
             return matched
     return user
+
+
+@require_http_methods(["GET"])
+def landing_view(request):
+    """Public About landing — first page for anonymous visitors."""
+    if request.user.is_authenticated:
+        return redirect("report:home")
+    about = AboutPage.get_solo()
+    return render(
+        request,
+        "account/landing.html",
+        {"about": about},
+    )
 
 
 @require_http_methods(["GET", "POST"])
@@ -97,7 +116,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "با موفقیت خارج شدید.")
-    return redirect("account:login")
+    return redirect("account:landing")
 
 
 @login_required
@@ -123,8 +142,19 @@ def profile_view(request):
 
 @login_required
 def about_view(request):
+    about = AboutPage.get_solo()
     items = SiteContent.objects.filter(page=SiteContent.Page.ABOUT, is_active=True)
-    return render(request, "account/about.html", {"items": items})
+    return render(
+        request,
+        "account/about.html",
+        {"about": about, "items": items},
+    )
+
+
+@login_required
+def faq_view(request):
+    items = SiteContent.objects.filter(page=SiteContent.Page.FAQ, is_active=True)
+    return render(request, "account/faq.html", {"items": items})
 
 
 @login_required
@@ -136,3 +166,40 @@ def contact_view(request):
         messages.success(request, "پیام شما ثبت شد. سپاسگزاریم.")
         return redirect("account:contact")
     return render(request, "account/contact.html", {"form": form, "items": items})
+
+
+@csrf_exempt
+@staff_member_required
+@require_POST
+def tinymce_upload_view(request):
+    """Accept image/file uploads from TinyMCE admin editor."""
+    upload = request.FILES.get("file")
+    if not upload:
+        return JsonResponse({"error": "فایلی ارسال نشده است."}, status=400)
+
+    allowed_ext = {
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".webp",
+        ".svg",
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".zip",
+    }
+    ext = Path(upload.name).suffix.lower()
+    if ext not in allowed_ext:
+        return JsonResponse({"error": "نوع فایل مجاز نیست."}, status=400)
+
+    max_size = 10 * 1024 * 1024
+    if upload.size > max_size:
+        return JsonResponse({"error": "حجم فایل بیش از ۱۰ مگابایت است."}, status=400)
+
+    name = f"about_uploads/{uuid.uuid4().hex}{ext}"
+    saved = default_storage.save(name, upload)
+    url = request.build_absolute_uri(settings.MEDIA_URL + saved.replace("\\", "/"))
+    return JsonResponse({"location": url})
