@@ -1,11 +1,27 @@
 {% extends "base_app.html" %}
 
-{% block title %}{{ title }} | پورتال گزارش HEF{% endblock %}
+{% block title %}{{ title }} | پورتال تاریخچه HEF{% endblock %}
 {% block page_heading %}{{ title }}{% endblock %}
 
 {% block content %}
 <section class="content-page">
+  {% if accounts %}
+  <div class="history-accounts-bar">
+    <span class="muted">حساب‌های ترید:</span>
+    {% for acc in accounts %}
+      <a
+        class="btn-secondary {% if active_account and active_account.pk == acc.pk %}active{% endif %}"
+        href="{% url 'report:history_account' acc.pk %}"
+      >{{ acc.trading_acc_username }} — {{ acc.broker }}</a>
+    {% endfor %}
+    <a class="btn-primary-light" href="{% url 'report:trading_account_create' %}">ایجاد حساب ترید</a>
+  </div>
+  {% endif %}
+
   <p>{{ message }}</p>
-  <a class="btn-primary-light" href="{% url 'report:home' %}">بازگشت به خانه</a>
+  {% if show_create %}
+    <a class="btn-primary-light" href="{% url 'report:trading_account_create' %}">ایجاد حساب ترید</a>
+  {% endif %}
+  <a class="btn-secondary" href="{% url 'report:home' %}">بازگشت به خانه</a>
 </section>
 {% endblock %}

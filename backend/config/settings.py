@@ -1,5 +1,5 @@
 """
-Django settings for HEF Report Portal.
+Django settings for HEF History Portal.
 
 Sensitive values are loaded from backend/.env — never commit real secrets.
 """
@@ -139,9 +139,9 @@ WHITENOISE_AUTOREFRESH = DEBUG
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Optional override; default is <project>/data/reports
-_reports_root = os.getenv("REPORTS_ROOT", "").strip()
-REPORTS_ROOT = Path(_reports_root) if _reports_root else (PROJECT_ROOT / "data" / "reports")
+# Optional override; default is <project>/data/History
+_history_root = os.getenv("HISTORY_ROOT", "").strip()
+HISTORY_ROOT = Path(_history_root) if _history_root else (PROJECT_ROOT / "data" / "History")
 
 LOGIN_URL = "account:login"
 LOGIN_REDIRECT_URL = "report:home"

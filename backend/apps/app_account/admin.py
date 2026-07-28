@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 from django.contrib.auth.models import Group
-from .models import LoginAttempt, SiteContent, User, UserScanSetting
+from .models import LoginAttempt, SiteContent, TradingAccount, User
 
 
 admin.site.unregister(Group)
@@ -172,9 +172,9 @@ class SiteContentAdmin(admin.ModelAdmin):
     list_editable = ("order", "is_active")
 
 
-@admin.register(UserScanSetting)
-class UserScanSettingAdmin(admin.ModelAdmin):
-    list_display = ("user", "interval", "last_scan_at", "scan_version")
-    list_filter = ("interval",)
-    search_fields = ("user__username",)
-    readonly_fields = ("last_scan_at", "scan_version", "last_fingerprint")
+@admin.register(TradingAccount)
+class TradingAccountAdmin(admin.ModelAdmin):
+    list_display = ("trading_acc_username", "broker", "created_at", "updated_at")
+    search_fields = ("trading_acc_username", "broker", "users__username")
+    filter_horizontal = ("users",)
+    readonly_fields = ("created_at", "updated_at")

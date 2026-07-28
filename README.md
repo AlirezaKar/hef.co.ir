@@ -1,6 +1,6 @@
-# HEF Report Portal
+# HEF History Portal
 
-Persian Django portal for viewing pre-generated trading/report `.htm` files.
+Persian Django portal for viewing pre-generated trading history `.htm` files.
 
 ## Stack
 
@@ -15,11 +15,11 @@ Persian Django portal for viewing pre-generated trading/report `.htm` files.
 hef.co.ir/
   backend/           # Django project
     apps/
-      app_account/   # users, auth, profile, settings, about, contact
-      app_report/    # home + report loading
+      app_account/   # users, auth, profile, trading accounts, about, contact
+      app_report/    # home + history loading
     media/profile_picture/
     templates/
-  data/reports/{username}/   # pre-built Index/Daily/Weekly/Monthly .htm files
+  data/History/History-{trading_acc_username}/   # Index/Daily/Weekly/Monthly .htm files
   example/           # UI / sample references
 ```
 
@@ -46,19 +46,20 @@ python manage.py runserver
 Open `http://127.0.0.1:8000/`.
 
 Sensitive settings (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`) live in `backend/.env` only — never commit that file.
-## Reports
 
-Place files under `data/reports/{username}/` matching:
+## History files
 
-- `Index_{username}.htm`
-- `Daily_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Weekly_{username}_Week{N}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Monthly_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Yearly_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm` (optional)
+Place files under `data/History/History-{trading_acc_username}/` matching:
 
-The site **loads** these files; it does not generate report HTML. Filenames are case-sensitive.
+- `Index_{trading_acc_username}.htm`
+- `Daily_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
+- `Weekly_{trading_acc_username}_Week{N}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
+- `Monthly_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
+- `Yearly_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm` (optional)
 
-In **Settings**, choose how often the folder is re-scanned (1h / 3h / 6h / daily). Open report pages poll for a new scan version and reload when it changes.
+Users create or link **trading accounts** (شماره حساب + نام کارگزاری). History is scanned on demand when a trading account is opened — there is no timed scheduler.
+
+The site **loads** these files; it does not generate history HTML. Filenames are case-sensitive.
 
 ## Notes
 

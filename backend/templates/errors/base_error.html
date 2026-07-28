@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} | پورتال گزارش HEF</title>
+  <title>{{ title }} | پورتال تاریخچه HEF</title>
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
   <style>
     .error-page {
@@ -67,7 +67,7 @@
     }
   </style>
   <script>
-    // If this error page was loaded inside an iframe (e.g. reports embed),
+    // If this error page was loaded inside an iframe (e.g. history embed),
     // break out so navigation is not nested inside another layout.
     if (window.top !== window.self) {
       window.top.location.replace(window.location.href);
@@ -82,7 +82,7 @@
       <p>{{ message }}</p>
       <div class="error-actions">
         <a href="{% url 'report:home' %}" target="_top">خانه</a>
-        <a class="secondary" href="{% url 'report:index' %}" target="_top">گزارش‌ها</a>
+        <a class="secondary" href="{% url 'report:index' %}" target="_top">تاریخچه</a>
       </div>
     </div>
   </div>

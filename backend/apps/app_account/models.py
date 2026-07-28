@@ -111,49 +111,26 @@ class SiteContent(models.Model):
         return f"{self.get_page_display()}: {self.key}"
 
 
-class UserScanSetting(models.Model):
-    class Interval(models.TextChoices):
-        HOUR_1 = "1h", "هر ۱ ساعت"
-        HOUR_3 = "3h", "هر ۳ ساعت"
-        HOUR_6 = "6h", "هر ۶ ساعت"
-        DAY_1 = "1d", "هر روز"
-
-    INTERVAL_SECONDS = {
-        "1h": 3600,
-        "3h": 10800,
-        "6h": 21600,
-        "1d": 86400,
-    }
-
-    user = models.OneToOneField(
+class TradingAccount(models.Model):
+    trading_acc_username = models.CharField(
+        "شماره حساب",
+        max_length=150,
+        unique=True,
+    )
+    broker = models.CharField("نام کارگزاری", max_length=200)
+    users = models.ManyToManyField(
         User,
-        on_delete=models.CASCADE,
-        related_name="scan_setting",
-        verbose_name="کاربر",
+        related_name="trading_accounts",
+        blank=True,
+        verbose_name="کاربران",
     )
-    interval = models.CharField(
-        "بازه به‌روزرسانی",
-        max_length=8,
-        choices=Interval.choices,
-        default=Interval.HOUR_1,
-    )
-    last_scan_at = models.DateTimeField("آخرین اسکن", blank=True, null=True)
-    scan_version = models.PositiveIntegerField("نسخه اسکن", default=0)
-    last_fingerprint = models.CharField("اثرانگشت پوشه", max_length=64, blank=True)
+    created_at = models.DateTimeField("زمان ایجاد", default=timezone.now)
+    updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
 
     class Meta:
-        verbose_name = "تنظیمات اسکن"
-        verbose_name_plural = "تنظیمات اسکن"
+        verbose_name = "حساب ترید"
+        verbose_name_plural = "حساب‌های ترید"
+        ordering = ["trading_acc_username"]
 
     def __str__(self):
-        return f"{self.user.username} — {self.get_interval_display()}"
-
-    @property
-    def interval_seconds(self):
-        return self.INTERVAL_SECONDS.get(self.interval, 3600)
-
-    def mark_scanned(self):
-        self.last_scan_at = timezone.now()
-        self.scan_version = models.F("scan_version") + 1
-        self.save(update_fields=["last_scan_at", "scan_version"])
-        self.refresh_from_db(fields=["scan_version"])
+        return f"{self.trading_acc_username} — {self.broker}"

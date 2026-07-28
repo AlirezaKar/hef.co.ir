@@ -1,16 +1,13 @@
-"""Secure report file discovery and serving helpers."""
+"""Secure history file discovery and serving helpers."""
 
 from __future__ import annotations
 
-import hashlib
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
 from django.conf import settings
-from django.db.models import F
-from django.utils import timezone
 
 INDEX_RE = re.compile(r"^Index_(?P<username>.+)\.htm$")
 DAILY_RE = re.compile(
@@ -26,7 +23,7 @@ YEARLY_RE = re.compile(
     r"^Yearly_(?P<username>.+)_(?P<start>\d{4}-\d{2}-\d{2})_to_(?P<end>\d{4}-\d{2}-\d{2})\.htm$"
 )
 
-ALLOWED_REPORT_RE = re.compile(
+ALLOWED_HISTORY_RE = re.compile(
     r"^(Index|Daily|Weekly|Monthly|Yearly)_[A-Za-z0-9._-]+\.htm$"
 )
 HREF_VALUE_RE = re.compile(
@@ -34,13 +31,13 @@ HREF_VALUE_RE = re.compile(
 )
 
 
-def rewrite_index_hrefs(html: str, username: str, file_url_builder) -> str:
-    """Rewrite relative report hrefs to Django URLs; open each in a new tab/page."""
+def rewrite_index_hrefs(html: str, trading_acc_username: str, file_url_builder) -> str:
+    """Rewrite relative history hrefs to Django URLs; open each in a new tab/page."""
 
     def repl(match: re.Match) -> str:
         quote = match.group(1)
         filename = match.group("file")
-        if classify_filename(filename, username) is None:
+        if classify_filename(filename, trading_acc_username) is None:
             return match.group(0)
         url = file_url_builder(filename)
         return f"href={quote}{url}{quote}"
@@ -49,20 +46,18 @@ def rewrite_index_hrefs(html: str, username: str, file_url_builder) -> str:
 
     def add_new_tab_attrs(match: re.Match) -> str:
         tag = match.group(0)
-        # Drop any existing target/rel so we can set a clean new-tab behavior
         tag = re.sub(r'\s+target=(["\'])[^"\']*\1', "", tag, flags=re.IGNORECASE)
         tag = re.sub(r'\s+rel=(["\'])[^"\']*\1', "", tag, flags=re.IGNORECASE)
         return tag[:-1] + ' target="_blank" rel="noopener noreferrer">'
 
     return re.sub(
-        r'''<a\b[^>]*\bhref=(["'])/reports/file/[^"']+\1[^>]*>''',
+        r'''<a\b[^>]*\bhref=(["'])/history/file/[^"']+\1[^>]*>''',
         add_new_tab_attrs,
         html,
         flags=re.IGNORECASE,
     )
 
 
-# Built-in report header button text from generated .htm files
 HOME_ANCHOR_RE = re.compile(
     r"<a\b([^>]*)>(.*?بازگشت به صفحه اصلی.*?)</a>",
     re.IGNORECASE | re.DOTALL,
@@ -70,7 +65,7 @@ HOME_ANCHOR_RE = re.compile(
 
 
 def rewrite_report_home_button(html: str, home_url: str) -> str:
-    """Point the report's native 'بازگشت به صفحه اصلی' control to the site home."""
+    """Point the history file's native 'بازگشت به صفحه اصلی' control to the site home."""
 
     def repl(match: re.Match) -> str:
         attrs = match.group(1) or ""
@@ -84,32 +79,32 @@ def rewrite_report_home_button(html: str, home_url: str) -> str:
 
 
 @dataclass
-class ReportFile:
+class HistoryFile:
     filename: str
     report_type: str
     path: Path
 
 
-def reports_root() -> Path:
-    return Path(settings.REPORTS_ROOT)
+def history_root() -> Path:
+    return Path(settings.HISTORY_ROOT)
 
 
-def user_report_dir(username: str) -> Path:
-    safe = Path(username).name
-    return reports_root() / safe
+def history_acc_dir(trading_acc_username: str) -> Path:
+    safe = Path(str(trading_acc_username)).name
+    return history_root() / f"History-{safe}"
 
 
-def ensure_user_report_dir(username: str) -> Path:
+def ensure_history_dir(trading_acc_username: str) -> Path:
     """
-    Ensure data/reports/{username}/ exists.
+    Ensure data/History/History-{trading_acc_username}/ exists.
     Creates the folder (and parents) when missing.
     """
-    folder = user_report_dir(username)
+    folder = history_acc_dir(trading_acc_username)
     folder.mkdir(parents=True, exist_ok=True)
     return folder
 
 
-def classify_filename(filename: str, username: str) -> Optional[str]:
+def classify_filename(filename: str, trading_acc_username: str) -> Optional[str]:
     for report_type, pattern in (
         ("index", INDEX_RE),
         ("daily", DAILY_RE),
@@ -118,21 +113,21 @@ def classify_filename(filename: str, username: str) -> Optional[str]:
         ("yearly", YEARLY_RE),
     ):
         match = pattern.match(filename)
-        if match and match.group("username") == username:
+        if match and match.group("username") == trading_acc_username:
             return report_type
     return None
 
 
-def safe_resolve_report(username: str, filename: str) -> Optional[Path]:
-    """Return a resolved path only if it is a valid report under the user folder."""
+def safe_resolve_history(trading_acc_username: str, filename: str) -> Optional[Path]:
+    """Return a resolved path only if it is a valid history file under the account folder."""
     if not filename or "/" in filename or "\\" in filename or ".." in filename:
         return None
-    if not ALLOWED_REPORT_RE.match(filename):
+    if not ALLOWED_HISTORY_RE.match(filename):
         return None
-    if classify_filename(filename, username) is None:
+    if classify_filename(filename, trading_acc_username) is None:
         return None
 
-    base = user_report_dir(username).resolve()
+    base = history_acc_dir(trading_acc_username).resolve()
     candidate = (base / filename).resolve()
     try:
         candidate.relative_to(base)
@@ -143,78 +138,21 @@ def safe_resolve_report(username: str, filename: str) -> Optional[Path]:
     return candidate
 
 
-def scan_user_reports(username: str) -> List[ReportFile]:
-    folder = user_report_dir(username)
+def scan_account_history(trading_acc_username: str) -> List[HistoryFile]:
+    folder = history_acc_dir(trading_acc_username)
     if not folder.is_dir():
         return []
-    results: List[ReportFile] = []
+    results: List[HistoryFile] = []
     for path in sorted(folder.glob("*.htm")):
-        report_type = classify_filename(path.name, username)
+        report_type = classify_filename(path.name, trading_acc_username)
         if report_type:
             results.append(
-                ReportFile(filename=path.name, report_type=report_type, path=path)
+                HistoryFile(filename=path.name, report_type=report_type, path=path)
             )
     return results
 
 
-def folder_fingerprint(username: str) -> str:
-    files = scan_user_reports(username)
-    payload = []
-    for item in files:
-        try:
-            mtime = item.path.stat().st_mtime_ns
-        except OSError:
-            mtime = 0
-        payload.append(f"{item.filename}:{mtime}")
-    return hashlib.sha256("|".join(payload).encode("utf-8")).hexdigest()
-
-
-def maybe_rescan(user) -> int:
-    """
-    Rescan if interval elapsed. Bumps scan_version only when folder content changes.
-    """
-    from apps.app_account.models import UserScanSetting
-
-    setting, _ = UserScanSetting.objects.get_or_create(user=user)
-    now = timezone.now()
-    due = (
-        setting.last_scan_at is None
-        or (now - setting.last_scan_at).total_seconds() >= setting.interval_seconds
-    )
-    if not due:
-        return setting.scan_version
-
-    return _apply_scan(setting, user.username, bump_always=False)
-
-
-def force_rescan(user) -> int:
-    """Immediate folder scan (ignores schedule). Always bumps scan_version."""
-    from apps.app_account.models import UserScanSetting
-
-    setting, _ = UserScanSetting.objects.get_or_create(user=user)
-    return _apply_scan(setting, user.username, bump_always=True)
-
-
-def _apply_scan(setting, username: str, *, bump_always: bool) -> int:
-    from apps.app_account.models import UserScanSetting
-
-    now = timezone.now()
-    fingerprint = folder_fingerprint(username)
-    changed = fingerprint != (setting.last_fingerprint or "")
-    update_fields = {"last_scan_at": now, "last_fingerprint": fingerprint}
-    if bump_always or changed:
-        UserScanSetting.objects.filter(pk=setting.pk).update(
-            **update_fields,
-            scan_version=F("scan_version") + 1,
-        )
-    else:
-        UserScanSetting.objects.filter(pk=setting.pk).update(**update_fields)
-
-    setting.refresh_from_db()
-    return setting.scan_version
-
-
-def read_report_html(path: Path) -> str:
+def read_history_html(path: Path) -> str:
     raw = path.read_bytes()
     for encoding in ("utf-8", "utf-8-sig", "cp1256", "latin-1"):
         try:

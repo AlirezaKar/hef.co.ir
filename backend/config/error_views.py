@@ -18,8 +18,9 @@ _UNSAFE = re.compile(
 def _safe_404_message(exception) -> tuple[str, str]:
     """Return (title, message) for a 404 response."""
     raw = str(exception or "").strip()
-    if raw and not _UNSAFE.search(raw) and "گزارش" in raw:
-        return "گزارش یافت نشد", raw.rstrip(".") + "."
+    if raw and not _UNSAFE.search(raw) and ("گزارش" in raw or "تاریخچه" in raw):
+        title = "فایل تاریخچه یافت نشد" if "تاریخچه" in raw else "گزارش یافت نشد"
+        return title, raw.rstrip(".") + "."
     return "صفحه یافت نشد", "صفحه مورد نظر یافت نشد."
 
 

@@ -1,0 +1,41 @@
+{% extends "base_app.html" %}
+
+{% block title %}ایجاد حساب ترید | پورتال تاریخچه HEF{% endblock %}
+{% block page_heading %}ایجاد حساب ترید{% endblock %}
+
+{% block content %}
+<section class="content-page">
+  {% if accounts %}
+  <div class="history-accounts-bar" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
+    <span class="muted">حساب‌های ذخیره‌شده:</span>
+    {% for acc in accounts %}
+      <a class="btn-secondary" href="{% url 'report:history_account' acc.pk %}">
+        {{ acc.trading_acc_username }} — {{ acc.broker }}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" novalidate class="auth-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <ul class="field-errors">
+            {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+    {% if form.non_field_errors %}
+      <ul class="field-errors">
+        {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    <button type="submit" class="btn-primary-light">ثبت حساب ترید</button>
+    <a class="btn-secondary" href="{% url 'report:index' %}">بازگشت به تاریخچه</a>
+  </form>
+</section>
+{% endblock %}

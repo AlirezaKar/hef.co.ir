@@ -10,8 +10,7 @@ class ClickTrackingMiddleware(MiddlewareMixin):
         "/static/",
         "/media/",
         "/admin/",
-        "/reports/scan-version/",
-        "/reports/raw/",
+        "/history/raw/",
     )
 
     def process_view(self, request, view_func, view_args, view_kwargs):

@@ -6,8 +6,17 @@ app_name = "report"
 
 urlpatterns = [
     path("", views.home_view, name="home"),
-    path("reports/", views.reports_index_view, name="index"),
-    path("reports/file/<str:filename>/", views.report_file_view, name="report_file"),
-    path("reports/raw/<str:filename>/", views.report_raw_view, name="report_raw"),
-    path("reports/scan-version/", views.scan_version_view, name="scan_version"),
+    path("history/", views.history_index_view, name="index"),
+    path(
+        "history/accounts/new/",
+        views.trading_account_create_view,
+        name="trading_account_create",
+    ),
+    path(
+        "history/accounts/<int:pk>/",
+        views.history_account_view,
+        name="history_account",
+    ),
+    path("history/file/<str:filename>/", views.history_file_view, name="history_file"),
+    path("history/raw/<str:filename>/", views.history_raw_view, name="history_raw"),
 ]

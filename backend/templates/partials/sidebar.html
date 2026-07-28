@@ -3,7 +3,7 @@
     <div class="brand-mark">H</div>
     <div class="brand-text">
       <strong>HEF</strong>
-      <span>پورتال گزارش</span>
+      <span>پورتال تاریخچه</span>
     </div>
   </div>
 
@@ -22,17 +22,17 @@
         <span class="nav-icon">☺</span>
         <span class="nav-label">پروفایل</span>
       </a>
-      <a href="{% url 'account:settings' %}" class="nav-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
-        <span class="nav-icon">⚙</span>
-        <span class="nav-label">تنظیمات</span>
+      <a href="{% url 'report:trading_account_create' %}" class="nav-item {% if request.resolver_match.url_name == 'trading_account_create' %}active{% endif %}">
+        <span class="nav-icon">＋</span>
+        <span class="nav-label">ایجاد حساب ترید</span>
       </a>
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-label">گزارش</div>
-      <a href="{% url 'report:index' %}" class="nav-item {% if 'report' in request.path %}active{% endif %}">
+      <div class="nav-group-label">تاریخچه</div>
+      <a href="{% url 'report:index' %}" class="nav-item {% if 'history' in request.path %}active{% endif %}">
         <span class="nav-icon">▣</span>
-        <span class="nav-label">گزارش‌ها</span>
+        <span class="nav-label">تاریخچه</span>
       </a>
     </div>
 

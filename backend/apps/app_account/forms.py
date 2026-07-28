@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
 
-from .models import User, UserScanSetting
+from .models import TradingAccount, User
 
 _PERSIAN_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
 
@@ -198,14 +198,44 @@ class ProfileForm(forms.ModelForm):
         return picture
 
 
-class ScanSettingForm(forms.ModelForm):
+class TradingAccountForm(forms.ModelForm):
     class Meta:
-        model = UserScanSetting
-        fields = ("interval",)
-        labels = {"interval": "بازه به‌روزرسانی پوشه گزارش‌ها"}
-        widgets = {
-            "interval": forms.Select(attrs={"class": "form-select"}),
+        model = TradingAccount
+        fields = ("trading_acc_username", "broker")
+        labels = {
+            "trading_acc_username": "شماره حساب",
+            "broker": "نام کارگزاری",
         }
+        widgets = {
+            "trading_acc_username": forms.TextInput(
+                attrs={
+                    "placeholder": "شماره حساب ترید",
+                    "autocomplete": "off",
+                }
+            ),
+            "broker": forms.TextInput(
+                attrs={
+                    "placeholder": "نام کارگزاری",
+                    "autocomplete": "organization",
+                }
+            ),
+        }
+
+    def clean_trading_acc_username(self):
+        value = (self.cleaned_data.get("trading_acc_username") or "").strip()
+        if not value:
+            raise ValidationError("شماره حساب الزامی است.")
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", value):
+            raise ValidationError(
+                "شماره حساب فقط می‌تواند شامل حروف، اعداد، نقطه، خط تیره و زیرخط باشد."
+            )
+        return value
+
+    def clean_broker(self):
+        value = (self.cleaned_data.get("broker") or "").strip()
+        if not value:
+            raise ValidationError("نام کارگزاری الزامی است.")
+        return value
 
 
 class ContactMessageForm(forms.Form):

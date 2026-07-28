@@ -1,26 +1,72 @@
 {% extends "base_app.html" %}
+{% load static %}
 
-{% block title %}{{ page_title }} | پورتال گزارش HEF{% endblock %}
+{% block title %}{{ page_title }} | پورتال تاریخچه HEF{% endblock %}
 {% block page_heading %}{{ page_title }}{% endblock %}
 
 {% block extra_head %}
 <style>
-  .report-frame-wrap { background: #0a0a1a; border-radius: 12px; overflow: hidden; min-height: 70vh; }
+  .report-frame-wrap { background: #0a0a1a; border-radius: 12px; overflow: hidden; min-height: 70vh; position: relative; }
   .report-frame-wrap iframe { width: 100%; min-height: 80vh; border: 0; background: #0a0a1a; }
+  .history-accounts-bar {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;
+    margin-bottom: 1rem;
+  }
+  .history-loading-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(10, 10, 26, 0.45);
+    backdrop-filter: blur(1px);
+  }
+  .history-loading-overlay img { width: 64px; height: 64px; }
+  .history-loading-overlay.is-hidden { display: none; }
 </style>
 {% endblock %}
 
 {% block content %}
+{% if accounts %}
+<div class="history-accounts-bar">
+  <span class="muted">حساب‌های ترید:</span>
+  {% for acc in accounts %}
+    <a
+      class="btn-secondary {% if active_account and active_account.pk == acc.pk %}active{% endif %}"
+      href="{% url 'report:history_account' acc.pk %}"
+    >{{ acc.trading_acc_username }} — {{ acc.broker }}</a>
+  {% endfor %}
+  <a class="btn-primary-light" href="{% url 'report:trading_account_create' %}">ایجاد حساب ترید</a>
+</div>
+{% endif %}
+
+{% if show_loading %}
+<div class="history-loading-overlay" id="historyLoadingOverlay" aria-live="polite" aria-busy="true">
+  <img src="{% static 'img/loading.gif' %}" alt="در حال بارگذاری">
+</div>
+{% endif %}
+
 <div class="report-frame-wrap">
-  <iframe id="reportFrame" title="گزارش" src="{{ iframe_src }}"></iframe>
+  <iframe id="reportFrame" title="تاریخچه" src="{{ iframe_src }}"></iframe>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+{% if show_loading %}
 <script>
-  window.HEF_SCAN = {
-    version: {{ scan_version|default:0 }},
-    endpoint: "{% url 'report:scan_version' %}",
-  };
+  (function () {
+    var overlay = document.getElementById("historyLoadingOverlay");
+    var frame = document.getElementById("reportFrame");
+    function hide() {
+      if (overlay) {
+        overlay.classList.add("is-hidden");
+        overlay.setAttribute("aria-busy", "false");
+      }
+    }
+    if (frame) {
+      frame.addEventListener("load", hide);
+      setTimeout(hide, 15000);
+    } else {
+      hide();
+    }
+  })();
 </script>
+{% endif %}
 {% endblock %}

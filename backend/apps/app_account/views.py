@@ -10,10 +10,9 @@ from .forms import (
     ContactMessageForm,
     LoginForm,
     ProfileForm,
-    ScanSettingForm,
     SignupForm,
 )
-from .models import LoginAttempt, SiteContent, User, UserScanSetting
+from .models import LoginAttempt, SiteContent, User
 from .utils import apply_network_identity, get_client_ip
 
 AUTH_BACKEND = settings.AUTHENTICATION_BACKENDS[0]
@@ -55,7 +54,6 @@ def signup_view(request):
         user.phone_number = form.cleaned_data["phone_number"]
         user.save()
         apply_network_identity(user, request, force_mac=True)
-        UserScanSetting.objects.get_or_create(user=user)
         login(request, user, backend=AUTH_BACKEND)
         messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
         return redirect("report:home")
@@ -80,7 +78,6 @@ def login_view(request):
             )
             login(request, user, backend=AUTH_BACKEND)
             apply_network_identity(user, request, force_mac=not bool(user.mac_address))
-            UserScanSetting.objects.get_or_create(user=user)
             messages.success(request, "ورود موفقیت‌آمیز بود.")
             return redirect(request.GET.get("next") or "report:home")
         matched = User.objects.filter(username__iexact=identifier).first()
@@ -122,34 +119,6 @@ def profile_view(request):
         messages.success(request, "پروفایل به‌روزرسانی شد.")
         return redirect("account:profile")
     return render(request, "account/profile.html", {"form": form})
-
-
-@login_required
-@require_http_methods(["GET", "POST"])
-def settings_view(request):
-    setting, _ = UserScanSetting.objects.get_or_create(user=request.user)
-    form = ScanSettingForm(request.POST or None, instance=setting)
-
-    if request.method == "POST":
-        action = request.POST.get("action", "save")
-        if action == "scan_now":
-            from apps.app_report.services import force_rescan, scan_user_reports
-
-            version = force_rescan(request.user)
-            setting.refresh_from_db()
-            count = len(scan_user_reports(request.user.username))
-            messages.success(
-                request,
-                f"اسکن انجام شد. {count} فایل یافت شد (نسخه {version}).",
-            )
-            return redirect("account:settings")
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, "تنظیمات اسکن ذخیره شد.")
-            return redirect("account:settings")
-
-    return render(request, "account/settings.html", {"form": form, "setting": setting})
 
 
 @login_required
