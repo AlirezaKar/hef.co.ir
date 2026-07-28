@@ -62,6 +62,27 @@ def rewrite_index_hrefs(html: str, username: str, file_url_builder) -> str:
     )
 
 
+# Built-in report header button text from generated .htm files
+HOME_ANCHOR_RE = re.compile(
+    r"<a\b([^>]*)>(.*?بازگشت به صفحه اصلی.*?)</a>",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def rewrite_report_home_button(html: str, home_url: str) -> str:
+    """Point the report's native 'بازگشت به صفحه اصلی' control to the site home."""
+
+    def repl(match: re.Match) -> str:
+        attrs = match.group(1) or ""
+        inner = match.group(2)
+        attrs = re.sub(r'\s*href\s*=\s*(["\'])[^"\']*\1', "", attrs, flags=re.IGNORECASE)
+        attrs = re.sub(r'\s*target\s*=\s*(["\'])[^"\']*\1', "", attrs, flags=re.IGNORECASE)
+        attrs = attrs.rstrip()
+        return f'<a{attrs} href="{home_url}" target="_top">{inner}</a>'
+
+    return HOME_ANCHOR_RE.sub(repl, html)
+
+
 @dataclass
 class ReportFile:
     filename: str

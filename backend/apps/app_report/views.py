@@ -12,6 +12,7 @@ from .services import (
     maybe_rescan,
     read_report_html,
     rewrite_index_hrefs,
+    rewrite_report_home_button,
     safe_resolve_report,
     scan_user_reports,
     user_report_dir,
@@ -26,6 +27,10 @@ def _raw_url(filename: str) -> str:
     return reverse("report:report_raw", kwargs={"filename": filename})
 
 
+def _home_url() -> str:
+    return reverse("report:home")
+
+
 def _load_report_html(username: str, filename: str) -> str:
     path = safe_resolve_report(username, filename)
     if path is None:
@@ -33,27 +38,10 @@ def _load_report_html(username: str, filename: str) -> str:
     html = read_report_html(path)
     if classify_filename(filename, username) == "index":
         html = rewrite_index_hrefs(html, username, _file_url)
+    else:
+        # Wire the native report header button to the portal home page
+        html = rewrite_report_home_button(html, _home_url())
     return html
-
-
-def _inject_back_link(html: str) -> str:
-    """Add a small control bar so standalone report pages can return to the index."""
-    index_url = reverse("report:index")
-    bar = f"""
-<style>
-.hef-report-bar{{position:fixed;top:12px;left:12px;z-index:99999;display:flex;gap:8px;
-font-family:Tahoma,sans-serif}}
-.hef-report-bar a{{background:#e4e4e7;color:#111;text-decoration:none;padding:8px 12px;
-border-radius:8px;font-size:13px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25)}}
-</style>
-<div class="hef-report-bar"><a href="{index_url}" target="_top">بازگشت به فهرست گزارش‌ها</a></div>
-"""
-    lower = html.lower()
-    body_idx = lower.find("<body")
-    if body_idx != -1:
-        insert_at = html.find(">", body_idx) + 1
-        return html[:insert_at] + bar + html[insert_at:]
-    return bar + html
 
 
 @login_required
@@ -108,9 +96,6 @@ def report_file_view(request, filename: str):
     username = request.user.username
     maybe_rescan(request.user)
     html = _load_report_html(username, filename)
-    # Index pages keep card links; other reports get a back button
-    if classify_filename(filename, username) != "index":
-        html = _inject_back_link(html)
     return HttpResponse(html, content_type="text/html; charset=utf-8")
 
 

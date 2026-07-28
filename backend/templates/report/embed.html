@@ -11,10 +11,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="report-toolbar">
-  <span class="muted">فایل: {{ filename }}</span>
-  <a class="btn-outline-sm" href="{% url 'report:index' %}">بازگشت به فهرست</a>
-</div>
 <div class="report-frame-wrap">
   <iframe id="reportFrame" title="گزارش" src="{{ iframe_src }}"></iframe>
 </div>
