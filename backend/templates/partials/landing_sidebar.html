@@ -1,0 +1,29 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark">H</div>
+    <div class="brand-text">
+      <strong>HEF</strong>
+      <span>پورتال تاریخچه</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">شروع</div>
+      <a href="{% url 'account:landing' %}" class="nav-item active">
+        <span class="nav-icon">ℹ</span>
+        <span class="nav-label">درباره ما</span>
+      </a>
+      <a href="{% url 'account:login' %}" class="nav-item">
+        <span class="nav-icon">⇢</span>
+        <span class="nav-label">ورود</span>
+      </a>
+      <a href="{% url 'account:signup' %}" class="nav-item">
+        <span class="nav-icon">＋</span>
+        <span class="nav-label">ثبت‌نام</span>
+      </a>
+    </div>
+  </nav>
+
+  <button type="button" class="sidebar-collapse" id="sidebarCollapse" title="جمع کردن">«</button>
+</aside>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
-from tinymce.widgets import TinyMCE
+from tinymce.widgets import AdminTinyMCE
 
 from .admin_filters import DateTimeFromToFilter
 from .models import AboutPage, LoginAttempt, PageVisit, SiteContent, TradingAccount, User
@@ -186,6 +186,14 @@ class SiteContentAdmin(admin.ModelAdmin):
 class AboutPageAdmin(admin.ModelAdmin):
     list_display = ("title", "updated_at")
     readonly_fields = ("updated_at",)
+    fields = ("title", "body", "updated_at")
+
+    class Media:
+        css = {
+            "all": (
+                "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap",
+            )
+        }
 
     def has_add_permission(self, request):
         return not AboutPage.objects.exists()
@@ -195,7 +203,9 @@ class AboutPageAdmin(admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == "body":
-            kwargs["widget"] = TinyMCE(attrs={"cols": 80, "rows": 30})
+            kwargs["widget"] = AdminTinyMCE(
+                attrs={"cols": 100, "rows": 36, "style": "width:100%; min-height:620px;"},
+            )
         return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 

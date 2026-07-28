@@ -304,51 +304,125 @@ body {
 .toast-error { background: #991b1b; }
 .toast-success { background: #065f46; }
 
-/* Public landing (About) */
-.landing-wrap {
+/* Public landing — centered hero image with chrome around it */
+.landing-page-body {
+  margin: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background:
-    linear-gradient(180deg, rgba(15,23,42,.04), rgba(241,245,249,.9)),
-    radial-gradient(circle at 90% 0%, #dbeafe, transparent 45%);
+  background: #5b9fd4;
 }
-.landing-header {
+
+.landing-shell {
+  background: #5b9fd4;
+  min-height: 100vh;
+}
+
+.landing-main-col {
+  background: transparent;
+  min-height: 100vh;
+}
+
+.landing-topbar {
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.landing-top-actions {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
-  background: rgba(255,255,255,.85);
-  backdrop-filter: blur(6px);
+  gap: 8px;
 }
-.landing-brand {
-  display: flex;
+
+.landing-link-btn {
+  display: inline-flex;
   align-items: center;
-  gap: .75rem;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(15, 23, 42, 0.12);
 }
-.landing-brand strong { display: block; font-size: 1.05rem; }
-.landing-brand span { color: #64748b; font-size: .85rem; }
-.landing-nav { display: flex; gap: .5rem; flex-wrap: wrap; }
-.landing-main {
+
+.landing-link-btn-strong {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+}
+
+.landing-stage {
   flex: 1;
-  width: min(920px, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  min-height: 0;
+}
+
+.landing-canvas {
+  position: relative;
+  width: min(1120px, 100%);
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+  background: #5b9fd4;
+  line-height: 0;
 }
-.landing-hero h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
+
+.landing-hero-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 170px);
+  object-fit: cover;
+  object-position: left center;
 }
-.landing-footer {
-  text-align: center;
-  padding: 1rem;
-  color: #64748b;
-  border-top: 1px solid #e2e8f0;
-  background: #fff;
+
+.landing-about-panel {
+  position: absolute;
+  top: 7%;
+  right: 3.5%;
+  bottom: 8%;
+  width: min(44%, 420px);
+  color: #000;
+  text-align: right;
+  direction: rtl;
+  overflow: auto;
+  padding: 8px 6px;
+  line-height: 1.75;
+  z-index: 2;
 }
-.landing-footer a { color: #4338ca; text-decoration: none; margin: 0 .35rem; }
+
+.landing-about-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  color: #000;
+  line-height: 1.35;
+}
+
+.landing-about-body {
+  color: #000;
+  font-size: clamp(0.92rem, 1.35vw, 1.05rem);
+}
+
+.landing-about-body.rich-content {
+  color: #000;
+}
+
+.landing-about-body a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.landing-app-footer {
+  background: rgba(255, 255, 255, 0.78);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
 .rich-content {
   line-height: 1.85;
   color: #0f172a;
@@ -366,5 +440,37 @@ body {
   .sidebar-toggle { display: inline-flex; }
   .profile-layout, .contact-row, .contact-info-band {
     grid-template-columns: 1fr;
+  }
+
+  .landing-stage { padding: 12px; }
+  .landing-hero-img { max-height: none; min-height: 420px; }
+  .landing-about-panel {
+    width: 58%;
+    top: 5%;
+    right: 3%;
+    bottom: 5%;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-canvas {
+    display: flex;
+    flex-direction: column;
+  }
+  .landing-hero-img {
+    width: 100%;
+    min-height: 280px;
+    max-height: 45vh;
+    object-position: left center;
+  }
+  .landing-about-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    padding: 1.1rem 1rem 1.4rem;
+    background: #5b9fd4;
   }
 }

@@ -1,42 +1,54 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ about.title }} | پورتال تاریخچه HEF{% endblock %}
-{% block body_class %}auth-body landing-body{% endblock %}
+{% block body_class %}landing-page-body{% endblock %}
 
 {% block body %}
-<div class="landing-wrap">
-  <header class="landing-header">
-    <div class="landing-brand">
-      <div class="brand-mark">H</div>
-      <div>
-        <strong>HEF</strong>
-        <span>پورتال تاریخچه</span>
+<div class="app-shell landing-shell" id="appShell">
+  {% include "partials/landing_sidebar.html" %}
+
+  <div class="app-main landing-main-col">
+    <header class="app-topbar landing-topbar">
+      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="باز و بسته کردن منو">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">{{ about.title }}</div>
+      <div class="landing-top-actions">
+        <a href="{% url 'account:login' %}" class="landing-link-btn">ورود</a>
+        <a href="{% url 'account:signup' %}" class="landing-link-btn landing-link-btn-strong">ثبت‌نام</a>
       </div>
-    </div>
-    <nav class="landing-nav">
-      <a href="{% url 'account:login' %}" class="btn-secondary">ورود</a>
-      <a href="{% url 'account:signup' %}" class="btn-primary-light">ثبت‌نام</a>
-    </nav>
-  </header>
+    </header>
 
-  <main class="landing-main">
-    <section class="landing-hero content-page">
-      <h1>{{ about.title }}</h1>
-      {% if about.body %}
-        <div class="rich-content">
-          {{ about.body|safe }}
-        </div>
-      {% else %}
-        <p class="muted">محتوای درباره ما هنوز از پنل مدیریت ثبت نشده است.</p>
-        <p class="muted">برای ورود به پورتال از دکمه‌های بالا استفاده کنید.</p>
-      {% endif %}
-    </section>
-  </main>
+    <main class="landing-stage">
+      <div
+        class="landing-canvas"
+        style="background-image: url('{% static 'img/landing.jpg' %}'); background-size: cover; background-position: left center;"
+      >
+        <img
+          class="landing-hero-img"
+          src="{% static 'img/landing.jpg' %}"
+          alt="HEF"
+          width="1024"
+          height="640"
+        >
+        <section class="landing-about-panel" aria-label="درباره ما">
+          <h1 class="landing-about-title">{{ about.title }}</h1>
+          {% if about.body %}
+            <div class="landing-about-body rich-content">
+              {{ about.body|safe }}
+            </div>
+          {% else %}
+            <div class="landing-about-body">
+              <p>به پورتال تاریخچه HEF خوش آمدید.</p>
+              <p>برای مشاهده تاریخچه حساب‌های ترید، وارد شوید یا ثبت‌نام کنید.</p>
+            </div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
 
-  <footer class="landing-footer">
-    <a href="{% url 'account:login' %}">ورود</a>
-    <span>·</span>
-    <a href="{% url 'account:signup' %}">ثبت‌نام</a>
-  </footer>
+    {% include "partials/landing_footer.html" %}
+  </div>
 </div>
 {% endblock %}

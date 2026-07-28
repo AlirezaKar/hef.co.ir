@@ -159,29 +159,123 @@ PROFILE_PICTURE_MAX_SIZE = 5 * 1024 * 1024  # 5 MB
 # Friendly CSRF error page (no technical details)
 CSRF_FAILURE_VIEW = "config.error_views.csrf_failure"
 
-# TinyMCE (admin About page editor)
+# TinyMCE (admin About page editor) — full formatting / style controls
 TINYMCE_DEFAULT_CONFIG = {
-    "height": 500,
+    "theme": "silver",
+    "height": 620,
     "menubar": "file edit view insert format tools table help",
     "plugins": (
         "advlist autolink lists link image charmap preview anchor "
         "searchreplace visualblocks code fullscreen insertdatetime media "
-        "table code help wordcount directionality"
+        "table help wordcount directionality emoticons accordion"
     ),
+    "toolbar_mode": "wrap",
     "toolbar": (
-        "undo redo | blocks | bold italic underline forecolor backcolor | "
+        "undo redo | blocks styles fontfamily fontsize lineheight | "
+        "bold italic underline strikethrough | forecolor backcolor | "
         "alignleft aligncenter alignright alignjustify | "
-        "bullist numlist outdent indent | link image media | "
-        "ltr rtl | removeformat | code | help"
+        "bullist numlist outdent indent | "
+        "link image media table emoticons charmap | "
+        "ltr rtl | removeformat | visualblocks code fullscreen preview | help"
     ),
+    "font_family_formats": (
+        "Vazirmatn=Vazirmatn,Tahoma,sans-serif;"
+        "Tahoma=Tahoma,Arial,sans-serif;"
+        "Arial=arial,helvetica,sans-serif;"
+        "Courier New=courier new,courier,monospace;"
+        "Times New Roman=times new roman,times,serif;"
+        "Georgia=georgia,palatino,serif"
+    ),
+    "font_size_formats": "10px 12px 14px 16px 18px 20px 24px 28px 32px 36px 48px",
+    "line_height_formats": "1 1.2 1.4 1.5 1.6 1.8 2 2.5 3",
+    "style_formats": [
+        {
+            "title": "متن",
+            "items": [
+                {"title": "پاراگراف", "format": "p"},
+                {"title": "عنوان ۱", "format": "h1"},
+                {"title": "عنوان ۲", "format": "h2"},
+                {"title": "عنوان ۳", "format": "h3"},
+                {"title": "نقل‌قول", "format": "blockquote"},
+            ],
+        },
+        {
+            "title": "سبک‌ها",
+            "items": [
+                {
+                    "title": "متن برجسته",
+                    "inline": "span",
+                    "styles": {"font-weight": "700", "color": "#0f172a"},
+                },
+                {
+                    "title": "متن کم‌رنگ",
+                    "inline": "span",
+                    "styles": {"color": "#475569"},
+                },
+                {
+                    "title": "پس‌زمینه روشن",
+                    "block": "div",
+                    "styles": {
+                        "background": "#eff6ff",
+                        "padding": "12px 14px",
+                        "border-radius": "10px",
+                    },
+                },
+            ],
+        },
+    ],
+    "style_formats_merge": True,
+    "formats": {
+        "alignleft": {"selector": "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table", "classes": "text-start"},
+        "aligncenter": {"selector": "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table", "classes": "text-center"},
+        "alignright": {"selector": "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li,table", "classes": "text-end"},
+    },
+    "color_map": [
+        "000000", "مشکی",
+        "111827", "زغال",
+        "374151", "خاکستری تیره",
+        "6B7280", "خاکستری",
+        "FFFFFF", "سفید",
+        "DC2626", "قرمز",
+        "EA580C", "نارنجی",
+        "CA8A04", "زرد",
+        "16A34A", "سبز",
+        "2563EB", "آبی",
+        "7C3AED", "بنفش",
+        "0F172A", "سرمه‌ای",
+    ],
     "directionality": "rtl",
     "branding": False,
+    "promotion": False,
+    "browser_spellcheck": True,
     "relative_urls": False,
     "remove_script_host": False,
     "convert_urls": True,
     "images_upload_url": "/uploads/tinymce/",
     "automatic_uploads": True,
     "file_picker_types": "image media file",
-    "content_style": "body { font-family: Vazirmatn, Tahoma, sans-serif; direction: rtl; }",
+    "image_caption": True,
+    "image_advtab": True,
+    "table_toolbar": (
+        "tableprops tablerowprops tablecellprops | "
+        "tableinsertrowbefore tableinsertrowafter tabledeleterow | "
+        "tableinsertcolbefore tableinsertcolafter tabledeletecol"
+    ),
+    # Keep inline style attributes so admin formatting survives save
+    "valid_children": "+body[style]",
+    "extended_valid_elements": (
+        "span[*],div[*],p[*],h1[*],h2[*],h3[*],h4[*],h5[*],h6[*],"
+        "a[*],img[*],table[*],thead[*],tbody[*],tr[*],td[*],th[*],"
+        "ul[*],ol[*],li[*],blockquote[*],pre[*],code[*],hr,br"
+    ),
+    "content_style": (
+        "@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');"
+        "body { font-family: Vazirmatn, Tahoma, sans-serif; direction: rtl; "
+        "font-size: 16px; line-height: 1.75; color: #000; }"
+        "img { max-width: 100%; height: auto; }"
+        ".text-start { text-align: left; }"
+        ".text-center { text-align: center; }"
+        ".text-end { text-align: right; }"
+    ),
 }
 TINYMCE_COMPRESSOR = False
