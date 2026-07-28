@@ -6,12 +6,14 @@
 {% block content %}
 <section class="content-page">
   {% if accounts %}
-  <div class="history-accounts-bar">
+  <div class="history-accounts-bar" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
     <span class="muted">حساب‌های ترید:</span>
     {% for acc in accounts %}
       <a
         class="btn-secondary {% if active_account and active_account.pk == acc.pk %}active{% endif %}"
         href="{% url 'report:history_account' acc.pk %}"
+        target="_blank"
+        rel="noopener noreferrer"
       >{{ acc.trading_acc_username }} — {{ acc.broker }}</a>
     {% endfor %}
     <a class="btn-primary-light" href="{% url 'report:trading_account_create' %}">ایجاد حساب ترید</a>

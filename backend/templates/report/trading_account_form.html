@@ -9,7 +9,12 @@
   <div class="history-accounts-bar" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">
     <span class="muted">حساب‌های ذخیره‌شده:</span>
     {% for acc in accounts %}
-      <a class="btn-secondary" href="{% url 'report:history_account' acc.pk %}">
+      <a
+        class="btn-secondary"
+        href="{% url 'report:history_account' acc.pk %}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {{ acc.trading_acc_username }} — {{ acc.broker }}
       </a>
     {% endfor %}

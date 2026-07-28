@@ -64,8 +64,8 @@ HOME_ANCHOR_RE = re.compile(
 )
 
 
-def rewrite_report_home_button(html: str, home_url: str) -> str:
-    """Point the history file's native 'بازگشت به صفحه اصلی' control to the site home."""
+def rewrite_home_button(html: str, url: str, *, target: str | None = None) -> str:
+    """Point native 'بازگشت به صفحه اصلی' control to the given URL."""
 
     def repl(match: re.Match) -> str:
         attrs = match.group(1) or ""
@@ -73,9 +73,41 @@ def rewrite_report_home_button(html: str, home_url: str) -> str:
         attrs = re.sub(r'\s*href\s*=\s*(["\'])[^"\']*\1', "", attrs, flags=re.IGNORECASE)
         attrs = re.sub(r'\s*target\s*=\s*(["\'])[^"\']*\1', "", attrs, flags=re.IGNORECASE)
         attrs = attrs.rstrip()
-        return f'<a{attrs} href="{home_url}" target="_top">{inner}</a>'
+        target_attr = f' target="{target}"' if target else ""
+        return f'<a{attrs} href="{url}"{target_attr}>{inner}</a>'
 
     return HOME_ANCHOR_RE.sub(repl, html)
+
+
+def ensure_index_home_button(html: str, home_url: str) -> str:
+    """
+    Ensure the Index page has a return-to-home control pointing at the portal home.
+    Rewrites an existing button when present; otherwise injects one before </body>.
+    """
+    if HOME_ANCHOR_RE.search(html):
+        return rewrite_home_button(html, home_url, target="_self")
+
+    button = (
+        f'<a href="{home_url}" '
+        f'style="display:inline-block;margin:12px;padding:8px 14px;'
+        f'background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;'
+        f'font-family:Tahoma,sans-serif;">'
+        f"بازگشت به صفحه اصلی</a>"
+    )
+    if re.search(r"</body\s*>", html, flags=re.IGNORECASE):
+        return re.sub(
+            r"</body\s*>",
+            button + "</body>",
+            html,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+    return html + button
+
+
+# Backward-compatible alias used by older call sites
+def rewrite_report_home_button(html: str, home_url: str) -> str:
+    return rewrite_home_button(html, home_url, target="_self")
 
 
 @dataclass

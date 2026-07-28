@@ -18,5 +18,4 @@ urlpatterns = [
         name="history_account",
     ),
     path("history/file/<str:filename>/", views.history_file_view, name="history_file"),
-    path("history/raw/<str:filename>/", views.history_raw_view, name="history_raw"),
 ]

@@ -5,13 +5,25 @@
 
 {% block content %}
 <section class="content-page">
-  <p>یک حساب ترید را انتخاب کنید تا تاریخچه آن بارگذاری شود.</p>
+  <p>یک حساب ترید را انتخاب کنید تا فهرست تاریخچه آن در تب جدید باز شود.</p>
 
   <div class="history-accounts-bar" style="display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;">
-    {% for acc in accounts %}
-      <a class="btn-primary-light" href="{% url 'report:history_account' acc.pk %}">
-        {{ acc.trading_acc_username }} — {{ acc.broker }}
-      </a>
+    {% for row in account_rows %}
+      {% if row.index_url %}
+        <a
+          class="btn-primary-light"
+          href="{{ row.index_url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ row.account.trading_acc_username }} — {{ row.account.broker }}
+        </a>
+      {% else %}
+        <a class="btn-secondary" href="{{ row.detail_url }}">
+          {{ row.account.trading_acc_username }} — {{ row.account.broker }}
+          <span class="muted">(بدون فایل)</span>
+        </a>
+      {% endif %}
     {% empty %}
       <p>حساب تریدی یافت نشد.</p>
     {% endfor %}
