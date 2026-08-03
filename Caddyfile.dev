@@ -1,0 +1,21 @@
+# Local / HTTP-only Caddy (no TLS). Used by docker-compose.yml
+:80 {
+	encode gzip
+
+	handle_path /static/* {
+		root * /usr/share/caddy/static
+		file_server
+	}
+
+	handle_path /media/* {
+		root * /usr/share/caddy/media
+		file_server
+	}
+
+	handle {
+		reverse_proxy django:8000 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {host}
+		}
+	}
+}

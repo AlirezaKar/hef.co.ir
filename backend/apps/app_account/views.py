@@ -96,6 +96,12 @@ def login_view(request):
                 successful=True,
             )
             login(request, user, backend=AUTH_BACKEND)
+            if form.cleaned_data.get("remember_me"):
+                # ~1 year
+                request.session.set_expiry(365 * 24 * 60 * 60)
+            else:
+                # Idle timeout: 30 minutes
+                request.session.set_expiry(30 * 60)
             apply_network_identity(user, request, force_mac=not bool(user.mac_address))
             messages.success(request, "ورود موفقیت‌آمیز بود.")
             return redirect(request.GET.get("next") or "report:home")

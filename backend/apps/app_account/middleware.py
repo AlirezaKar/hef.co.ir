@@ -1,9 +1,46 @@
 from django.contrib.auth import get_user_model
 from django.db.models import F
+from django.urls import Resolver404, resolve
 from django.utils.deprecation import MiddlewareMixin
 
 from .models import PageVisit
 from .utils import get_client_ip, _mac_from_ip
+
+# Persian labels for known named routes (namespace:name)
+PAGE_LABELS = {
+    "account:landing": "صفحه اصلی (لندینگ)",
+    "account:login": "ورود",
+    "account:signup": "ثبت‌نام",
+    "account:logout": "خروج",
+    "account:profile": "پروفایل",
+    "account:about": "درباره ما",
+    "account:faq": "سؤالات متداول",
+    "account:contact": "تماس با ما",
+    "account:tinymce_upload": "آپلود TinyMCE",
+    "report:home": "خانه",
+    "report:index": "تاریخچه",
+    "report:trading_account_create": "ایجاد حساب ترید",
+    "report:history_account": "حساب ترید (تاریخچه)",
+    "report:history_file": "فایل تاریخچه",
+}
+
+
+def resolve_page_location(path: str) -> tuple[str, str]:
+    """Return (url_name, page_label) for a request path."""
+    try:
+        match = resolve(path)
+    except Resolver404:
+        return "", path[:200]
+
+    if match.namespaces:
+        url_name = f"{':'.join(match.namespaces)}:{match.url_name}"
+    else:
+        url_name = match.url_name or ""
+
+    label = PAGE_LABELS.get(url_name, "")
+    if not label:
+        label = url_name or path[:200]
+    return url_name[:200], label[:200]
 
 
 class ClickTrackingMiddleware(MiddlewareMixin):
@@ -29,6 +66,7 @@ class ClickTrackingMiddleware(MiddlewareMixin):
         user = getattr(request, "user", None)
         authenticated = bool(user and user.is_authenticated)
         ip = get_client_ip(request)
+        url_name, page_label = resolve_page_location(path)
 
         if authenticated:
             visitor_label = user.username
@@ -49,6 +87,8 @@ class ClickTrackingMiddleware(MiddlewareMixin):
             ip_address=ip,
             mac_address=mac,
             path=path[:500],
+            url_name=url_name,
+            page_label=page_label,
             user_agent=ua,
         )
         return None

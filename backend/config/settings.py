@@ -92,12 +92,61 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# PostgreSQL when POSTGRES_HOST (or DATABASE_URL) is set; otherwise SQLite for local dev.
+_postgres_host = os.getenv("POSTGRES_HOST", "").strip()
+_database_url = os.getenv("DATABASE_URL", "").strip()
+
+if _database_url.startswith("postgres"):
+    # Simple postgres://user:pass@host:port/db parsing without extra deps
+    import urllib.parse as _urlparse
+
+    _u = _urlparse.urlparse(_database_url)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": (_u.path or "/").lstrip("/") or "hef",
+            "USER": _u.username or "hef",
+            "PASSWORD": _u.password or "",
+            "HOST": _u.hostname or "localhost",
+            "PORT": str(_u.port or 5432),
+        }
     }
-}
+elif _postgres_host:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB", "hef").strip() or "hef",
+            "USER": os.getenv("POSTGRES_USER", "hef").strip() or "hef",
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", "").strip(),
+            "HOST": _postgres_host,
+            "PORT": os.getenv("POSTGRES_PORT", "5432").strip() or "5432",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+# Sessions: sliding idle expiry for non-remembered logins (set_expiry in login_view)
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 30 * 60  # default 30 minutes; overridden per-login when "remember me"
+
+_csrf_origins = [
+    o.strip()
+    for o in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if o.strip()
+]
+CSRF_TRUSTED_ORIGINS = _csrf_origins
+
+SESSION_COOKIE_SECURE = env_bool("DJANGO_SESSION_COOKIE_SECURE", default=False)
+CSRF_COOKIE_SECURE = env_bool("DJANGO_CSRF_COOKIE_SECURE", default=False)
+SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", default=False)
+# Caddy terminates TLS and proxies HTTP to Gunicorn
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -123,7 +172,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+_static_root = os.getenv("DJANGO_STATIC_ROOT", "").strip()
+STATIC_ROOT = Path(_static_root) if _static_root else (BASE_DIR / "staticfiles")
 
 # Serve project static files reliably (works even when DEBUG is False)
 STORAGES = {
@@ -138,7 +188,8 @@ WHITENOISE_USE_FINDERS = DEBUG
 WHITENOISE_AUTOREFRESH = DEBUG
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+_media_root = os.getenv("DJANGO_MEDIA_ROOT", "").strip()
+MEDIA_ROOT = Path(_media_root) if _media_root else (BASE_DIR / "media")
 
 # Optional override; default is <project>/data/History
 _history_root = os.getenv("HISTORY_ROOT", "").strip()

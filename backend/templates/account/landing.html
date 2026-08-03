@@ -2,53 +2,69 @@
 {% load static %}
 
 {% block title %}{{ about.title }} | پورتال تاریخچه HEF{% endblock %}
-{% block body_class %}landing-page-body{% endblock %}
+{% block body_class %}landing-page-body bg-light{% endblock %}
 
 {% block body %}
-<div class="app-shell landing-shell" id="appShell">
-  {% include "partials/landing_sidebar.html" %}
+{% include "partials/navbar.html" %}
 
-  <div class="app-main landing-main-col">
-    <header class="app-topbar landing-topbar">
-      <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="باز و بسته کردن منو">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="topbar-title">{{ about.title }}</div>
-      <div class="landing-top-actions">
-        <a href="{% url 'account:login' %}" class="landing-link-btn">ورود</a>
-        <a href="{% url 'account:signup' %}" class="landing-link-btn landing-link-btn-strong">ثبت‌نام</a>
-      </div>
-    </header>
-
-    <main class="landing-stage">
-      <div
-        class="landing-canvas"
-        style="background-image: url('{% static 'img/landing.jpg' %}'); background-size: cover; background-position: left center;"
-      >
-        <img
-          class="landing-hero-img"
-          src="{% static 'img/landing.jpg' %}"
-          alt="HEF"
-          width="1024"
-          height="640"
-        >
-        <section class="landing-about-panel" aria-label="درباره ما">
-          <h1 class="landing-about-title">{{ about.title }}</h1>
-          {% if about.body %}
-            <div class="landing-about-body rich-content">
-              {{ about.body|safe }}
-            </div>
-          {% else %}
-            <div class="landing-about-body">
-              <p>به پورتال تاریخچه HEF خوش آمدید.</p>
-              <p>برای مشاهده تاریخچه حساب‌های ترید، وارد شوید یا ثبت‌نام کنید.</p>
-            </div>
-          {% endif %}
-        </section>
-      </div>
-    </main>
-
-    {% include "partials/landing_footer.html" %}
+<section class="landing-hero position-relative overflow-hidden">
+  <img
+    src="{% static 'img/landing/hero.jpg' %}?v=2"
+    alt="HEF"
+    class="landing-hero-img w-100"
+    width="1920"
+    height="800"
+  >
+  <div class="landing-hero-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+  <div class="landing-hero-content position-absolute top-50 start-50 translate-middle text-center text-white px-3 w-100">
+    <img
+      src="{% static 'img/landing/logo.png' %}?v=2"
+      alt="HEF"
+      class="landing-logo mb-3 rounded bg-white p-2"
+      width="88"
+      height="88"
+    >
+    <h1 class="display-4 fw-bold mb-2">HEF</h1>
+    <p class="lead mb-4">{{ about.title }}</p>
+    <div class="d-flex justify-content-center gap-2 flex-wrap">
+      <a href="{% url 'account:login' %}" class="btn btn-outline-light btn-lg px-4">ورود</a>
+      <a href="{% url 'account:signup' %}" class="btn btn-info btn-lg px-4 text-dark fw-semibold">ثبت‌نام</a>
+    </div>
   </div>
-</div>
+</section>
+
+<section class="py-5 bg-white" aria-label="درباره ما">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-md-5">
+        <img
+          src="{% static 'img/landing/accent.jpg' %}?v=2"
+          alt=""
+          class="img-fluid rounded shadow-sm w-100"
+          width="640"
+          height="400"
+        >
+      </div>
+      <div class="col-md-7 text-end">
+        <h2 class="h3 mb-3">{{ about.title }}</h2>
+        {% if about.body %}
+          <div class="rich-content landing-about-body">
+            {{ about.body|safe }}
+          </div>
+        {% else %}
+          <div class="landing-about-body text-secondary">
+            <p>به پورتال تاریخچه HEF خوش آمدید.</p>
+            <p>برای مشاهده تاریخچه حساب‌های ترید، وارد شوید یا ثبت‌نام کنید.</p>
+          </div>
+        {% endif %}
+        <div class="d-flex gap-2 justify-content-end flex-wrap mt-3">
+          <a href="{% url 'account:login' %}" class="btn btn-outline-dark">ورود</a>
+          <a href="{% url 'account:signup' %}" class="btn btn-dark">ثبت‌نام</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/landing_footer.html" %}
 {% endblock %}

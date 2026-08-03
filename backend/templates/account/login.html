@@ -23,13 +23,17 @@
       {{ form.password }}
       {% for e in form.password.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
 
+      <label class="remember-me" for="id_remember_me">
+        {{ form.remember_me }}
+        <span>{{ form.remember_me.label }}</span>
+      </label>
+      {% for e in form.remember_me.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+
       <button type="submit" class="btn-primary">ورود</button>
     </form>
 
     <p class="auth-footer">
       حساب ندارید؟ <a href="{% url 'account:signup' %}">ثبت‌نام</a>
-      ·
-      <a href="{% url 'account:landing' %}">درباره ما</a>
     </p>
   </div>
 </div>

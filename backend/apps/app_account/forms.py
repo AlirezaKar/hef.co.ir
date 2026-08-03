@@ -126,6 +126,12 @@ class LoginForm(AuthenticationForm):
             }
         ),
     )
+    remember_me = forms.BooleanField(
+        label="مرا به خاطر بسپار",
+        required=False,
+        initial=False,
+        widget=forms.CheckboxInput(attrs={"class": "remember-me-input"}),
+    )
 
     error_messages = {
         "invalid_login": "نام کاربری/ایمیل یا رمز عبور نادرست است.",
@@ -209,17 +215,27 @@ class TradingAccountForm(forms.ModelForm):
         widgets = {
             "trading_acc_username": forms.TextInput(
                 attrs={
+                    "class": "form-control",
                     "placeholder": "شماره حساب ترید",
                     "autocomplete": "off",
                 }
             ),
             "broker": forms.TextInput(
                 attrs={
+                    "class": "form-control",
                     "placeholder": "نام کارگزاری",
                     "autocomplete": "organization",
                 }
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.is_bound:
+            for name, field in self.fields.items():
+                if self.errors.get(name):
+                    css = field.widget.attrs.get("class", "")
+                    field.widget.attrs["class"] = f"{css} is-invalid".strip()
 
     def clean_trading_acc_username(self):
         value = (self.cleaned_data.get("trading_acc_username") or "").strip()

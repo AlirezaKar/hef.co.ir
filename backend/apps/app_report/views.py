@@ -33,7 +33,16 @@ def _index_filename(trading_acc_username: str) -> str:
 
 
 def _user_owns_account(user, account: TradingAccount) -> bool:
+    if user.is_superuser:
+        return True
     return account.users.filter(pk=user.pk).exists()
+
+
+def _accounts_for_user(user):
+    """Superusers see every trading account; others only linked ones."""
+    if user.is_superuser:
+        return TradingAccount.objects.all()
+    return user.trading_accounts.all()
 
 
 def _resolve_index_name(trading_acc_username: str) -> str | None:
@@ -77,7 +86,7 @@ def _render_missing_history(request, account: TradingAccount, message: str):
             "title": "فایل تاریخچه یافت نشد",
             "message": message,
             "show_create": False,
-            "accounts": request.user.trading_accounts.all(),
+            "accounts": _accounts_for_user(request.user),
             "active_account": account,
         },
     )
@@ -114,7 +123,7 @@ def home_view(request):
 @login_required
 @require_GET
 def history_index_view(request):
-    accounts = list(request.user.trading_accounts.all())
+    accounts = list(_accounts_for_user(request.user))
     if not accounts:
         return render(
             request,
@@ -181,7 +190,7 @@ def trading_account_create_view(request):
         "report/trading_account_form.html",
         {
             "form": form,
-            "accounts": request.user.trading_accounts.all(),
+            "accounts": _accounts_for_user(request.user),
         },
     )
 
@@ -198,7 +207,7 @@ def history_account_view(request, pk: int):
 @login_required
 @require_GET
 def history_file_view(request, filename: str):
-    """Serve history HTML as a standalone page (no portal sidebar)."""
+    """Serve history HTML as a standalone page (no portal chrome)."""
     account = _resolve_account_for_file(request.user, filename)
     if account is None:
         raise Http404("فایل تاریخچه یافت نشد")
@@ -207,8 +216,8 @@ def history_file_view(request, filename: str):
 
 
 def _resolve_account_for_file(user, filename: str):
-    """Find which of the user's trading accounts owns this history filename."""
-    for account in user.trading_accounts.all():
+    """Find which trading account owns this history filename (all for superuser)."""
+    for account in _accounts_for_user(user):
         if classify_filename(filename, account.trading_acc_username):
             if safe_resolve_history(account.trading_acc_username, filename):
                 return account

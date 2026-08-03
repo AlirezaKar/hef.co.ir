@@ -1,0 +1,136 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom site-navbar">
+  <div class="container-fluid">
+    <a
+      class="navbar-brand d-flex align-items-center gap-2"
+      href="{% if user.is_authenticated %}{% url 'report:home' %}{% else %}{% url 'account:landing' %}{% endif %}"
+    >
+      <img
+        src="{% static 'img/landing/logo.png' %}?v=2"
+        alt="HEF"
+        width="32"
+        height="32"
+        class="d-inline-block align-text-top rounded"
+      >
+      HEF
+    </a>
+
+    {# Profile / auth actions stay outside .collapse so they are always visible #}
+    {% if user.is_authenticated %}
+      <div class="navbar-profile-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
+        <a
+          href="{% url 'account:profile' %}"
+          class="navbar-profile-link d-inline-flex align-items-center gap-2 text-decoration-none"
+          title="پروفایل"
+        >
+          {% if user.picture %}
+            <img
+              src="{{ user.picture.url }}"
+              alt="پروفایل"
+              class="avatar rounded-full object-cover w-9 h-9"
+              width="36"
+              height="36"
+              onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
+            >
+            <span class="avatar avatar-fallback rounded-full d-none" aria-hidden="true">
+              {{ user.username|slice:":1"|upper }}
+            </span>
+          {% else %}
+            <span class="avatar avatar-fallback rounded-full" aria-hidden="true">
+              {{ user.username|slice:":1"|upper }}
+            </span>
+          {% endif %}
+          <span class="navbar-username d-none d-sm-inline">
+            {{ user.get_full_name|default:user.username }}
+          </span>
+        </a>
+        <form method="post" action="{% url 'account:logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline-secondary btn-sm">خروج</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
+        <a href="{% url 'account:login' %}" class="btn btn-outline-secondary btn-sm">ورود</a>
+        <a href="{% url 'account:signup' %}" class="btn btn-primary btn-sm">ثبت‌نام</a>
+      </div>
+    {% endif %}
+
+    <button
+      class="navbar-toggler ms-2"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      {% if user.is_authenticated %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+              {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}
+              href="{% url 'report:home' %}"
+            >خانه</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'trading_account_create' %}active{% endif %}"
+              href="{% url 'report:trading_account_create' %}"
+            >ایجاد حساب ترید</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'history_account' or request.resolver_match.url_name == 'history_file' %}active{% endif %}"
+              href="{% url 'report:index' %}"
+            >تاریخچه</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
+              href="{% url 'account:about' %}"
+            >درباره ما</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}"
+              href="{% url 'account:faq' %}"
+            >سؤالات متداول</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+              href="{% url 'account:contact' %}"
+            >تماس با ما</a>
+          </li>
+        </ul>
+      {% else %}
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'landing' or request.resolver_match.url_name == 'about' %}active{% endif %}"
+              href="{% url 'account:landing' %}"
+            >درباره ما</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}"
+              href="{% url 'account:faq' %}"
+            >سؤالات متداول</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+              href="{% url 'account:contact' %}"
+            >تماس با ما</a>
+          </li>
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+</nav>

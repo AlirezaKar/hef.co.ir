@@ -159,6 +159,8 @@ class PageVisit(models.Model):
     ip_address = models.GenericIPAddressField("آدرس IP", blank=True, null=True)
     mac_address = models.CharField("آدرس MAC", max_length=32, blank=True)
     path = models.CharField("مسیر", max_length=500)
+    url_name = models.CharField("نام مسیر URL", max_length=200, blank=True)
+    page_label = models.CharField("برچسب صفحه", max_length=200, blank=True)
     user_agent = models.CharField("User-Agent", max_length=500, blank=True)
     created_at = models.DateTimeField("زمان", default=timezone.now, db_index=True)
 
@@ -168,7 +170,8 @@ class PageVisit(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.visitor_label} — {self.path}"
+        where = self.page_label or self.path
+        return f"{self.visitor_label} — {where}"
 
 
 class TradingAccount(models.Model):

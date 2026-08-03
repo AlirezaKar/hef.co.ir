@@ -214,15 +214,18 @@ class PageVisitAdmin(admin.ModelAdmin):
     list_display = (
         "visitor_label",
         "user",
+        "page_label",
+        "url_name",
+        "path",
         "ip_address",
         "mac_address",
-        "path",
         "created_at",
     )
     list_filter = (
         DateTimeFromToFilter,
         ("created_at", admin.DateFieldListFilter),
         "visitor_label",
+        "page_label",
     )
     date_hierarchy = "created_at"
     search_fields = (
@@ -230,6 +233,8 @@ class PageVisitAdmin(admin.ModelAdmin):
         "ip_address",
         "mac_address",
         "path",
+        "url_name",
+        "page_label",
         "user__username",
     )
     readonly_fields = (
@@ -238,6 +243,8 @@ class PageVisitAdmin(admin.ModelAdmin):
         "ip_address",
         "mac_address",
         "path",
+        "url_name",
+        "page_label",
         "user_agent",
         "created_at",
     )
