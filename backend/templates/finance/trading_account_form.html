@@ -1,0 +1,57 @@
+{% extends "base_app.html" %}
+
+{% block title %}ایجاد حساب ترید | پورتال تاریخچه HEF{% endblock %}
+{% block page_heading %}ایجاد حساب ترید{% endblock %}
+
+{% block content %}
+<section class="trading-create-page max-w-xl">
+  <a class="btn btn-outline-secondary btn-sm mb-3" href="{% url 'finance:index' %}">
+    بازگشت به تاریخچه
+  </a>
+
+  <div class="panel-frame">
+    {% if accounts %}
+      <div class="mb-4">
+        <h2 class="h6 mb-2">حساب‌های ذخیره‌شده</h2>
+        <div class="d-flex flex-wrap gap-2">
+          {% for acc in accounts %}
+            <a
+              class="btn-primary-light account-btn-sm"
+              href="{% url 'finance:history_account' acc.pk %}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ acc.trading_acc_username }} — {{ acc.broker }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+      <hr class="my-3">
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="invalid-feedback d-block">
+              {% for error in field.errors %}{{ error }}{% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger py-2">
+          {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn-primary-light w-100">ثبت حساب ترید</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

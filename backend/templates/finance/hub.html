@@ -1,0 +1,13 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ ui_t.finance_title }} | HEF{% endblock %}
+{% block page_heading %}{{ ui_t.finance_title }}{% endblock %}
+
+{% block content %}
+<section class="content-page">
+  <p class="text-secondary mb-4">{{ ui_t.finance_body }}</p>
+  <a class="btn-primary-light account-btn-sm" href="{% url 'finance:index' %}">
+    {{ ui_t.finance_history_cta }}
+  </a>
+</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base_app.html" %}
+
+{% block title %}خانه | پورتال تاریخچه HEF{% endblock %}
+{% block page_heading %}خانه{% endblock %}
+
+{% block content %}
+<section class="home-page">
+  <h2 class="home-welcome h5">خوش آمدید{% if user.get_full_name %}، {{ user.get_full_name }}{% endif %}</h2>
+  <p class="text-secondary mb-4">یکی از بخش‌های زیر را انتخاب کنید</p>
+
+  <div class="home-cards">
+    <a href="{% url 'finance:index' %}" class="home-card home-card-primary">
+      <span class="home-card-mark" aria-hidden="true"></span>
+      <span class="home-card-title">تاریخچه</span>
+      <span class="home-card-desc">مشاهده گزارش‌های حساب‌های ترید</span>
+    </a>
+
+    <a href="{% url 'finance:trading_account_create' %}" class="home-card">
+      <span class="home-card-mark home-card-mark-alt" aria-hidden="true"></span>
+      <span class="home-card-title">ایجاد حساب ترید</span>
+      <span class="home-card-desc">افزودن یا پیوند حساب جدید</span>
+    </a>
+
+    <div class="home-card home-card-soon" aria-disabled="true">
+      <span class="home-card-mark home-card-mark-muted" aria-hidden="true"></span>
+      <span class="home-card-title">به‌زودی</span>
+      <span class="home-card-desc">صفحات جدید در راه است</span>
+    </div>
+  </div>
+</section>
+{% endblock %}

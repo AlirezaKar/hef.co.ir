@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ about.title }} | HEF{% endblock %}
+{% block body_class %}home-page-body bg-light{% endblock %}
+
+{% block body %}
+{% include "partials/navbar.html" %}
+
+<section class="py-4 bg-white">
+  <div class="container text-center">
+    <h1 class="display-5 fw-bold mb-2">HEF</h1>
+    <p class="lead mb-4">{{ about.title }}</p>
+    <div class="home-cta-row d-inline-flex align-items-center justify-content-center gap-2 flex-wrap">
+      <a href="{% url 'account:login' %}" class="btn btn-outline-dark btn-lg px-4 home-cta-btn">{{ ui_t.home_login }}</a>
+      <a href="{% url 'account:signup' %}" class="btn btn-dark btn-lg px-4 home-cta-btn">{{ ui_t.home_signup }}</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-carousel-section py-3 py-md-4" aria-label="Carousel">
+  <div class="container home-carousel-pad">
+    {% if carousel_images %}
+      <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+          {% for img in carousel_images %}
+            <button
+              type="button"
+              data-bs-target="#homeCarousel"
+              data-bs-slide-to="{{ forloop.counter0 }}"
+              {% if forloop.first %}class="active" aria-current="true"{% endif %}
+              aria-label="Slide {{ forloop.counter }}"
+            ></button>
+          {% endfor %}
+        </div>
+        <div class="carousel-inner rounded overflow-hidden shadow-sm">
+          {% for img in carousel_images %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+              <img src="{{ img }}" class="d-block w-100 home-carousel-img" alt="HEF {{ forloop.counter }}">
+            </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    {% else %}
+      <div class="home-carousel-fallback rounded overflow-hidden shadow-sm bg-dark text-white text-center py-5">
+        <img
+          src="{% static 'img/landing/logo.png' %}?v=3"
+          alt="HEF"
+          class="landing-logo mb-3 rounded bg-white p-2"
+          width="88"
+          height="88"
+        >
+        <h2 class="h2 mb-0">HEF</h2>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="py-5 bg-light" aria-label="{{ ui_t.nav_about }}">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-md-5">
+        <img
+          src="{% static 'img/landing/accent.jpg' %}?v=2"
+          alt=""
+          class="img-fluid rounded shadow-sm w-100"
+          width="640"
+          height="400"
+        >
+      </div>
+      <div class="col-md-7">
+        <h2 class="h3 mb-3">{{ about.title }}</h2>
+        {% if about.body %}
+          <div class="rich-content landing-about-body">
+            {{ about.body|safe }}
+          </div>
+        {% else %}
+          <div class="landing-about-body text-secondary">
+            <p>HEF</p>
+          </div>
+        {% endif %}
+        <div class="home-cta-row d-inline-flex align-items-center gap-2 flex-wrap mt-3">
+          <a href="{% url 'account:login' %}" class="btn btn-outline-dark home-cta-btn">{{ ui_t.home_login }}</a>
+          <a href="{% url 'account:signup' %}" class="btn btn-dark home-cta-btn">{{ ui_t.home_signup }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "partials/footer.html" %}
+{% endblock %}

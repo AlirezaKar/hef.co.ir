@@ -139,6 +139,33 @@ class AboutPage(models.Model):
         return obj
 
 
+class ResumePage(models.Model):
+    """Singleton Resume / CV content edited with TinyMCE."""
+
+    title = models.CharField("عنوان", max_length=200, default="رزومه")
+    body = models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE")
+    updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "صفحه رزومه"
+        verbose_name_plural = "صفحه رزومه"
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
 class PageVisit(models.Model):
     """Visit log for every page load — authenticated user or anonymous."""
 

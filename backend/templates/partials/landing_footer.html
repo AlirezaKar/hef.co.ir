@@ -1,7 +1,3 @@
 <footer class="app-footer landing-app-footer">
-  <div class="footer-links">
-    <a href="{% url 'account:landing' %}">درباره ما</a>
-    <a href="{% url 'account:login' %}">ورود</a>
-    <a href="{% url 'account:signup' %}">ثبت‌نام</a>
-  </div>
+  <p class="footer-rights mb-0">© {% now "Y" %} HEF. {{ ui_t.footer_rights }}</p>
 </footer>

@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from tinymce.widgets import AdminTinyMCE
 
 from .admin_filters import DateTimeFromToFilter
-from .models import AboutPage, LoginAttempt, PageVisit, SiteContent, TradingAccount, User
+from .models import AboutPage, LoginAttempt, PageVisit, ResumePage, SiteContent, TradingAccount, User
 
 
 admin.site.unregister(Group)
@@ -189,14 +189,30 @@ class AboutPageAdmin(admin.ModelAdmin):
     fields = ("title", "body", "updated_at")
 
     class Media:
-        css = {
-            "all": (
-                "https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap",
-            )
-        }
+        css = {"all": ()}
 
     def has_add_permission(self, request):
         return not AboutPage.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "body":
+            kwargs["widget"] = AdminTinyMCE(
+                attrs={"cols": 100, "rows": 36, "style": "width:100%; min-height:620px;"},
+            )
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+@admin.register(ResumePage)
+class ResumePageAdmin(admin.ModelAdmin):
+    list_display = ("title", "updated_at")
+    readonly_fields = ("updated_at",)
+    fields = ("title", "body", "updated_at")
+
+    def has_add_permission(self, request):
+        return not ResumePage.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         return False

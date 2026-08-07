@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} | پورتال تاریخچه HEF</title>
-  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <title>{{ title }} | HEF</title>
+  <link rel="icon" href="{% static 'img/hef.co.ir.jpg' %}?v=2" type="image/jpeg">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}?v=11">
   <style>
     .error-page {
       min-height: 100vh;
@@ -81,8 +82,7 @@
       <h1>{{ title }}</h1>
       <p>{{ message }}</p>
       <div class="error-actions">
-        <a href="{% url 'report:home' %}" target="_top">خانه</a>
-        <a class="secondary" href="{% url 'report:index' %}" target="_top">تاریخچه</a>
+        <a href="{% url 'account:home' %}" target="_top">خانه</a>
       </div>
     </div>
   </div>

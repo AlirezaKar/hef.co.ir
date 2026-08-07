@@ -10,8 +10,9 @@ from django.core.files.storage import default_storage
 from django.db.models import F
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.templatetags.static import static
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from .forms import (
     ContactMessageForm,
@@ -19,10 +20,18 @@ from .forms import (
     ProfileForm,
     SignupForm,
 )
-from .models import AboutPage, LoginAttempt, SiteContent, User
+from .i18n_chrome import set_ui_lang
+from .models import AboutPage, LoginAttempt, ResumePage, SiteContent, User
 from .utils import apply_network_identity, get_client_ip
 
 AUTH_BACKEND = settings.AUTHENTICATION_BACKENDS[0]
+
+CAROUSEL_DIR_NAME = "main_page_carousel_img"
+CAROUSEL_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+CAROUSEL_STATIC_FALLBACK = (
+    "img/landing/hero.jpg",
+    "img/landing/accent.jpg",
+)
 
 
 def _record_login_attempt(*, username_tried, user, request, successful):
@@ -48,23 +57,64 @@ def _record_login_attempt(*, username_tried, user, request, successful):
     return user
 
 
+def _carousel_image_urls():
+    """List image URLs from MEDIA_ROOT/main_page_carousel_img/; fall back to static."""
+    folder = Path(settings.MEDIA_ROOT) / CAROUSEL_DIR_NAME
+    folder.mkdir(parents=True, exist_ok=True)
+    urls = []
+    for path in sorted(folder.iterdir()):
+        if path.is_file() and path.suffix.lower() in CAROUSEL_EXTENSIONS:
+            rel = f"{CAROUSEL_DIR_NAME}/{path.name}".replace("\\", "/")
+            urls.append(settings.MEDIA_URL + rel)
+    if not urls:
+        urls = [static(name) for name in CAROUSEL_STATIC_FALLBACK]
+    return urls
+
+
 @require_http_methods(["GET"])
-def landing_view(request):
-    """Public About landing — first page for anonymous visitors."""
-    if request.user.is_authenticated:
-        return redirect("report:home")
+def home_view(request):
+    """Public Main page (former landing) — carousel + about content."""
     about = AboutPage.get_solo()
     return render(
         request,
-        "account/landing.html",
-        {"about": about},
+        "account/home.html",
+        {
+            "about": about,
+            "carousel_images": _carousel_image_urls(),
+        },
     )
+
+
+# Backward-compatible alias
+landing_view = home_view
+
+
+@require_GET
+def set_language_view(request):
+    lang = set_ui_lang(request, request.GET.get("lang", ""))
+    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER") or "/"
+    if not next_url.startswith("/") or next_url.startswith("//"):
+        next_url = "/"
+    response = redirect(next_url)
+    response.set_cookie("ui_lang", lang, max_age=365 * 24 * 60 * 60, samesite="Lax")
+    return response
+
+
+@require_http_methods(["GET"])
+def adobe_connect_view(request):
+    return render(request, "account/stub.html", {"stub_key": "adobe"})
+
+
+@require_http_methods(["GET"])
+def resume_view(request):
+    resume = ResumePage.get_solo()
+    return render(request, "account/resume.html", {"resume": resume})
 
 
 @require_http_methods(["GET", "POST"])
 def signup_view(request):
     if request.user.is_authenticated:
-        return redirect("report:home")
+        return redirect("account:home")
 
     form = SignupForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
@@ -75,14 +125,14 @@ def signup_view(request):
         apply_network_identity(user, request, force_mac=True)
         login(request, user, backend=AUTH_BACKEND)
         messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
-        return redirect("report:home")
+        return redirect("account:home")
     return render(request, "account/signup.html", {"form": form})
 
 
 @require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("report:home")
+        return redirect("account:home")
 
     form = LoginForm(request, data=request.POST or None)
     if request.method == "POST":
@@ -97,14 +147,12 @@ def login_view(request):
             )
             login(request, user, backend=AUTH_BACKEND)
             if form.cleaned_data.get("remember_me"):
-                # ~1 year
                 request.session.set_expiry(365 * 24 * 60 * 60)
             else:
-                # Idle timeout: 30 minutes
                 request.session.set_expiry(30 * 60)
             apply_network_identity(user, request, force_mac=not bool(user.mac_address))
             messages.success(request, "ورود موفقیت‌آمیز بود.")
-            return redirect(request.GET.get("next") or "report:home")
+            return redirect(request.GET.get("next") or "account:home")
         matched = User.objects.filter(username__iexact=identifier).first()
         if matched is None and "@" in identifier:
             matched = User.objects.filter(email__iexact=identifier).first()
@@ -122,7 +170,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "با موفقیت خارج شدید.")
-    return redirect("account:landing")
+    return redirect("account:home")
 
 
 @login_required
@@ -146,7 +194,6 @@ def profile_view(request):
     return render(request, "account/profile.html", {"form": form})
 
 
-@login_required
 def about_view(request):
     about = AboutPage.get_solo()
     items = SiteContent.objects.filter(page=SiteContent.Page.ABOUT, is_active=True)
@@ -157,13 +204,11 @@ def about_view(request):
     )
 
 
-@login_required
 def faq_view(request):
     items = SiteContent.objects.filter(page=SiteContent.Page.FAQ, is_active=True)
     return render(request, "account/faq.html", {"items": items})
 
 
-@login_required
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
     items = SiteContent.objects.filter(page=SiteContent.Page.CONTACT, is_active=True)

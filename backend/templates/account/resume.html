@@ -1,0 +1,16 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ resume.title }} | HEF{% endblock %}
+{% block page_heading %}{{ resume.title }}{% endblock %}
+
+{% block content %}
+<section class="content-page">
+  {% if resume.body %}
+    <div class="rich-content">
+      {{ resume.body|safe }}
+    </div>
+  {% else %}
+    <p class="muted">{{ ui_t.resume_empty }}</p>
+  {% endif %}
+</section>
+{% endblock %}

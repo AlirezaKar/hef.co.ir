@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tinymce",
     "apps.app_account.apps.AppAccountConfig",
-    "apps.app_report.apps.AppReportConfig",
+    "apps.app_finance.apps.AppFinanceConfig",
+    "apps.app_learn.apps.AppLearnConfig",
+    "apps.app_download.apps.AppDownloadConfig",
 ]
 
 MIDDLEWARE = [
@@ -85,6 +87,7 @@ TEMPLATES = [
                 "django.template.context_processors.media",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.app_account.context_processors.chrome_i18n",
             ],
         },
     },
@@ -196,8 +199,8 @@ _history_root = os.getenv("HISTORY_ROOT", "").strip()
 HISTORY_ROOT = Path(_history_root) if _history_root else (PROJECT_ROOT / "data" / "History")
 
 LOGIN_URL = "account:login"
-LOGIN_REDIRECT_URL = "report:home"
-LOGOUT_REDIRECT_URL = "account:landing"
+LOGIN_REDIRECT_URL = "account:home"
+LOGOUT_REDIRECT_URL = "account:home"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

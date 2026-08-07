@@ -1,0 +1,16 @@
+{% extends "base_app.html" %}
+
+{% block title %}{{ ui_t.coming_soon }} | HEF{% endblock %}
+{% block page_heading %}
+  {% if stub_key == 'learn' %}{{ ui_t.nav_learn }}
+  {% elif stub_key == 'download' %}{{ ui_t.nav_download }}
+  {% elif stub_key == 'adobe' %}{{ ui_t.nav_adobe }}
+  {% else %}{{ ui_t.coming_soon }}{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="content-page text-center py-5">
+  <h2 class="h4 mb-2">{{ ui_t.coming_soon }}</h2>
+  <p class="text-secondary mb-0">{{ ui_t.coming_soon_body }}</p>
+</section>
+{% endblock %}

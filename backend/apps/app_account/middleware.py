@@ -8,7 +8,10 @@ from .utils import get_client_ip, _mac_from_ip
 
 # Persian labels for known named routes (namespace:name)
 PAGE_LABELS = {
-    "account:landing": "صفحه اصلی (لندینگ)",
+    "account:home": "صفحه اصلی",
+    "account:landing": "صفحه اصلی",
+    "account:adobe_connect": "ادوب کانکت",
+    "account:set_language": "تغییر زبان",
     "account:login": "ورود",
     "account:signup": "ثبت‌نام",
     "account:logout": "خروج",
@@ -16,12 +19,16 @@ PAGE_LABELS = {
     "account:about": "درباره ما",
     "account:faq": "سؤالات متداول",
     "account:contact": "تماس با ما",
+    "account:resume": "رزومه",
     "account:tinymce_upload": "آپلود TinyMCE",
-    "report:home": "خانه",
-    "report:index": "تاریخچه",
-    "report:trading_account_create": "ایجاد حساب ترید",
-    "report:history_account": "حساب ترید (تاریخچه)",
-    "report:history_file": "فایل تاریخچه",
+    "learn:index": "آموزش",
+    "download:index": "مرکز دانلود",
+    "finance:hub": "سرمایه‌گذاری",
+    "finance:home": "خانه",
+    "finance:index": "تاریخچه",
+    "finance:trading_account_create": "ایجاد حساب ترید",
+    "finance:history_account": "حساب ترید (تاریخچه)",
+    "finance:history_file": "فایل تاریخچه",
 }
 
 

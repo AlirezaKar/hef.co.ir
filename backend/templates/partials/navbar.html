@@ -1,135 +1,119 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom site-navbar">
-  <div class="container-fluid">
-    <a
-      class="navbar-brand d-flex align-items-center gap-2"
-      href="{% if user.is_authenticated %}{% url 'report:home' %}{% else %}{% url 'account:landing' %}{% endif %}"
-    >
-      <img
-        src="{% static 'img/landing/logo.png' %}?v=2"
-        alt="HEF"
-        width="32"
-        height="32"
-        class="d-inline-block align-text-top rounded"
-      >
-      HEF
+<nav class="site-navbar">
+  <div class="site-navbar-inner">
+    <a class="site-brand" href="{% url 'account:home' %}">
+      <span class="site-brand-mark">
+        <img
+          src="{% static 'img/landing/logo.png' %}?v=6"
+          alt="HEF"
+          width="80"
+          height="37"
+          class="site-brand-logo"
+        >
+      </span>
+      <span class="site-brand-text">HEF</span>
     </a>
 
-    {# Profile / auth actions stay outside .collapse so they are always visible #}
-    {% if user.is_authenticated %}
-      <div class="navbar-profile-actions d-flex align-items-center gap-2 ms-auto order-lg-last">
-        <a
-          href="{% url 'account:profile' %}"
-          class="navbar-profile-link d-inline-flex align-items-center gap-2 text-decoration-none"
-          title="پروفایل"
+    <ul class="site-nav-links">
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'landing' %}is-active{% endif %}" href="{% url 'account:home' %}">{{ ui_t.nav_home }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.app_name == 'learn' %}is-active{% endif %}" href="{% url 'learn:index' %}">{{ ui_t.nav_learn }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.app_name == 'download' %}is-active{% endif %}" href="{% url 'download:index' %}">{{ ui_t.nav_download }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'adobe_connect' %}is-active{% endif %}" href="{% url 'account:adobe_connect' %}">{{ ui_t.nav_adobe }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.app_name == 'finance' and request.resolver_match.url_name == 'hub' %}is-active{% endif %}" href="{% url 'finance:hub' %}">{{ ui_t.nav_finance }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'faq' %}is-active{% endif %}" href="{% url 'account:faq' %}">{{ ui_t.nav_faq }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'resume' %}is-active{% endif %}" href="{% url 'account:resume' %}">{{ ui_t.nav_resume }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}" href="{% url 'account:about' %}">{{ ui_t.nav_about }}</a>
+      </li>
+      <li>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}" href="{% url 'account:contact' %}">{{ ui_t.nav_contact }}</a>
+      </li>
+    </ul>
+
+    <div class="site-navbar-actions" dir="ltr">
+      <button
+        type="button"
+        class="nav-icon-btn"
+        id="themeToggleBtn"
+        data-theme-toggle
+        aria-label="{{ ui_t.nav_theme }}"
+        title="{{ ui_t.nav_theme }}"
+        aria-pressed="false"
+      >
+        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"/>
+        </svg>
+        <svg class="theme-icon theme-icon-sun d-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <path stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+
+      <div class="dropdown">
+        <button
+          class="nav-lang-btn dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          title="{{ ui_t.nav_lang }}"
         >
+          <span>{{ ui_lang_label }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end nav-lang-menu">
+          {% for lang in ui_langs %}
+            <li>
+              <a
+                class="dropdown-item nav-lang-item {% if lang.code == ui_lang %}active{% endif %}"
+                href="{% url 'account:set_language' %}?lang={{ lang.code }}&next={{ request.get_full_path|urlencode }}"
+              >
+                <span class="nav-lang-region">{{ lang.region }}</span>
+                <span class="nav-lang-name">{{ lang.label }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <span class="nav-actions-divider" aria-hidden="true"></span>
+
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'account:logout' %}" class="m-0">
+          {% csrf_token %}
+          <button type="submit" class="nav-btn nav-btn-ghost">{{ ui_t.nav_logout }}</button>
+        </form>
+        <a href="{% url 'account:profile' %}" class="nav-profile-chip" title="{{ ui_t.nav_profile }}">
           {% if user.picture %}
             <img
               src="{{ user.picture.url }}"
-              alt="پروفایل"
-              class="avatar rounded-full object-cover w-9 h-9"
-              width="36"
-              height="36"
+              alt=""
+              class="nav-profile-avatar"
+              width="28"
+              height="28"
               onerror="this.classList.add('d-none');this.nextElementSibling.classList.remove('d-none');"
             >
-            <span class="avatar avatar-fallback rounded-full d-none" aria-hidden="true">
-              {{ user.username|slice:":1"|upper }}
-            </span>
+            <span class="nav-profile-avatar nav-profile-fallback d-none" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
           {% else %}
-            <span class="avatar avatar-fallback rounded-full" aria-hidden="true">
-              {{ user.username|slice:":1"|upper }}
-            </span>
+            <span class="nav-profile-avatar nav-profile-fallback" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
           {% endif %}
-          <span class="navbar-username d-none d-sm-inline">
-            {{ user.get_full_name|default:user.username }}
-          </span>
+          <span class="nav-profile-name">{{ user.get_full_name|default:user.username }}</span>
         </a>
-        <form method="post" action="{% url 'account:logout' %}" class="m-0">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-outline-secondary btn-sm">خروج</button>
-        </form>
-      </div>
-    {% else %}
-      <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
-        <a href="{% url 'account:login' %}" class="btn btn-outline-secondary btn-sm">ورود</a>
-        <a href="{% url 'account:signup' %}" class="btn btn-primary btn-sm">ثبت‌نام</a>
-      </div>
-    {% endif %}
-
-    <button
-      class="navbar-toggler ms-2"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      {% if user.is_authenticated %}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-              {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}
-              href="{% url 'report:home' %}"
-            >خانه</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'trading_account_create' %}active{% endif %}"
-              href="{% url 'report:trading_account_create' %}"
-            >ایجاد حساب ترید</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'history_account' or request.resolver_match.url_name == 'history_file' %}active{% endif %}"
-              href="{% url 'report:index' %}"
-            >تاریخچه</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
-              href="{% url 'account:about' %}"
-            >درباره ما</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}"
-              href="{% url 'account:faq' %}"
-            >سؤالات متداول</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
-              href="{% url 'account:contact' %}"
-            >تماس با ما</a>
-          </li>
-        </ul>
       {% else %}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'landing' or request.resolver_match.url_name == 'about' %}active{% endif %}"
-              href="{% url 'account:landing' %}"
-            >درباره ما</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}"
-              href="{% url 'account:faq' %}"
-            >سؤالات متداول</a>
-          </li>
-          <li class="nav-item">
-            <a
-              class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
-              href="{% url 'account:contact' %}"
-            >تماس با ما</a>
-          </li>
-        </ul>
+        <a href="{% url 'account:login' %}" class="nav-btn nav-btn-ghost">{{ ui_t.nav_login }}</a>
+        <a href="{% url 'account:signup' %}" class="nav-btn nav-btn-accent">{{ ui_t.nav_signup }}</a>
       {% endif %}
     </div>
   </div>
