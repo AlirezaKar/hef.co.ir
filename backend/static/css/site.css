@@ -5,6 +5,57 @@
   --line: #27272a;
 }
 
+/* Local Vazirmatn (self-hosted — no Google Fonts) */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/vazirmatn/Vazirmatn-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   font-family: Tahoma, "Segoe UI", system-ui, sans-serif;
 }
@@ -758,13 +809,128 @@ html.theme-dark .py-5.bg-light {
   overflow: hidden;
   background: #f1f5f9;
   border: 1px dashed #cbd5e1;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  cursor: pointer;
+  display: block;
 }
-.profile-photo img { width: 100%; height: 100%; object-fit: cover; }
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .photo-placeholder {
   height: 100%;
   display: grid;
   place-items: center;
   color: #94a3b8;
+}
+.profile-photo-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(241, 245, 249, 0.92);
+}
+.profile-photo-trigger:hover .profile-photo-overlay {
+  background: rgba(232, 117, 34, 0.12);
+  color: #c95d12;
+}
+.profile-photo-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.profile-photo-btn {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.profile-photo-btn-edit:hover {
+  border-color: #e87522;
+  color: #c95d12;
+}
+.profile-photo-btn-delete {
+  color: #b91c1c;
+}
+.profile-photo-btn-delete:hover:not(:disabled) {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.profile-photo-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.profile-photo-delete-form {
+  flex: 1;
+  margin: 0;
+}
+.profile-photo-delete-form .profile-photo-btn {
+  width: 100%;
+}
+.profile-crop-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.55);
+  padding: 16px;
+}
+.profile-crop-modal[hidden] {
+  display: none !important;
+}
+.profile-crop-dialog {
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+.profile-crop-header,
+.profile-crop-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+}
+.profile-crop-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.profile-crop-close {
+  border: 0;
+  background: transparent;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+}
+.profile-crop-stage {
+  height: min(360px, 55vh);
+  background: #0f172a;
+}
+.profile-crop-stage img {
+  display: block;
+  max-width: 100%;
+}
+.profile-crop-footer {
+  border-top: 1px solid #e2e8f0;
+  justify-content: flex-end;
+}
+.profile-crop-apply {
+  width: auto !important;
+  padding: 10px 14px !important;
 }
 .profile-field { margin-bottom: 14px; }
 .profile-field label { display: block; font-weight: 600; margin-bottom: 6px; }
@@ -807,7 +973,7 @@ html.theme-dark .py-5.bg-light {
   gap: 12px;
   background: #f1f5f9;
   padding: 28px 18px 34px;
-  border-top: 8px solid var(--teal);
+  border-top: 8px solid #e87522;
 }
 .contact-info-col { text-align: center; }
 .contact-circle {
@@ -815,11 +981,26 @@ html.theme-dark .py-5.bg-light {
   height: 54px;
   margin: 0 auto 10px;
   border-radius: 50%;
-  background: var(--teal);
+  background: #e87522;
   color: #fff;
   display: grid;
   place-items: center;
   font-size: 1.2rem;
+}
+.btn-contact {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: #e87522;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-contact:hover {
+  background: #c95d12;
+  color: #fff;
 }
 .report-toolbar {
   display: flex;
@@ -1564,4 +1745,91 @@ body.theme-dark .adobe-hero-meta {
 html.theme-dark .adobe-faq-question,
 body.theme-dark .adobe-faq-question {
   color: var(--adobe-text) !important;
+}
+
+/* ===== Download Center ===== */
+.dl-page-body,
+.dl-page,
+.dl-page button,
+.dl-page input,
+.dl-page select,
+.dl-page textarea,
+.dl-page label,
+.dl-page a,
+.dl-page table,
+.dl-page th,
+.dl-page td {
+  font-family: "Vazirmatn", Tahoma, sans-serif !important;
+}
+
+.dl-page {
+  font-family: "Vazirmatn", Tahoma, sans-serif;
+}
+
+html.theme-dark .dl-page-body,
+body.theme-dark .dl-page-body {
+  background: #0f0f12 !important;
+  color: #e4e4e7 !important;
+}
+
+html.theme-dark .dl-page,
+body.theme-dark .dl-page {
+  color: #e4e4e7;
+}
+
+html.theme-dark .dl-page .dl-card,
+html.theme-dark .dl-page aside,
+html.theme-dark .dl-page .bg-white,
+html.theme-dark .dl-page table,
+body.theme-dark .dl-page .dl-card,
+body.theme-dark .dl-page aside,
+body.theme-dark .dl-page .bg-white {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+html.theme-dark .dl-page .bg-stone-50,
+html.theme-dark .dl-page .bg-stone-100,
+body.theme-dark .dl-page .bg-stone-50,
+body.theme-dark .dl-page .bg-stone-100 {
+  background: #1f1f23 !important;
+}
+
+html.theme-dark .dl-page .text-stone-500,
+html.theme-dark .dl-page .text-stone-400,
+html.theme-dark .dl-page .text-stone-600,
+body.theme-dark .dl-page .text-stone-500,
+body.theme-dark .dl-page .text-stone-400,
+body.theme-dark .dl-page .text-stone-600 {
+  color: #a1a1aa !important;
+}
+
+html.theme-dark .dl-page h1,
+html.theme-dark .dl-page h2,
+html.theme-dark .dl-page .font-semibold,
+html.theme-dark .dl-page .font-bold,
+body.theme-dark .dl-page h1,
+body.theme-dark .dl-page h2,
+body.theme-dark .dl-page .font-semibold,
+body.theme-dark .dl-page .font-bold {
+  color: #e4e4e7 !important;
+}
+
+html.theme-dark .dl-page input,
+html.theme-dark .dl-page select,
+html.theme-dark .dl-page textarea,
+body.theme-dark .dl-page input,
+body.theme-dark .dl-page select,
+body.theme-dark .dl-page textarea {
+  background: #0f0f12 !important;
+  border-color: #3f3f46 !important;
+  color: #e4e4e7 !important;
+}
+
+html.theme-dark .dl-page .border-stone-100,
+html.theme-dark .dl-page .border-stone-200,
+body.theme-dark .dl-page .border-stone-100,
+body.theme-dark .dl-page .border-stone-200 {
+  border-color: #27272a !important;
 }

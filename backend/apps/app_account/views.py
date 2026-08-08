@@ -177,12 +177,26 @@ def logout_view(request):
 @require_http_methods(["GET", "POST"])
 def profile_view(request):
     user = request.user
+
+    if request.method == "POST" and request.POST.get("clear_picture") == "1":
+        if user.picture:
+            user.picture.delete(save=False)
+            user.picture = None
+            user.save(update_fields=["picture"])
+        messages.success(request, "تصویر پروفایل حذف شد.")
+        return redirect("account:profile")
+
     form = ProfileForm(request.POST or None, request.FILES or None, instance=user)
     if request.method == "POST" and form.is_valid():
         profile_user = form.save(commit=False)
         if "picture" in request.FILES:
+            uploaded = request.FILES["picture"]
+            max_size = getattr(settings, "PROFILE_PICTURE_MAX_SIZE", 5 * 1024 * 1024)
+            if getattr(uploaded, "size", 0) > max_size:
+                messages.error(request, "حجم تصویر نباید بیشتر از ۵ مگابایت باشد.")
+                return render(request, "account/profile.html", {"form": form})
             try:
-                profile_user.save_picture_as_webp(request.FILES["picture"])
+                profile_user.save_picture_as_webp(uploaded)
             except Exception:
                 messages.error(
                     request, "پردازش تصویر ناموفق بود. فایل معتبر ارسال کنید."

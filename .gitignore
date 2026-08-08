@@ -23,6 +23,8 @@ backend/media/profile_picture/*
 !backend/media/profile_picture/.gitkeep
 backend/media/about_uploads/*
 !backend/media/about_uploads/.gitkeep
+backend/cdn/**
+!backend/cdn/.gitkeep
 
 # Environment
 .env

@@ -194,6 +194,13 @@ MEDIA_URL = "/media/"
 _media_root = os.getenv("DJANGO_MEDIA_ROOT", "").strip()
 MEDIA_ROOT = Path(_media_root) if _media_root else (BASE_DIR / "media")
 
+# Local CDN for download-center files (swap CDN_URL to an external host later).
+_cdn_root = os.getenv("DJANGO_CDN_ROOT", "").strip()
+CDN_ROOT = Path(_cdn_root) if _cdn_root else (BASE_DIR / "cdn")
+CDN_URL = os.getenv("DJANGO_CDN_URL", "/cdn/").strip() or "/cdn/"
+if not CDN_URL.endswith("/"):
+    CDN_URL = f"{CDN_URL}/"
+
 # Optional override; default is <project>/data/History
 _history_root = os.getenv("HISTORY_ROOT", "").strip()
 HISTORY_ROOT = Path(_history_root) if _history_root else (PROJECT_ROOT / "data" / "History")
@@ -323,7 +330,11 @@ TINYMCE_DEFAULT_CONFIG = {
         "ul[*],ol[*],li[*],blockquote[*],pre[*],code[*],hr,br"
     ),
     "content_style": (
-        "@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');"
+        "@font-face{font-family:'Vazirmatn';src:url('/static/fonts/vazirmatn/Vazirmatn-Light.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap;}"
+        "@font-face{font-family:'Vazirmatn';src:url('/static/fonts/vazirmatn/Vazirmatn-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;}"
+        "@font-face{font-family:'Vazirmatn';src:url('/static/fonts/vazirmatn/Vazirmatn-Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;}"
+        "@font-face{font-family:'Vazirmatn';src:url('/static/fonts/vazirmatn/Vazirmatn-SemiBold.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap;}"
+        "@font-face{font-family:'Vazirmatn';src:url('/static/fonts/vazirmatn/Vazirmatn-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap;}"
         "body { font-family: Vazirmatn, Tahoma, sans-serif; direction: rtl; "
         "font-size: 16px; line-height: 1.75; color: #000; }"
         "img { max-width: 100%; height: auto; }"

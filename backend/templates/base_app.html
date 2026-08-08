@@ -10,6 +10,7 @@
     window.top.location.replace(window.location.href);
   }
 </script>
+{% block app_extra_head %}{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -23,4 +24,8 @@
   </main>
 </div>
 {% include "partials/footer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+{% block app_extra_js %}{% endblock %}
 {% endblock %}

@@ -1,11 +1,189 @@
-{% extends "base_app.html" %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ ui_t.nav_download }} | HEF{% endblock %}
-{% block page_heading %}{{ ui_t.nav_download }}{% endblock %}
+{% block title %}{{ ui_t.download_title }} | HEF{% endblock %}
+{% block body_class %}dl-page-body bg-stone-50{% endblock %}
 
-{% block content %}
-<section class="content-page text-center py-5">
-  <h2 class="h4 mb-2">{{ ui_t.coming_soon }}</h2>
-  <p class="text-secondary mb-0">{{ ui_t.coming_soon_body }}</p>
-</section>
+{% block extra_head %}
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          orange: { 50:'#fff7ed', 100:'#ffedd5', 500:'#f97316', 600:'#ea580c', 700:'#c2410c' }
+        },
+        fontFamily: { sans: ['Vazirmatn','Tahoma','sans-serif'] }
+      }
+    }
+  };
+</script>
+<style>[x-cloak]{display:none!important}</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{% endblock %}
+
+{% block body %}
+{% include "partials/navbar.html" %}
+
+<main class="dl-page mx-auto max-w-7xl px-4 py-8 sm:px-6" x-data="downloadPortal()" x-cloak>
+  <div class="mb-8 border-b border-stone-200 pb-7">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <p class="mb-2 text-xs font-semibold text-orange-600">{{ ui_t.download_eyebrow }}</p>
+        <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">{{ ui_t.download_heading }}</h1>
+        <p class="mt-2 max-w-2xl text-sm leading-7 text-stone-500">{{ ui_t.download_intro }}</p>
+      </div>
+      {% if manage_url %}
+      <a href="{{ manage_url }}" class="rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs font-medium text-stone-600 transition hover:border-orange-300 hover:text-orange-600">
+        {{ ui_t.download_manage_cta }}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div id="files" class="grid gap-8 lg:grid-cols-[230px_1fr]">
+    <aside class="dl-card h-fit rounded-xl border border-stone-200 bg-white p-4">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-sm font-bold">{{ ui_t.download_filters }}</h2>
+        <button type="button" @click="resetFilters()" class="text-[11px] text-orange-600 hover:text-orange-700">{{ ui_t.download_reset_filters }}</button>
+      </div>
+
+      <label class="mb-2 block text-xs font-medium text-stone-600">{{ ui_t.download_search }}</label>
+      <input x-model="search" type="search" placeholder="{{ ui_t.download_search_ph }}"
+        class="mb-5 w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-xs outline-none transition focus:border-orange-400 focus:bg-white">
+
+      <label class="mb-2 block text-xs font-medium text-stone-600">{{ ui_t.download_category }}</label>
+      <select x-model="category" class="mb-5 w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+        <option value="">{{ ui_t.download_all_categories }}</option>
+        <template x-for="cat in categories" :key="cat.id">
+          <option :value="cat.name" x-text="cat.name"></option>
+        </template>
+      </select>
+
+      <label class="mb-2 block text-xs font-medium text-stone-600">{{ ui_t.download_file_type }}</label>
+      <select x-model="type" class="mb-5 w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+        <option value="">{{ ui_t.download_all_types }}</option>
+        <option value="PDF">PDF</option>
+        <option value="ZIP">ZIP</option>
+        <option value="DOCX">Word</option>
+        <option value="XLSX">Excel</option>
+        <option value="MP4">Video</option>
+      </select>
+
+      <label class="mb-2 block text-xs font-medium text-stone-600">{{ ui_t.download_date }}</label>
+      <select x-model="dateFilter" class="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+        <option value="">{{ ui_t.download_all_dates }}</option>
+        <option value="new">{{ ui_t.download_newest }}</option>
+        <option value="old">{{ ui_t.download_oldest }}</option>
+      </select>
+    </aside>
+
+    <section>
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="text-xs text-stone-400">
+          <span x-text="filteredFiles().length"></span> {{ ui_t.download_files_count }}
+        </div>
+        <select x-model="sort" class="rounded-lg border border-stone-200 bg-white px-3 py-2 text-xs text-stone-600 outline-none">
+          <option value="name">{{ ui_t.download_sort_name }}</option>
+          <option value="date">{{ ui_t.download_sort_date }}</option>
+          <option value="size">{{ ui_t.download_sort_size }}</option>
+        </select>
+      </div>
+
+      <div class="dl-card overflow-hidden rounded-xl border border-stone-200 bg-white">
+        <div class="hidden grid-cols-[1fr_120px_100px_100px] gap-4 border-b border-stone-200 bg-stone-50 px-5 py-3 text-[11px] font-medium text-stone-400 sm:grid">
+          <div>{{ ui_t.download_col_file }}</div>
+          <div>{{ ui_t.download_col_type }}</div>
+          <div>{{ ui_t.download_col_size }}</div>
+          <div></div>
+        </div>
+
+        <template x-for="file in filteredFiles()" :key="file.id">
+          <div class="grid gap-3 border-b border-stone-100 px-4 py-4 last:border-0 sm:grid-cols-[1fr_120px_100px_100px] sm:items-center sm:gap-4 sm:px-5">
+            <div class="flex min-w-0 items-center gap-3">
+              <div class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-stone-100 text-[10px] font-bold text-stone-500" x-text="file.type"></div>
+              <div class="min-w-0">
+                <div class="truncate text-xs font-semibold" x-text="file.title"></div>
+                <div class="mt-0.5 truncate text-[10px] text-stone-400" x-text="file.name"></div>
+              </div>
+            </div>
+            <div class="text-[11px] text-stone-500"><span class="sm:hidden">{{ ui_t.download_col_type }}: </span><span x-text="file.type"></span></div>
+            <div class="text-[11px] text-stone-500" x-text="file.size"></div>
+            <div>
+              <a :href="file.download_url" class="block w-full rounded-lg bg-orange-500 px-3 py-2 text-center text-[11px] font-semibold text-white transition hover:bg-orange-600">
+                {{ ui_t.download_get }}
+              </a>
+              <button type="button" @click="openReport(file)" class="mt-1 w-full text-[10px] text-stone-400 hover:text-orange-600">{{ ui_t.download_report }}</button>
+            </div>
+          </div>
+        </template>
+
+        <div x-show="filteredFiles().length === 0" class="px-5 py-12 text-center text-xs text-stone-400">
+          {{ ui_t.download_empty }}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div x-show="reportOpen" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-black/30 p-4">
+    <div @click.outside="reportOpen=false" class="dl-card w-full max-w-md rounded-xl bg-white p-6">
+      <h2 class="text-lg font-bold">{{ ui_t.download_report_title }}</h2>
+      <p class="mt-2 text-xs text-stone-500">{{ ui_t.download_report_intro }}</p>
+      <form method="post" action="{% url 'download:report' %}" class="mt-5">
+        {% csrf_token %}
+        <input type="hidden" name="file_id" :value="reportFileId">
+        <select name="reason" class="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs" required>
+          <option value="{{ ui_t.download_report_r1 }}">{{ ui_t.download_report_r1 }}</option>
+          <option value="{{ ui_t.download_report_r2 }}">{{ ui_t.download_report_r2 }}</option>
+          <option value="{{ ui_t.download_report_r3 }}">{{ ui_t.download_report_r3 }}</option>
+          <option value="{{ ui_t.download_report_r4 }}">{{ ui_t.download_report_r4 }}</option>
+        </select>
+        <textarea name="details" class="mt-3 h-24 w-full resize-none rounded-lg border border-stone-200 px-3 py-2.5 text-xs outline-none focus:border-orange-400" placeholder="{{ ui_t.download_report_details_ph }}"></textarea>
+        <div class="mt-5 flex justify-end gap-2">
+          <button type="button" @click="reportOpen=false" class="rounded-lg border border-stone-200 px-4 py-2 text-xs">{{ ui_t.download_cancel }}</button>
+          <button type="submit" class="rounded-lg bg-orange-500 px-4 py-2 text-xs font-semibold text-white">{{ ui_t.download_send_report }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+{% include "partials/footer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadPortal(){
+  return {
+    search: '',
+    category: '',
+    type: '',
+    dateFilter: '',
+    sort: 'name',
+    reportOpen: false,
+    reportFileId: null,
+    files: {{ files_json|safe }},
+    categories: {{ categories_json|safe }},
+    filteredFiles(){
+      let result = this.files.filter(f => {
+        const q = this.search.trim().toLowerCase();
+        return (!q || f.title.toLowerCase().includes(q) || f.name.toLowerCase().includes(q))
+          && (!this.category || f.category === this.category)
+          && (!this.type || f.type === this.type);
+      });
+      if (this.dateFilter === 'new' || this.sort === 'date') result = result.slice().sort((a,b)=> (b.id||0)-(a.id||0));
+      else if (this.dateFilter === 'old') result = result.slice().sort((a,b)=> (a.id||0)-(b.id||0));
+      else if (this.sort === 'size') result = result.slice().sort((a,b)=> (a.size_bytes||0)-(b.size_bytes||0));
+      else if (this.sort === 'name') result = result.slice().sort((a,b)=> a.title.localeCompare(b.title, 'fa'));
+      return result;
+    },
+    resetFilters(){
+      this.search=''; this.category=''; this.type=''; this.dateFilter=''; this.sort='name';
+    },
+    openReport(file){
+      this.reportFileId = file.id;
+      this.reportOpen = true;
+    }
+  }
+}
+</script>
 {% endblock %}

@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ ui_t.download_manage_heading }} | HEF{% endblock %}
+{% block body_class %}dl-page-body bg-stone-50{% endblock %}
+
+{% block extra_head %}
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          orange: { 50:'#fff7ed', 100:'#ffedd5', 500:'#f97316', 600:'#ea580c', 700:'#c2410c' }
+        },
+        fontFamily: { sans: ['Vazirmatn','Tahoma','sans-serif'] }
+      }
+    }
+  };
+</script>
+<style>[x-cloak]{display:none!important}</style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+{% endblock %}
+
+{% block body %}
+{% include "partials/navbar.html" %}
+
+<main class="dl-page mx-auto max-w-7xl px-4 py-8 sm:px-6" x-data="managePortal()" x-cloak>
+  <div class="mb-8 flex flex-col justify-between gap-4 border-b border-stone-200 pb-7 sm:flex-row sm:items-end">
+    <div>
+      <p class="mb-2 text-xs font-semibold text-orange-600">{{ ui_t.download_manage_eyebrow }}</p>
+      <h1 class="text-2xl font-bold tracking-tight">{{ ui_t.download_manage_heading }}</h1>
+      <p class="mt-2 text-sm text-stone-500">{{ ui_t.download_manage_intro }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <a href="{% url 'download:index' %}" class="rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-xs font-medium text-stone-600 hover:border-orange-300 hover:text-orange-600">
+        {{ ui_t.download_back_to_list }}
+      </a>
+      <button type="button" @click="openCreate()" class="rounded-lg bg-orange-500 px-4 py-2.5 text-xs font-semibold text-white hover:bg-orange-600">
+        {{ ui_t.download_add_file }}
+      </button>
+    </div>
+  </div>
+
+  <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div class="dl-card rounded-xl border border-stone-200 bg-white p-4">
+      <div class="text-[10px] text-stone-400">{{ ui_t.download_stat_total }}</div>
+      <div class="mt-1 text-xl font-bold">{{ stats.total }}</div>
+    </div>
+    <div class="dl-card rounded-xl border border-stone-200 bg-white p-4">
+      <div class="text-[10px] text-stone-400">{{ ui_t.download_stat_public }}</div>
+      <div class="mt-1 text-xl font-bold">{{ stats.public }}</div>
+    </div>
+    <div class="dl-card rounded-xl border border-stone-200 bg-white p-4">
+      <div class="text-[10px] text-stone-400">{{ ui_t.download_stat_private }}</div>
+      <div class="mt-1 text-xl font-bold">{{ stats.private }}</div>
+    </div>
+    <div class="dl-card rounded-xl border border-stone-200 bg-white p-4">
+      <div class="text-[10px] text-stone-400">{{ ui_t.download_stat_downloads }}</div>
+      <div class="mt-1 text-xl font-bold">{{ stats.downloads }}</div>
+    </div>
+  </div>
+
+  <div class="mb-4 flex flex-col gap-3 sm:flex-row">
+    <input x-model="adminSearch" type="search" placeholder="{{ ui_t.download_admin_search_ph }}"
+      class="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+    <select x-model="adminVisibility" class="rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none">
+      <option value="">{{ ui_t.download_all_visibility }}</option>
+      <option value="public">{{ ui_t.download_public }}</option>
+      <option value="private">{{ ui_t.download_private }}</option>
+    </select>
+  </div>
+
+  <div class="dl-card overflow-x-auto rounded-xl border border-stone-200 bg-white">
+    <table class="w-full min-w-[850px] text-start text-xs">
+      <thead class="border-b border-stone-200 bg-stone-50 text-[10px] text-stone-400">
+        <tr>
+          <th class="px-5 py-3 font-medium">{{ ui_t.download_col_title }}</th>
+          <th class="px-4 py-3 font-medium">{{ ui_t.download_col_type }}</th>
+          <th class="px-4 py-3 font-medium">{{ ui_t.download_col_size }}</th>
+          <th class="px-4 py-3 font-medium">{{ ui_t.download_col_date }}</th>
+          <th class="px-4 py-3 font-medium">{{ ui_t.download_col_downloads }}</th>
+          <th class="px-4 py-3 font-medium">{{ ui_t.download_col_access }}</th>
+          <th class="px-5 py-3 font-medium">{{ ui_t.download_col_actions }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="file in adminFiles()" :key="file.id">
+          <tr class="border-b border-stone-100 last:border-0">
+            <td class="px-5 py-4">
+              <div class="font-semibold" x-text="file.title"></div>
+              <div class="mt-1 text-[10px] text-stone-400" x-text="file.name"></div>
+            </td>
+            <td class="px-4 py-4 text-stone-500" x-text="file.type"></td>
+            <td class="px-4 py-4 text-stone-500" x-text="file.size"></td>
+            <td class="px-4 py-4 text-stone-500" x-text="file.date"></td>
+            <td class="px-4 py-4 text-stone-500" x-text="file.downloads"></td>
+            <td class="px-4 py-4">
+              <span :class="file.visibility==='public' ? 'text-green-700 bg-green-50' : 'text-orange-700 bg-orange-50'"
+                class="rounded-md px-2 py-1 text-[10px]"
+                x-text="file.visibility==='public' ? '{{ ui_t.download_public }}' : '{{ ui_t.download_private }}'"></span>
+              <span x-show="file.password" class="ms-1 text-[10px] text-stone-400">🔒</span>
+            </td>
+            <td class="px-5 py-4">
+              <div class="flex gap-3">
+                <button type="button" @click="editFile(file)" class="text-stone-500 hover:text-orange-600">{{ ui_t.download_edit }}</button>
+                <form method="post" :action="`{% url 'download:delete' 0 %}`.replace('/0/', '/' + file.id + '/')"
+                  @submit.prevent="if(confirm('{{ ui_t.download_delete_confirm }}')) $el.submit()">
+                  {% csrf_token %}
+                  <button type="submit" class="text-stone-400 hover:text-red-600">{{ ui_t.download_delete }}</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+
+  <div x-show="uploadOpen" x-cloak class="fixed inset-0 z-50 grid place-items-center bg-black/30 p-4" @keydown.escape.window="uploadOpen=false">
+    <div @click.outside="uploadOpen=false" class="dl-card max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold" x-text="editing ? '{{ ui_t.download_modal_edit }}' : '{{ ui_t.download_modal_add }}'"></h2>
+          <p class="mt-1 text-[11px] text-stone-400" x-text="editing ? '{{ ui_t.download_modal_edit_hint }}' : '{{ ui_t.download_modal_add_hint }}'"></p>
+        </div>
+        <button type="button" @click="uploadOpen=false" class="text-xl text-stone-400 hover:text-stone-700">×</button>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" :action="editing ? updateUrl : '{% url 'download:upload' %}'">
+        {% csrf_token %}
+        <div x-show="!editing" class="mb-5 rounded-lg border border-dashed border-stone-300 bg-stone-50 p-7 text-center">
+          <div class="mb-2 text-2xl text-stone-400">↑</div>
+          <div class="text-xs font-medium">{{ ui_t.download_pick_files }}</div>
+          <div class="mt-1 text-[10px] text-stone-400">{{ ui_t.download_pick_files_hint }}</div>
+          <input name="files" type="file" multiple class="mt-4 block w-full text-xs text-stone-500" :required="!editing">
+        </div>
+
+        <div x-show="editing" class="mb-5">
+          <label class="mb-2 block text-xs font-medium">{{ ui_t.download_pick_files }}</label>
+          <input name="file" type="file" class="block w-full text-xs text-stone-500">
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium">{{ ui_t.download_display_title }}</span>
+            <input name="title" x-model="form.title" type="text" placeholder="{{ ui_t.download_title_ph }}"
+              class="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+          </label>
+
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium">{{ ui_t.download_category }}</span>
+            <select name="category_id" x-model="form.category_id" class="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+              <option value="">{{ ui_t.download_all_categories }}</option>
+              <template x-for="cat in categories" :key="cat.id">
+                <option :value="cat.id" x-text="cat.name"></option>
+              </template>
+            </select>
+          </label>
+
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium">{{ ui_t.download_tags }}</span>
+            <input name="tags" x-model="form.tags" type="text" placeholder="{{ ui_t.download_tags_ph }}"
+              class="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+          </label>
+
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium">{{ ui_t.download_access }}</span>
+            <select name="visibility" x-model="form.visibility" class="w-full rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+              <option value="public">{{ ui_t.download_public }}</option>
+              <option value="private">{{ ui_t.download_private }}</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="mt-4 flex items-center gap-2 text-xs text-stone-600">
+          <input type="checkbox" name="password_enabled" value="1" x-model="form.passwordEnabled" class="accent-orange-500">
+          {{ ui_t.download_password_enable }}
+        </label>
+
+        <div x-show="form.passwordEnabled" x-cloak class="mt-3">
+          <input name="password" x-model="form.password" type="password" placeholder="{{ ui_t.download_password_ph }}"
+            class="w-full rounded-lg border border-stone-200 px-3 py-2.5 text-xs outline-none focus:border-orange-400">
+        </div>
+
+        <div class="mt-6 flex justify-end gap-2 border-t border-stone-100 pt-5">
+          <button type="button" @click="uploadOpen=false" class="rounded-lg border border-stone-200 px-4 py-2.5 text-xs text-stone-600">{{ ui_t.download_cancel }}</button>
+          <button type="submit" class="rounded-lg bg-orange-500 px-5 py-2.5 text-xs font-semibold text-white hover:bg-orange-600"
+            x-text="editing ? '{{ ui_t.download_save }}' : '{{ ui_t.download_upload }}'"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+{% include "partials/footer.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function managePortal(){
+  return {
+    uploadOpen: false,
+    editing: false,
+    updateUrl: '',
+    adminSearch: '',
+    adminVisibility: '',
+    files: {{ files_json|safe }},
+    categories: {{ categories_json|safe }},
+    form: {
+      title: '',
+      category_id: '',
+      tags: '',
+      visibility: 'public',
+      passwordEnabled: false,
+      password: ''
+    },
+    adminFiles(){
+      return this.files.filter(f => {
+        const q = this.adminSearch.trim().toLowerCase();
+        return (!q || f.title.toLowerCase().includes(q) || f.name.toLowerCase().includes(q))
+          && (!this.adminVisibility || f.visibility === this.adminVisibility);
+      });
+    },
+    openCreate(){
+      this.editing = false;
+      this.updateUrl = '';
+      this.form = { title:'', category_id: this.categories[0]?.id || '', tags:'', visibility:'public', passwordEnabled:false, password:'' };
+      this.uploadOpen = true;
+    },
+    editFile(file){
+      this.editing = true;
+      this.updateUrl = `{% url 'download:update' 0 %}`.replace('/0/', '/' + file.id + '/');
+      this.form = {
+        title: file.title,
+        category_id: file.category_id || '',
+        tags: file.tags || '',
+        visibility: file.visibility || 'public',
+        passwordEnabled: !!file.password,
+        password: ''
+      };
+      this.uploadOpen = true;
+    }
+  }
+}
+</script>
+{% endblock %}

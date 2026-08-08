@@ -148,7 +148,6 @@ class ProfileForm(forms.ModelForm):
             "email",
             "phone_number",
             "national_id",
-            "picture",
         )
         labels = {
             "first_name": "نام",
@@ -156,7 +155,6 @@ class ProfileForm(forms.ModelForm):
             "email": "ایمیل",
             "phone_number": "شماره تلفن",
             "national_id": "کد ملی",
-            "picture": "تصویر پروفایل",
         }
         widgets = {
             "first_name": forms.TextInput(attrs={"placeholder": "نام"}),
@@ -192,16 +190,6 @@ class ProfileForm(forms.ModelForm):
 
     def clean_national_id(self):
         return validate_national_id(self.cleaned_data.get("national_id", ""))
-
-    def clean_picture(self):
-        picture = self.cleaned_data.get("picture")
-        if picture and hasattr(picture, "size"):
-            from django.conf import settings
-
-            max_size = getattr(settings, "PROFILE_PICTURE_MAX_SIZE", 5 * 1024 * 1024)
-            if picture.size > max_size:
-                raise ValidationError("حجم تصویر نباید بیشتر از ۵ مگابایت باشد.")
-        return picture
 
 
 class TradingAccountForm(forms.ModelForm):

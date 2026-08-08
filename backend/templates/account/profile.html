@@ -3,22 +3,51 @@
 {% block title %}پروفایل | پورتال تاریخچه HEF{% endblock %}
 {% block page_heading %}پروفایل{% endblock %}
 
+{% block app_extra_head %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"
+>
+{% endblock %}
+
 {% block content %}
 <section class="profile-layout">
   <div class="profile-media">
-    <div class="profile-photo">
+    <button
+      type="button"
+      class="profile-photo profile-photo-trigger"
+      id="profilePhotoTrigger"
+      aria-label="برای آپلود تصویر کلیک کنید"
+    >
       {% if user.picture %}
-        <img src="{{ user.picture.url }}" alt="تصویر پروفایل">
+        <img id="profilePhotoPreview" src="{{ user.picture.url }}" alt="تصویر پروفایل">
+        <span class="profile-photo-overlay" id="profilePhotoOverlay" hidden>برای آپلود تصویر کلیک کنید</span>
       {% else %}
-        <div class="photo-placeholder">بدون تصویر</div>
+        <img id="profilePhotoPreview" src="" alt="" hidden>
+        <span class="profile-photo-overlay" id="profilePhotoOverlay">برای آپلود تصویر کلیک کنید</span>
       {% endif %}
+    </button>
+
+    <div class="profile-photo-actions">
+      <button type="button" class="profile-photo-btn profile-photo-btn-edit" id="profilePhotoEditBtn">ویرایش</button>
+      <form method="post" class="profile-photo-delete-form" id="profilePhotoDeleteForm">
+        {% csrf_token %}
+        <input type="hidden" name="clear_picture" value="1">
+        <button
+          type="submit"
+          class="profile-photo-btn profile-photo-btn-delete"
+          id="profilePhotoDeleteBtn"
+          {% if not user.picture %}disabled{% endif %}
+        >حذف</button>
+      </form>
     </div>
   </div>
 
   <div class="profile-form-panel">
     <h2>ویرایش اطلاعات</h2>
-    <form method="post" enctype="multipart/form-data" novalidate>
+    <form method="post" enctype="multipart/form-data" novalidate id="profileForm">
       {% csrf_token %}
+      <input type="file" name="picture" id="profilePictureInput" accept="image/*" hidden>
       {% for field in form %}
         <div class="profile-field">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -36,4 +65,117 @@
     </form>
   </div>
 </section>
+
+<div class="profile-crop-modal" id="profileCropModal" hidden>
+  <div class="profile-crop-dialog" role="dialog" aria-modal="true" aria-labelledby="profileCropTitle">
+    <div class="profile-crop-header">
+      <h3 id="profileCropTitle">برش تصویر</h3>
+      <button type="button" class="profile-crop-close" id="profileCropClose" aria-label="بستن">×</button>
+    </div>
+    <div class="profile-crop-stage">
+      <img id="profileCropImage" alt="برش">
+    </div>
+    <div class="profile-crop-footer">
+      <button type="button" class="btn-outline profile-crop-cancel" id="profileCropCancel">انصراف</button>
+      <button type="button" class="btn-contact profile-crop-apply" id="profileCropApply">تأیید و ذخیره پیش‌نمایش</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block app_extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+<script>
+(function () {
+  var trigger = document.getElementById("profilePhotoTrigger");
+  var editBtn = document.getElementById("profilePhotoEditBtn");
+  var deleteBtn = document.getElementById("profilePhotoDeleteBtn");
+  var fileInput = document.getElementById("profilePictureInput");
+  var preview = document.getElementById("profilePhotoPreview");
+  var overlay = document.getElementById("profilePhotoOverlay");
+  var modal = document.getElementById("profileCropModal");
+  var cropImg = document.getElementById("profileCropImage");
+  var closeBtn = document.getElementById("profileCropClose");
+  var cancelBtn = document.getElementById("profileCropCancel");
+  var applyBtn = document.getElementById("profileCropApply");
+  var cropper = null;
+  var objectUrl = null;
+
+  function openPicker() {
+    fileInput.click();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
+    cropImg.removeAttribute("src");
+  }
+
+  function openModal(file) {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+    cropImg.src = objectUrl;
+    modal.hidden = false;
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(cropImg, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 1,
+      background: false,
+      responsive: true,
+    });
+  }
+
+  trigger.addEventListener("click", openPicker);
+  editBtn.addEventListener("click", openPicker);
+  closeBtn.addEventListener("click", closeModal);
+  cancelBtn.addEventListener("click", closeModal);
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  fileInput.addEventListener("change", function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    if (!file.type || file.type.indexOf("image/") !== 0) {
+      alert("لطفاً یک فایل تصویری انتخاب کنید.");
+      fileInput.value = "";
+      return;
+    }
+    openModal(file);
+  });
+
+  applyBtn.addEventListener("click", function () {
+    if (!cropper) return;
+    var canvas = cropper.getCroppedCanvas({
+      width: 512,
+      height: 512,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: "high",
+    });
+    if (!canvas) return;
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      var cropped = new File([blob], "profile.webp", { type: "image/webp" });
+      var dt = new DataTransfer();
+      dt.items.add(cropped);
+      fileInput.files = dt.files;
+
+      var url = URL.createObjectURL(blob);
+      preview.src = url;
+      preview.hidden = false;
+      overlay.hidden = true;
+      if (deleteBtn) deleteBtn.disabled = false;
+      closeModal();
+    }, "image/webp", 0.92);
+  });
+})();
+</script>
 {% endblock %}

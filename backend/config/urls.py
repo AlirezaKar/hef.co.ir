@@ -26,6 +26,11 @@ urlpatterns += [
         serve,
         {"document_root": settings.MEDIA_ROOT},
     ),
+    re_path(
+        r"^cdn/(?P<path>.*)$",
+        serve,
+        {"document_root": settings.CDN_ROOT},
+    ),
 ]
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
