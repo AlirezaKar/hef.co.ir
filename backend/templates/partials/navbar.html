@@ -24,8 +24,36 @@
       <li>
         <a class="site-nav-link {% if request.resolver_match.app_name == 'download' %}is-active{% endif %}" href="{% url 'download:index' %}">{{ ui_t.nav_download }}</a>
       </li>
-      <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'adobe_connect' %}is-active{% endif %}" href="{% url 'account:adobe_connect' %}">{{ ui_t.nav_adobe }}</a>
+      <li class="site-nav-dropdown">
+        <a
+          class="site-nav-link site-nav-dropdown-link {% if request.resolver_match.url_name == 'adobe_connect' %}is-active{% endif %}"
+          href="{% url 'account:adobe_connect' %}"
+          aria-haspopup="true"
+        >
+          <span>{{ ui_t.nav_adobe }}</span>
+          <span class="site-nav-caret-icon" aria-hidden="true"></span>
+        </a>
+        <ul class="site-nav-submenu" role="menu" aria-label="{{ ui_t.nav_adobe_sections }}">
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#features">{{ ui_t.nav_adobe_features }}</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#options">{{ ui_t.nav_adobe_options }}</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#process">{{ ui_t.nav_adobe_process }}</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#pricing">{{ ui_t.nav_adobe_pricing }}</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#faq">{{ ui_t.nav_adobe_faq }}</a>
+          </li>
+          <li class="site-nav-submenu-divider" role="separator"></li>
+          <li role="none">
+            <a role="menuitem" class="site-nav-sublink site-nav-sublink-accent" href="{% url 'account:adobe_connect' %}#contact">{{ ui_t.nav_adobe_consult }}</a>
+          </li>
+        </ul>
       </li>
       <li>
         <a class="site-nav-link {% if request.resolver_match.app_name == 'finance' and request.resolver_match.url_name == 'hub' %}is-active{% endif %}" href="{% url 'finance:hub' %}">{{ ui_t.nav_finance }}</a>

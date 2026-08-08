@@ -68,4 +68,19 @@
     e.stopPropagation();
     toggleTheme();
   });
+
+  // Adobe Connect FAQ accordion
+  document.addEventListener("click", function (e) {
+    var question = e.target.closest(".adobe-faq-question");
+    if (!question) return;
+    var item = question.closest(".adobe-faq-item");
+    if (!item) return;
+    var faq = item.closest(".adobe-faq");
+    if (faq) {
+      faq.querySelectorAll(".adobe-faq-item").forEach(function (other) {
+        if (other !== item) other.classList.remove("open");
+      });
+    }
+    item.classList.toggle("open");
+  });
 })();

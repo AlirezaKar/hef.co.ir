@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ ui_t.adobe_title }} | HEF{% endblock %}
+{% block body_class %}adobe-page-body bg-light{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="{{ ui_t.adobe_meta_desc }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+{% include "partials/navbar.html" %}
+
+<main class="adobe-page">
+
+  {# HERO #}
+  <section class="adobe-hero">
+    <div class="adobe-wrap adobe-hero-grid">
+      <div>
+        <div class="adobe-eyebrow">{{ ui_t.adobe_eyebrow }}</div>
+        <h1 class="adobe-hero-title">
+          {{ ui_t.adobe_h1 }}<br>
+          <span>{{ ui_t.adobe_h1_span }}</span>
+        </h1>
+        <p class="adobe-hero-description">{{ ui_t.adobe_hero_desc }}</p>
+        <div class="adobe-actions">
+          <a href="{% url 'account:contact' %}" class="adobe-btn adobe-btn-primary">{{ ui_t.adobe_cta_consult }}</a>
+          <a href="#process" class="adobe-btn adobe-btn-secondary">{{ ui_t.adobe_cta_process }}</a>
+        </div>
+        <div class="adobe-hero-meta">
+          <span>{{ ui_t.adobe_meta_1 }}</span>
+          <span>{{ ui_t.adobe_meta_2 }}</span>
+          <span>{{ ui_t.adobe_meta_3 }}</span>
+        </div>
+      </div>
+      <div class="adobe-hero-graphic">
+        <div class="adobe-graphic-header">
+          <span class="adobe-graphic-title">{{ ui_t.adobe_graphic_title }}</span>
+          <span class="adobe-status">{{ ui_t.adobe_graphic_status }}</span>
+        </div>
+        <div class="adobe-server-row">
+          <span class="adobe-server-label">{{ ui_t.adobe_row1_label }}</span>
+          <span class="adobe-server-value">{{ ui_t.adobe_row1_value }}</span>
+        </div>
+        <div class="adobe-server-row">
+          <span class="adobe-server-label">{{ ui_t.adobe_row2_label }}</span>
+          <span class="adobe-server-value">{{ ui_t.adobe_row2_value }}</span>
+        </div>
+        <div class="adobe-server-row">
+          <span class="adobe-server-label">{{ ui_t.adobe_row3_label }}</span>
+          <span class="adobe-server-value">{{ ui_t.adobe_row3_value }}</span>
+        </div>
+        <div class="adobe-server-row">
+          <span class="adobe-server-label">{{ ui_t.adobe_row4_label }}</span>
+          <span class="adobe-server-value">{{ ui_t.adobe_row4_value }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# FEATURES #}
+  <section class="adobe-section" id="features">
+    <div class="adobe-wrap">
+      <div class="adobe-section-head">
+        <div class="adobe-eyebrow">{{ ui_t.adobe_features_eyebrow }}</div>
+        <h2>{{ ui_t.adobe_features_title }}</h2>
+        <p>{{ ui_t.adobe_features_desc }}</p>
+      </div>
+      <div class="adobe-features">
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">01</div>
+          <h3>{{ ui_t.adobe_f1_title }}</h3>
+          <p>{{ ui_t.adobe_f1_desc }}</p>
+        </div>
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">02</div>
+          <h3>{{ ui_t.adobe_f2_title }}</h3>
+          <p>{{ ui_t.adobe_f2_desc }}</p>
+        </div>
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">03</div>
+          <h3>{{ ui_t.adobe_f3_title }}</h3>
+          <p>{{ ui_t.adobe_f3_desc }}</p>
+        </div>
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">04</div>
+          <h3>{{ ui_t.adobe_f4_title }}</h3>
+          <p>{{ ui_t.adobe_f4_desc }}</p>
+        </div>
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">05</div>
+          <h3>{{ ui_t.adobe_f5_title }}</h3>
+          <p>{{ ui_t.adobe_f5_desc }}</p>
+        </div>
+        <div class="adobe-feature">
+          <div class="adobe-feature-number">06</div>
+          <h3>{{ ui_t.adobe_f6_title }}</h3>
+          <p>{{ ui_t.adobe_f6_desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# OPTIONS #}
+  <section class="adobe-section" id="options">
+    <div class="adobe-wrap">
+      <div class="adobe-section-head">
+        <div class="adobe-eyebrow">{{ ui_t.adobe_options_eyebrow }}</div>
+        <h2>{{ ui_t.adobe_options_title }}</h2>
+        <p>{{ ui_t.adobe_options_desc }}</p>
+      </div>
+      <div class="adobe-options">
+        <div class="adobe-option">
+          <div class="adobe-option-label">{{ ui_t.adobe_opt1_label }}</div>
+          <h3>{{ ui_t.adobe_opt1_title }}</h3>
+          <p>{{ ui_t.adobe_opt1_desc }}</p>
+          <ul class="adobe-check-list">
+            <li>{{ ui_t.adobe_opt1_li1 }}</li>
+            <li>{{ ui_t.adobe_opt1_li2 }}</li>
+            <li>{{ ui_t.adobe_opt1_li3 }}</li>
+            <li>{{ ui_t.adobe_opt1_li4 }}</li>
+            <li>{{ ui_t.adobe_opt1_li5 }}</li>
+          </ul>
+        </div>
+        <div class="adobe-option">
+          <div class="adobe-option-label">{{ ui_t.adobe_opt2_label }}</div>
+          <h3>{{ ui_t.adobe_opt2_title }}</h3>
+          <p>{{ ui_t.adobe_opt2_desc }}</p>
+          <ul class="adobe-check-list">
+            <li>{{ ui_t.adobe_opt2_li1 }}</li>
+            <li>{{ ui_t.adobe_opt2_li2 }}</li>
+            <li>{{ ui_t.adobe_opt2_li3 }}</li>
+            <li>{{ ui_t.adobe_opt2_li4 }}</li>
+            <li>{{ ui_t.adobe_opt2_li5 }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# PROCESS #}
+  <section class="adobe-section" id="process">
+    <div class="adobe-wrap">
+      <div class="adobe-section-head">
+        <div class="adobe-eyebrow">{{ ui_t.adobe_process_eyebrow }}</div>
+        <h2>{{ ui_t.adobe_process_title }}</h2>
+        <p>{{ ui_t.adobe_process_desc }}</p>
+      </div>
+      <div class="adobe-process">
+        <div class="adobe-step">
+          <div class="adobe-step-number">{{ ui_t.adobe_step1_num }}</div>
+          <h3>{{ ui_t.adobe_step1_title }}</h3>
+          <p>{{ ui_t.adobe_step1_desc }}</p>
+        </div>
+        <div class="adobe-step">
+          <div class="adobe-step-number">{{ ui_t.adobe_step2_num }}</div>
+          <h3>{{ ui_t.adobe_step2_title }}</h3>
+          <p>{{ ui_t.adobe_step2_desc }}</p>
+        </div>
+        <div class="adobe-step">
+          <div class="adobe-step-number">{{ ui_t.adobe_step3_num }}</div>
+          <h3>{{ ui_t.adobe_step3_title }}</h3>
+          <p>{{ ui_t.adobe_step3_desc }}</p>
+        </div>
+        <div class="adobe-step">
+          <div class="adobe-step-number">{{ ui_t.adobe_step4_num }}</div>
+          <h3>{{ ui_t.adobe_step4_title }}</h3>
+          <p>{{ ui_t.adobe_step4_desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# PRICING #}
+  <section class="adobe-section" id="pricing">
+    <div class="adobe-wrap">
+      <div class="adobe-pricing">
+        <div class="adobe-pricing-grid">
+          <div>
+            <div class="adobe-eyebrow">{{ ui_t.adobe_pricing_eyebrow }}</div>
+            <h2>{{ ui_t.adobe_pricing_title }}</h2>
+            <p class="adobe-pricing-description">{{ ui_t.adobe_pricing_desc }}</p>
+            <div class="adobe-price-items">
+              <div><span>●</span> {{ ui_t.adobe_price_item1 }}</div>
+              <div><span>●</span> {{ ui_t.adobe_price_item2 }}</div>
+              <div><span>●</span> {{ ui_t.adobe_price_item3 }}</div>
+              <div><span>●</span> {{ ui_t.adobe_price_item4 }}</div>
+            </div>
+          </div>
+          <div class="adobe-price-box">
+            <div class="adobe-price-box-label">{{ ui_t.adobe_price_box_label }}</div>
+            <div class="adobe-price-box-title">{{ ui_t.adobe_price_box_title }}</div>
+            <p>{{ ui_t.adobe_price_box_desc }}</p>
+            <a href="{% url 'account:contact' %}" class="adobe-btn adobe-btn-primary">{{ ui_t.adobe_cta_quote }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# FAQ #}
+  <section class="adobe-section" id="faq">
+    <div class="adobe-wrap">
+      <div class="adobe-section-head">
+        <div class="adobe-eyebrow">{{ ui_t.adobe_faq_eyebrow }}</div>
+        <h2>{{ ui_t.adobe_faq_title }}</h2>
+      </div>
+      <div class="adobe-faq">
+        <div class="adobe-faq-item">
+          <button type="button" class="adobe-faq-question">
+            {{ ui_t.adobe_faq1_q }}
+            <span class="adobe-faq-symbol">+</span>
+          </button>
+          <div class="adobe-faq-answer">{{ ui_t.adobe_faq1_a }}</div>
+        </div>
+        <div class="adobe-faq-item">
+          <button type="button" class="adobe-faq-question">
+            {{ ui_t.adobe_faq2_q }}
+            <span class="adobe-faq-symbol">+</span>
+          </button>
+          <div class="adobe-faq-answer">{{ ui_t.adobe_faq2_a }}</div>
+        </div>
+        <div class="adobe-faq-item">
+          <button type="button" class="adobe-faq-question">
+            {{ ui_t.adobe_faq3_q }}
+            <span class="adobe-faq-symbol">+</span>
+          </button>
+          <div class="adobe-faq-answer">{{ ui_t.adobe_faq3_a }}</div>
+        </div>
+        <div class="adobe-faq-item">
+          <button type="button" class="adobe-faq-question">
+            {{ ui_t.adobe_faq4_q }}
+            <span class="adobe-faq-symbol">+</span>
+          </button>
+          <div class="adobe-faq-answer">{{ ui_t.adobe_faq4_a }}</div>
+        </div>
+        <div class="adobe-faq-item">
+          <button type="button" class="adobe-faq-question">
+            {{ ui_t.adobe_faq5_q }}
+            <span class="adobe-faq-symbol">+</span>
+          </button>
+          <div class="adobe-faq-answer">{{ ui_t.adobe_faq5_a }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# CTA #}
+  <section class="adobe-section" id="contact">
+    <div class="adobe-wrap">
+      <div class="adobe-cta">
+        <div class="adobe-eyebrow">{{ ui_t.adobe_cta_eyebrow }}</div>
+        <h2>{{ ui_t.adobe_cta_title }}</h2>
+        <p>{{ ui_t.adobe_cta_desc }}</p>
+        <div class="adobe-actions adobe-actions-center">
+          <a href="{% url 'account:contact' %}" class="adobe-btn adobe-btn-primary">{{ ui_t.adobe_cta_request }}</a>
+          <a href="{% url 'account:contact' %}" class="adobe-btn adobe-btn-secondary">{{ ui_t.adobe_cta_call }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "partials/footer.html" %}
+{% endblock %}

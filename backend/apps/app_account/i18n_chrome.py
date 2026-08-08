@@ -13,12 +13,559 @@ LANG_META = {
     "ar": {"dir": "rtl", "label": "العربية", "html_lang": "ar", "code": "SA"},
 }
 
+_ADOBE_FA = {
+    "adobe_title": "Adobe Connect اختصاصی | راهکار سازمانی",
+    "adobe_meta_desc": (
+        "راه‌اندازی و پیکربندی سرور اختصاصی Adobe Connect برای سازمان‌ها. "
+        "امکان تأمین سرور توسط شما یا ما، با پرداخت یک‌باره و مالکیت کامل زیرساخت."
+    ),
+    "adobe_eyebrow": "راهکار اختصاصی جلسات آنلاین",
+    "adobe_h1": "Adobe Connect",
+    "adobe_h1_span": "اختصاصی برای سازمان شما",
+    "adobe_hero_desc": (
+        "راه‌اندازی و پیکربندی Adobe Connect روی سرور اختصاصی شما. "
+        "سرور را از ما تهیه کنید یا زیرساخت خودتان را در اختیار ما قرار دهید؛ "
+        "ما نصب و راه‌اندازی فنی را انجام می‌دهیم."
+    ),
+    "adobe_cta_consult": "دریافت مشاوره و قیمت",
+    "adobe_cta_process": "نحوه اجرا",
+    "adobe_meta_1": "پرداخت یک‌باره",
+    "adobe_meta_2": "مالکیت کامل زیرساخت",
+    "adobe_meta_3": "بدون اشتراک ماهانه",
+    "adobe_graphic_title": "Private Adobe Connect",
+    "adobe_graphic_status": "Ready",
+    "adobe_row1_label": "سرور اختصاصی",
+    "adobe_row1_value": "Dedicated",
+    "adobe_row2_label": "نصب Adobe Connect",
+    "adobe_row2_value": "Configured",
+    "adobe_row3_label": "پیکربندی فنی",
+    "adobe_row3_value": "Optimized",
+    "adobe_row4_label": "تحویل به سازمان",
+    "adobe_row4_value": "Ready",
+    "adobe_features_eyebrow": "مزایای راهکار",
+    "adobe_features_title": "زیرساخت اختصاصی، بدون وابستگی به سرویس اشتراکی",
+    "adobe_features_desc": (
+        "محیط Adobe Connect شما روی زیرساختی اجرا می‌شود که خودتان مالک آن هستید "
+        "و کنترل آن در اختیار سازمان شما قرار دارد."
+    ),
+    "adobe_f1_title": "مالکیت زیرساخت",
+    "adobe_f1_desc": "سرور و تجهیزات متعلق به سازمان شماست و سرویس به شکل یک خرید یک‌باره راه‌اندازی می‌شود.",
+    "adobe_f2_title": "حریم خصوصی",
+    "adobe_f2_desc": "جلسات و اطلاعات سازمان روی زیرساخت اختصاصی شما قرار می‌گیرد.",
+    "adobe_f3_title": "پیکربندی متناسب",
+    "adobe_f3_desc": "منابع سرور و تنظیمات بر اساس تعداد کاربران و نوع استفاده انتخاب می‌شوند.",
+    "adobe_f4_title": "شبکه سازمانی",
+    "adobe_f4_desc": "امکان طراحی دسترسی برای شبکه داخلی، VPN یا دسترسی اینترنتی وجود دارد.",
+    "adobe_f5_title": "قابل توسعه",
+    "adobe_f5_desc": "زیرساخت در آینده می‌تواند متناسب با افزایش کاربران و نیازهای شما ارتقا پیدا کند.",
+    "adobe_f6_title": "خدمات فنی",
+    "adobe_f6_desc": "نصب، پیکربندی و آماده‌سازی اولیه توسط تیم فنی انجام می‌شود.",
+    "adobe_options_eyebrow": "انتخاب با شماست",
+    "adobe_options_title": "سرور را از ما تهیه کنید یا خودتان تأمین کنید",
+    "adobe_options_desc": "در هر دو حالت، نتیجه یک زیرساخت آماده بهره‌برداری و متناسب با نیاز سازمان شماست.",
+    "adobe_opt1_label": "گزینه اول",
+    "adobe_opt1_title": "تأمین سرور توسط ما",
+    "adobe_opt1_desc": (
+        "نیاز سازمان را بررسی می‌کنیم، مشخصات مناسب را پیشنهاد می‌دهیم "
+        "و سخت‌افزار را نیز برای شما تأمین می‌کنیم."
+    ),
+    "adobe_opt1_li1": "نیازسنجی و پیشنهاد مشخصات",
+    "adobe_opt1_li2": "تأمین سخت‌افزار",
+    "adobe_opt1_li3": "نصب Adobe Connect",
+    "adobe_opt1_li4": "پیکربندی و آماده‌سازی",
+    "adobe_opt1_li5": "تحویل زیرساخت",
+    "adobe_opt2_label": "گزینه دوم",
+    "adobe_opt2_title": "استفاده از سرور شما",
+    "adobe_opt2_desc": (
+        "اگر سازمان شما سرور مناسب دارد، می‌توانید از همان زیرساخت استفاده کنید "
+        "و فقط خدمات نصب و راه‌اندازی را به ما بسپارید."
+    ),
+    "adobe_opt2_li1": "بررسی مشخصات سرور",
+    "adobe_opt2_li2": "بررسی شرایط شبکه",
+    "adobe_opt2_li3": "نصب Adobe Connect",
+    "adobe_opt2_li4": "پیکربندی سرویس",
+    "adobe_opt2_li5": "تست و تحویل",
+    "adobe_process_eyebrow": "فرآیند اجرا",
+    "adobe_process_title": "ساده و مستقیم",
+    "adobe_process_desc": "از بررسی نیاز تا تحویل سرویس، مراحل اجرا با هماهنگی شما انجام می‌شود.",
+    "adobe_step1_num": "مرحله ۰۱",
+    "adobe_step1_title": "نیازسنجی",
+    "adobe_step1_desc": "تعداد کاربران، نحوه استفاده و شرایط شبکه بررسی می‌شود.",
+    "adobe_step2_num": "مرحله ۰۲",
+    "adobe_step2_title": "انتخاب زیرساخت",
+    "adobe_step2_desc": "سرور مناسب پیشنهاد می‌شود یا سرور موجود شما بررسی می‌گردد.",
+    "adobe_step3_num": "مرحله ۰۳",
+    "adobe_step3_title": "نصب و پیکربندی",
+    "adobe_step3_desc": "نصب و تنظیمات فنی Adobe Connect انجام می‌شود.",
+    "adobe_step4_num": "مرحله ۰۴",
+    "adobe_step4_title": "تحویل",
+    "adobe_step4_desc": "پس از بررسی نهایی، سرویس آماده استفاده به شما تحویل می‌شود.",
+    "adobe_pricing_eyebrow": "قیمت‌گذاری",
+    "adobe_pricing_title": "قیمت متناسب با زیرساخت شما",
+    "adobe_pricing_desc": (
+        "قیمت نهایی بر اساس مشخصات سخت‌افزار و خدمات مورد نیاز تعیین می‌شود. "
+        "بنابراین به‌جای قیمت ثابت، برای هر سازمان پیش‌فاکتور اختصاصی ارائه می‌کنیم."
+    ),
+    "adobe_price_item1": "هزینه سخت‌افزار، در صورت خرید از ما",
+    "adobe_price_item2": "هزینه نصب و راه‌اندازی",
+    "adobe_price_item3": "هزینه پیکربندی و آماده‌سازی",
+    "adobe_price_item4": "خدمات پشتیبانی، در صورت نیاز",
+    "adobe_price_box_label": "مدل پرداخت",
+    "adobe_price_box_title": "پرداخت یک‌باره",
+    "adobe_price_box_desc": "بدون اشتراک ماهانه. زیرساخت و سخت‌افزار متعلق به شماست.",
+    "adobe_cta_quote": "درخواست پیش‌فاکتور",
+    "adobe_faq_eyebrow": "سؤالات متداول",
+    "adobe_faq_title": "سؤالاتی که ممکن است داشته باشید",
+    "adobe_faq1_q": "آیا حتماً باید سرور را از شما خریداری کنم؟",
+    "adobe_faq1_a": (
+        "خیر. می‌توانید سرور مناسب را خودتان تهیه کنید. ما پس از بررسی زیرساخت، "
+        "نصب و پیکربندی Adobe Connect را انجام می‌دهیم."
+    ),
+    "adobe_faq2_q": "آیا هزینه به صورت ماهانه دریافت می‌شود؟",
+    "adobe_faq2_a": (
+        "خیر. هزینه اصلی راه‌اندازی به صورت یک‌باره دریافت می‌شود. "
+        "خدمات پشتیبانی و نگهداری، در صورت درخواست، می‌تواند جداگانه ارائه شود."
+    ),
+    "adobe_faq3_q": "مالک سرور و زیرساخت چه کسی است؟",
+    "adobe_faq3_a": (
+        "در این مدل، سرور و زیرساخت متعلق به مشتری است و ما خدمات نصب، "
+        "پیکربندی و راه‌اندازی را ارائه می‌کنیم."
+    ),
+    "adobe_faq4_q": "آیا می‌توان سرویس را در شبکه داخلی سازمان اجرا کرد؟",
+    "adobe_faq4_a": "بله. معماری دسترسی می‌تواند متناسب با شبکه داخلی، VPN یا دسترسی اینترنتی سازمان طراحی شود.",
+    "adobe_faq5_q": "برای دریافت قیمت چه اطلاعاتی لازم است؟",
+    "adobe_faq5_a": (
+        "تعداد کاربران همزمان، نوع استفاده، مشخصات سرور موجود و شرایط شبکه "
+        "به ما کمک می‌کند پیشنهاد فنی و قیمت دقیق‌تری ارائه کنیم."
+    ),
+    "adobe_cta_eyebrow": "شروع همکاری",
+    "adobe_cta_title": "برای راه‌اندازی زیرساخت خود آماده‌اید؟",
+    "adobe_cta_desc": (
+        "مشخصات سرور یا نیاز سازمانتان را با ما در میان بگذارید. "
+        "کارشناسان ما راهکار مناسب و برآورد هزینه را ارائه خواهند کرد."
+    ),
+    "adobe_cta_request": "درخواست مشاوره",
+    "adobe_cta_call": "تماس با ما",
+}
+
+_ADOBE_EN = {
+    "adobe_title": "Private Adobe Connect | Enterprise Solution",
+    "adobe_meta_desc": (
+        "Deploy and configure a dedicated Adobe Connect server for organizations. "
+        "We can supply the server or use yours, with one-time payment and full infrastructure ownership."
+    ),
+    "adobe_eyebrow": "Private online meeting solution",
+    "adobe_h1": "Adobe Connect",
+    "adobe_h1_span": "dedicated to your organization",
+    "adobe_hero_desc": (
+        "Deploy and configure Adobe Connect on your dedicated server. "
+        "Get the server from us or provide your own infrastructure; "
+        "we handle the technical installation and setup."
+    ),
+    "adobe_cta_consult": "Get consultation and pricing",
+    "adobe_cta_process": "How it works",
+    "adobe_meta_1": "One-time payment",
+    "adobe_meta_2": "Full infrastructure ownership",
+    "adobe_meta_3": "No monthly subscription",
+    "adobe_graphic_title": "Private Adobe Connect",
+    "adobe_graphic_status": "Ready",
+    "adobe_row1_label": "Dedicated server",
+    "adobe_row1_value": "Dedicated",
+    "adobe_row2_label": "Adobe Connect install",
+    "adobe_row2_value": "Configured",
+    "adobe_row3_label": "Technical configuration",
+    "adobe_row3_value": "Optimized",
+    "adobe_row4_label": "Handover to organization",
+    "adobe_row4_value": "Ready",
+    "adobe_features_eyebrow": "Solution benefits",
+    "adobe_features_title": "Private infrastructure, no shared-service dependency",
+    "adobe_features_desc": (
+        "Your Adobe Connect environment runs on infrastructure you own, "
+        "with control remaining in your organization's hands."
+    ),
+    "adobe_f1_title": "Infrastructure ownership",
+    "adobe_f1_desc": "Servers and equipment belong to your organization, delivered as a one-time purchase.",
+    "adobe_f2_title": "Privacy",
+    "adobe_f2_desc": "Meetings and organizational data stay on your dedicated infrastructure.",
+    "adobe_f3_title": "Tailored configuration",
+    "adobe_f3_desc": "Server resources and settings are chosen based on users and usage patterns.",
+    "adobe_f4_title": "Enterprise network",
+    "adobe_f4_desc": "Access can be designed for internal network, VPN, or internet connectivity.",
+    "adobe_f5_title": "Scalable",
+    "adobe_f5_desc": "Infrastructure can grow later as users and requirements increase.",
+    "adobe_f6_title": "Technical services",
+    "adobe_f6_desc": "Installation, configuration, and initial readiness are handled by our technical team.",
+    "adobe_options_eyebrow": "Your choice",
+    "adobe_options_title": "Get the server from us or supply your own",
+    "adobe_options_desc": "Either way, you get ready-to-use infrastructure tailored to your organization.",
+    "adobe_opt1_label": "Option one",
+    "adobe_opt1_title": "Server supplied by us",
+    "adobe_opt1_desc": (
+        "We assess your needs, recommend suitable specs, "
+        "and also supply the hardware for you."
+    ),
+    "adobe_opt1_li1": "Needs assessment and specs proposal",
+    "adobe_opt1_li2": "Hardware procurement",
+    "adobe_opt1_li3": "Adobe Connect installation",
+    "adobe_opt1_li4": "Configuration and readiness",
+    "adobe_opt1_li5": "Infrastructure handover",
+    "adobe_opt2_label": "Option two",
+    "adobe_opt2_title": "Use your server",
+    "adobe_opt2_desc": (
+        "If your organization already has a suitable server, you can use that infrastructure "
+        "and leave installation and setup to us."
+    ),
+    "adobe_opt2_li1": "Server specs review",
+    "adobe_opt2_li2": "Network conditions review",
+    "adobe_opt2_li3": "Adobe Connect installation",
+    "adobe_opt2_li4": "Service configuration",
+    "adobe_opt2_li5": "Testing and handover",
+    "adobe_process_eyebrow": "Delivery process",
+    "adobe_process_title": "Simple and direct",
+    "adobe_process_desc": "From needs assessment to service handover, we work in coordination with you.",
+    "adobe_step1_num": "Step 01",
+    "adobe_step1_title": "Needs assessment",
+    "adobe_step1_desc": "User count, usage patterns, and network conditions are reviewed.",
+    "adobe_step2_num": "Step 02",
+    "adobe_step2_title": "Infrastructure selection",
+    "adobe_step2_desc": "A suitable server is proposed, or your existing server is reviewed.",
+    "adobe_step3_num": "Step 03",
+    "adobe_step3_title": "Install and configure",
+    "adobe_step3_desc": "Adobe Connect is installed and technically configured.",
+    "adobe_step4_num": "Step 04",
+    "adobe_step4_title": "Handover",
+    "adobe_step4_desc": "After final review, the ready-to-use service is delivered to you.",
+    "adobe_pricing_eyebrow": "Pricing",
+    "adobe_pricing_title": "Pricing matched to your infrastructure",
+    "adobe_pricing_desc": (
+        "Final pricing depends on hardware specs and required services. "
+        "Instead of a fixed price, we provide a custom quotation for each organization."
+    ),
+    "adobe_price_item1": "Hardware cost, if purchased from us",
+    "adobe_price_item2": "Installation and setup cost",
+    "adobe_price_item3": "Configuration and readiness cost",
+    "adobe_price_item4": "Support services, if needed",
+    "adobe_price_box_label": "Payment model",
+    "adobe_price_box_title": "One-time payment",
+    "adobe_price_box_desc": "No monthly subscription. Infrastructure and hardware belong to you.",
+    "adobe_cta_quote": "Request a quotation",
+    "adobe_faq_eyebrow": "FAQ",
+    "adobe_faq_title": "Questions you may have",
+    "adobe_faq1_q": "Do I have to buy the server from you?",
+    "adobe_faq1_a": (
+        "No. You can procure a suitable server yourself. After reviewing the infrastructure, "
+        "we install and configure Adobe Connect."
+    ),
+    "adobe_faq2_q": "Is there a monthly fee?",
+    "adobe_faq2_a": (
+        "No. The main setup cost is one-time. "
+        "Support and maintenance can be provided separately on request."
+    ),
+    "adobe_faq3_q": "Who owns the server and infrastructure?",
+    "adobe_faq3_a": (
+        "In this model, the server and infrastructure belong to the customer. "
+        "We provide installation, configuration, and setup services."
+    ),
+    "adobe_faq4_q": "Can the service run on the internal network?",
+    "adobe_faq4_a": "Yes. Access architecture can be designed for internal network, VPN, or internet access.",
+    "adobe_faq5_q": "What information is needed for pricing?",
+    "adobe_faq5_a": (
+        "Concurrent users, usage type, existing server specs, and network conditions "
+        "help us provide a more accurate technical proposal and price."
+    ),
+    "adobe_cta_eyebrow": "Get started",
+    "adobe_cta_title": "Ready to set up your infrastructure?",
+    "adobe_cta_desc": (
+        "Share your server specs or organizational needs with us. "
+        "Our specialists will provide a suitable solution and cost estimate."
+    ),
+    "adobe_cta_request": "Request consultation",
+    "adobe_cta_call": "Contact us",
+}
+
+_ADOBE_FR = {
+    "adobe_title": "Adobe Connect privé | Solution entreprise",
+    "adobe_meta_desc": (
+        "Déploiement et configuration d’un serveur Adobe Connect dédié pour les organisations. "
+        "Serveur fourni par nous ou par vous, paiement unique et propriété complète de l’infrastructure."
+    ),
+    "adobe_eyebrow": "Solution privée de réunions en ligne",
+    "adobe_h1": "Adobe Connect",
+    "adobe_h1_span": "dédié à votre organisation",
+    "adobe_hero_desc": (
+        "Déployez et configurez Adobe Connect sur votre serveur dédié. "
+        "Obtenez le serveur auprès de nous ou fournissez votre infrastructure ; "
+        "nous gérons l’installation et la mise en service techniques."
+    ),
+    "adobe_cta_consult": "Obtenir un conseil et un tarif",
+    "adobe_cta_process": "Comment ça marche",
+    "adobe_meta_1": "Paiement unique",
+    "adobe_meta_2": "Propriété complète de l’infrastructure",
+    "adobe_meta_3": "Sans abonnement mensuel",
+    "adobe_graphic_title": "Private Adobe Connect",
+    "adobe_graphic_status": "Ready",
+    "adobe_row1_label": "Serveur dédié",
+    "adobe_row1_value": "Dedicated",
+    "adobe_row2_label": "Installation Adobe Connect",
+    "adobe_row2_value": "Configured",
+    "adobe_row3_label": "Configuration technique",
+    "adobe_row3_value": "Optimized",
+    "adobe_row4_label": "Remise à l’organisation",
+    "adobe_row4_value": "Ready",
+    "adobe_features_eyebrow": "Avantages de la solution",
+    "adobe_features_title": "Infrastructure privée, sans dépendance à un service partagé",
+    "adobe_features_desc": (
+        "Votre environnement Adobe Connect s’exécute sur une infrastructure que vous possédez, "
+        "sous le contrôle de votre organisation."
+    ),
+    "adobe_f1_title": "Propriété de l’infrastructure",
+    "adobe_f1_desc": "Serveurs et équipements appartiennent à votre organisation, livrés en achat unique.",
+    "adobe_f2_title": "Confidentialité",
+    "adobe_f2_desc": "Réunions et données restent sur votre infrastructure dédiée.",
+    "adobe_f3_title": "Configuration adaptée",
+    "adobe_f3_desc": "Ressources et réglages choisis selon le nombre d’utilisateurs et l’usage.",
+    "adobe_f4_title": "Réseau d’entreprise",
+    "adobe_f4_desc": "Accès possible via réseau interne, VPN ou Internet.",
+    "adobe_f5_title": "Évolutif",
+    "adobe_f5_desc": "L’infrastructure peut évoluer avec la croissance des utilisateurs et des besoins.",
+    "adobe_f6_title": "Services techniques",
+    "adobe_f6_desc": "Installation, configuration et mise en service initiale par notre équipe technique.",
+    "adobe_options_eyebrow": "À vous de choisir",
+    "adobe_options_title": "Serveur fourni par nous ou par vous",
+    "adobe_options_desc": "Dans les deux cas, vous obtenez une infrastructure prête à l’emploi et adaptée.",
+    "adobe_opt1_label": "Option 1",
+    "adobe_opt1_title": "Serveur fourni par nous",
+    "adobe_opt1_desc": (
+        "Nous analysons vos besoins, proposons des spécifications adaptées "
+        "et fournissons aussi le matériel."
+    ),
+    "adobe_opt1_li1": "Analyse des besoins et proposition de specs",
+    "adobe_opt1_li2": "Fourniture du matériel",
+    "adobe_opt1_li3": "Installation Adobe Connect",
+    "adobe_opt1_li4": "Configuration et préparation",
+    "adobe_opt1_li5": "Remise de l’infrastructure",
+    "adobe_opt2_label": "Option 2",
+    "adobe_opt2_title": "Utiliser votre serveur",
+    "adobe_opt2_desc": (
+        "Si votre organisation dispose déjà d’un serveur adapté, vous pouvez l’utiliser "
+        "et nous confier uniquement l’installation et la mise en service."
+    ),
+    "adobe_opt2_li1": "Revue des spécifications serveur",
+    "adobe_opt2_li2": "Revue des conditions réseau",
+    "adobe_opt2_li3": "Installation Adobe Connect",
+    "adobe_opt2_li4": "Configuration du service",
+    "adobe_opt2_li5": "Tests et remise",
+    "adobe_process_eyebrow": "Processus de mise en œuvre",
+    "adobe_process_title": "Simple et direct",
+    "adobe_process_desc": "De l’analyse des besoins à la remise du service, en coordination avec vous.",
+    "adobe_step1_num": "Étape 01",
+    "adobe_step1_title": "Analyse des besoins",
+    "adobe_step1_desc": "Nombre d’utilisateurs, usages et conditions réseau sont examinés.",
+    "adobe_step2_num": "Étape 02",
+    "adobe_step2_title": "Choix de l’infrastructure",
+    "adobe_step2_desc": "Un serveur adapté est proposé, ou votre serveur existant est examiné.",
+    "adobe_step3_num": "Étape 03",
+    "adobe_step3_title": "Installation et configuration",
+    "adobe_step3_desc": "Adobe Connect est installé et configuré techniquement.",
+    "adobe_step4_num": "Étape 04",
+    "adobe_step4_title": "Remise",
+    "adobe_step4_desc": "Après vérification finale, le service prêt à l’emploi vous est remis.",
+    "adobe_pricing_eyebrow": "Tarification",
+    "adobe_pricing_title": "Un tarif adapté à votre infrastructure",
+    "adobe_pricing_desc": (
+        "Le prix final dépend des spécifications matérielles et des services requis. "
+        "Au lieu d’un prix fixe, nous établissons un devis personnalisé."
+    ),
+    "adobe_price_item1": "Coût du matériel, si acheté chez nous",
+    "adobe_price_item2": "Coût d’installation et de mise en service",
+    "adobe_price_item3": "Coût de configuration et de préparation",
+    "adobe_price_item4": "Services de support, si nécessaire",
+    "adobe_price_box_label": "Modèle de paiement",
+    "adobe_price_box_title": "Paiement unique",
+    "adobe_price_box_desc": "Sans abonnement mensuel. Infrastructure et matériel vous appartiennent.",
+    "adobe_cta_quote": "Demander un devis",
+    "adobe_faq_eyebrow": "FAQ",
+    "adobe_faq_title": "Questions fréquentes",
+    "adobe_faq1_q": "Dois-je obligatoirement acheter le serveur chez vous ?",
+    "adobe_faq1_a": (
+        "Non. Vous pouvez fournir un serveur adapté. Après examen de l’infrastructure, "
+        "nous installons et configurons Adobe Connect."
+    ),
+    "adobe_faq2_q": "Y a-t-il des frais mensuels ?",
+    "adobe_faq2_a": (
+        "Non. Le coût principal de mise en service est unique. "
+        "Support et maintenance peuvent être proposés séparément sur demande."
+    ),
+    "adobe_faq3_q": "Qui possède le serveur et l’infrastructure ?",
+    "adobe_faq3_a": (
+        "Dans ce modèle, le serveur et l’infrastructure appartiennent au client. "
+        "Nous fournissons installation, configuration et mise en service."
+    ),
+    "adobe_faq4_q": "Le service peut-il tourner sur le réseau interne ?",
+    "adobe_faq4_a": "Oui. L’architecture d’accès peut être conçue pour réseau interne, VPN ou Internet.",
+    "adobe_faq5_q": "Quelles informations sont nécessaires pour le tarif ?",
+    "adobe_faq5_a": (
+        "Utilisateurs simultanés, type d’usage, specs du serveur existant et conditions réseau "
+        "nous aident à proposer une solution et un prix plus précis."
+    ),
+    "adobe_cta_eyebrow": "Démarrer",
+    "adobe_cta_title": "Prêt à déployer votre infrastructure ?",
+    "adobe_cta_desc": (
+        "Partagez vos specs serveur ou les besoins de votre organisation. "
+        "Nos experts proposeront une solution adaptée et une estimation."
+    ),
+    "adobe_cta_request": "Demander un conseil",
+    "adobe_cta_call": "Nous contacter",
+}
+
+_ADOBE_AR = {
+    "adobe_title": "Adobe Connect خاص | حل مؤسسي",
+    "adobe_meta_desc": (
+        "إعداد وتكوين خادم Adobe Connect مخصص للمؤسسات. "
+        "يمكن توفير الخادم من طرفنا أو من طرفكم، بدفع لمرة واحدة وملكية كاملة للبنية التحتية."
+    ),
+    "adobe_eyebrow": "حل خاص للاجتماعات عبر الإنترنت",
+    "adobe_h1": "Adobe Connect",
+    "adobe_h1_span": "مخصص لمؤسستك",
+    "adobe_hero_desc": (
+        "إعداد وتكوين Adobe Connect على خادمك المخصص. "
+        "احصل على الخادم منا أو وفّر بنيتك التحتية؛ "
+        "ونحن نتولى التثبيت والإعداد الفني."
+    ),
+    "adobe_cta_consult": "احصل على استشارة وسعر",
+    "adobe_cta_process": "طريقة التنفيذ",
+    "adobe_meta_1": "دفع لمرة واحدة",
+    "adobe_meta_2": "ملكية كاملة للبنية التحتية",
+    "adobe_meta_3": "بدون اشتراك شهري",
+    "adobe_graphic_title": "Private Adobe Connect",
+    "adobe_graphic_status": "Ready",
+    "adobe_row1_label": "خادم مخصص",
+    "adobe_row1_value": "Dedicated",
+    "adobe_row2_label": "تثبيت Adobe Connect",
+    "adobe_row2_value": "Configured",
+    "adobe_row3_label": "تكوين فني",
+    "adobe_row3_value": "Optimized",
+    "adobe_row4_label": "التسليم للمؤسسة",
+    "adobe_row4_value": "Ready",
+    "adobe_features_eyebrow": "مزايا الحل",
+    "adobe_features_title": "بنية تحتية خاصة دون اعتماد على خدمة مشتركة",
+    "adobe_features_desc": (
+        "بيئة Adobe Connect لديك تعمل على بنية تحتية تملكها أنت، "
+        "والتحكم يبقى بيد مؤسستك."
+    ),
+    "adobe_f1_title": "ملكية البنية التحتية",
+    "adobe_f1_desc": "الخادم والمعدات تخص مؤسستك ويتم الإعداد كشراء لمرة واحدة.",
+    "adobe_f2_title": "الخصوصية",
+    "adobe_f2_desc": "الاجتماعات وبيانات المؤسسة تبقى على بنيتك التحتية المخصصة.",
+    "adobe_f3_title": "تكوين مناسب",
+    "adobe_f3_desc": "موارد الخادم والإعدادات تُختار حسب عدد المستخدمين ونوع الاستخدام.",
+    "adobe_f4_title": "شبكة المؤسسة",
+    "adobe_f4_desc": "يمكن تصميم الوصول للشبكة الداخلية أو VPN أو الإنترنت.",
+    "adobe_f5_title": "قابل للتوسع",
+    "adobe_f5_desc": "يمكن تطوير البنية لاحقًا مع زيادة المستخدمين والاحتياجات.",
+    "adobe_f6_title": "خدمات فنية",
+    "adobe_f6_desc": "التثبيت والتكوين والتجهيز الأولي ينفذه الفريق الفني.",
+    "adobe_options_eyebrow": "الخيار لك",
+    "adobe_options_title": "احصل على الخادم منا أو وفّره بنفسك",
+    "adobe_options_desc": "في الحالتين تحصل على بنية جاهزة للاستخدام ومناسبة لاحتياجات مؤسستك.",
+    "adobe_opt1_label": "الخيار الأول",
+    "adobe_opt1_title": "توفير الخادم من طرفنا",
+    "adobe_opt1_desc": (
+        "نراجع احتياجات المؤسسة ونقترح المواصفات المناسبة "
+        "ونوفّر الأجهزة أيضًا."
+    ),
+    "adobe_opt1_li1": "تقييم الاحتياجات واقتراح المواصفات",
+    "adobe_opt1_li2": "توفير الأجهزة",
+    "adobe_opt1_li3": "تثبيت Adobe Connect",
+    "adobe_opt1_li4": "التكوين والتجهيز",
+    "adobe_opt1_li5": "تسليم البنية التحتية",
+    "adobe_opt2_label": "الخيار الثاني",
+    "adobe_opt2_title": "استخدام خادمك",
+    "adobe_opt2_desc": (
+        "إذا كانت لدى مؤسستك خادم مناسب، يمكن استخدامه "
+        "وإسناد التثبيت والإعداد إلينا فقط."
+    ),
+    "adobe_opt2_li1": "مراجعة مواصفات الخادم",
+    "adobe_opt2_li2": "مراجعة ظروف الشبكة",
+    "adobe_opt2_li3": "تثبيت Adobe Connect",
+    "adobe_opt2_li4": "تكوين الخدمة",
+    "adobe_opt2_li5": "الاختبار والتسليم",
+    "adobe_process_eyebrow": "عملية التنفيذ",
+    "adobe_process_title": "بسيطة ومباشرة",
+    "adobe_process_desc": "من تقييم الاحتياجات حتى تسليم الخدمة، نعمل بالتنسيق معكم.",
+    "adobe_step1_num": "المرحلة ٠١",
+    "adobe_step1_title": "تقييم الاحتياجات",
+    "adobe_step1_desc": "يُراجع عدد المستخدمين وطريقة الاستخدام وظروف الشبكة.",
+    "adobe_step2_num": "المرحلة ٠٢",
+    "adobe_step2_title": "اختيار البنية التحتية",
+    "adobe_step2_desc": "يُقترح خادم مناسب أو يُراجع خادمك الحالي.",
+    "adobe_step3_num": "المرحلة ٠٣",
+    "adobe_step3_title": "التثبيت والتكوين",
+    "adobe_step3_desc": "يتم تثبيت Adobe Connect وضبطه فنيًا.",
+    "adobe_step4_num": "المرحلة ٠٤",
+    "adobe_step4_title": "التسليم",
+    "adobe_step4_desc": "بعد المراجعة النهائية تُسلَّم الخدمة جاهزة للاستخدام.",
+    "adobe_pricing_eyebrow": "التسعير",
+    "adobe_pricing_title": "سعر يتناسب مع بنيتك التحتية",
+    "adobe_pricing_desc": (
+        "يُحدد السعر النهائي حسب مواصفات الأجهزة والخدمات المطلوبة. "
+        "بدلًا من سعر ثابت نقدّم عرض سعر مخصص لكل مؤسسة."
+    ),
+    "adobe_price_item1": "تكلفة الأجهزة عند الشراء منا",
+    "adobe_price_item2": "تكلفة التثبيت والإعداد",
+    "adobe_price_item3": "تكلفة التكوين والتجهيز",
+    "adobe_price_item4": "خدمات الدعم عند الحاجة",
+    "adobe_price_box_label": "نموذج الدفع",
+    "adobe_price_box_title": "دفع لمرة واحدة",
+    "adobe_price_box_desc": "بدون اشتراك شهري. البنية التحتية والأجهزة ملكك.",
+    "adobe_cta_quote": "طلب عرض سعر",
+    "adobe_faq_eyebrow": "الأسئلة الشائعة",
+    "adobe_faq_title": "أسئلة قد تخطر ببالك",
+    "adobe_faq1_q": "هل يجب شراء الخادم منكم بالضرورة؟",
+    "adobe_faq1_a": (
+        "لا. يمكنك توفير خادم مناسب بنفسك. بعد مراجعة البنية التحتية "
+        "نقوم بتثبيت وتكوين Adobe Connect."
+    ),
+    "adobe_faq2_q": "هل تُحصَّل الرسوم شهريًا؟",
+    "adobe_faq2_a": (
+        "لا. تكلفة الإعداد الأساسية لمرة واحدة. "
+        "خدمات الدعم والصيانة يمكن تقديمها بشكل منفصل عند الطلب."
+    ),
+    "adobe_faq3_q": "من يملك الخادم والبنية التحتية؟",
+    "adobe_faq3_a": (
+        "في هذا النموذج الخادم والبنية التحتية ملك العميل، "
+        "ونحن نقدّم خدمات التثبيت والتكوين والإعداد."
+    ),
+    "adobe_faq4_q": "هل يمكن تشغيل الخدمة على الشبكة الداخلية؟",
+    "adobe_faq4_a": "نعم. يمكن تصميم بنية الوصول للشبكة الداخلية أو VPN أو الإنترنت.",
+    "adobe_faq5_q": "ما المعلومات اللازمة للحصول على السعر؟",
+    "adobe_faq5_a": (
+        "عدد المستخدمين المتزامنين ونوع الاستخدام ومواصفات الخادم الحالي وظروف الشبكة "
+        "تساعدنا على تقديم اقتراح فني وسعر أدق."
+    ),
+    "adobe_cta_eyebrow": "بدء التعاون",
+    "adobe_cta_title": "هل أنتم مستعدون لإعداد بنيتكم التحتية؟",
+    "adobe_cta_desc": (
+        "شاركونا مواصفات الخادم أو احتياجات مؤسستكم. "
+        "سيقدّم خبراؤنا الحل المناسب وتقدير التكلفة."
+    ),
+    "adobe_cta_request": "طلب استشارة",
+    "adobe_cta_call": "اتصل بنا",
+}
+
 STRINGS = {
     "fa": {
         "nav_home": "صفحه اصلی",
         "nav_learn": "آموزش",
         "nav_download": "مرکز دانلود",
         "nav_adobe": "ادوب کانکت",
+        "nav_adobe_sections": "بخش‌های ادوب کانکت",
+        "nav_adobe_features": "مزایا",
+        "nav_adobe_options": "روش اجرا",
+        "nav_adobe_process": "مراحل",
+        "nav_adobe_pricing": "قیمت",
+        "nav_adobe_faq": "سؤالات متداول",
+        "nav_adobe_consult": "مشاوره",
         "nav_finance": "سرمایه‌گذاری",
         "nav_faq": "سؤالات متداول",
         "nav_resume": "رزومه",
@@ -39,12 +586,20 @@ STRINGS = {
         "home_login": "ورود",
         "home_signup": "ثبت‌نام",
         "resume_empty": "هنوز محتوایی از پنل مدیریت ثبت نشده است.",
+        **_ADOBE_FA,
     },
     "en": {
         "nav_home": "Main Page",
         "nav_learn": "Learn",
         "nav_download": "Download Center",
         "nav_adobe": "Adobe Connect",
+        "nav_adobe_sections": "Adobe Connect sections",
+        "nav_adobe_features": "Benefits",
+        "nav_adobe_options": "Delivery options",
+        "nav_adobe_process": "Steps",
+        "nav_adobe_pricing": "Pricing",
+        "nav_adobe_faq": "FAQ",
+        "nav_adobe_consult": "Consultation",
         "nav_finance": "Finance",
         "nav_faq": "FAQ",
         "nav_resume": "Resume",
@@ -65,12 +620,20 @@ STRINGS = {
         "home_login": "Login",
         "home_signup": "Sign up",
         "resume_empty": "No content has been published yet.",
+        **_ADOBE_EN,
     },
     "fr": {
         "nav_home": "Accueil",
         "nav_learn": "Apprendre",
         "nav_download": "Centre de téléchargement",
         "nav_adobe": "Adobe Connect",
+        "nav_adobe_sections": "Sections Adobe Connect",
+        "nav_adobe_features": "Avantages",
+        "nav_adobe_options": "Mode d’exécution",
+        "nav_adobe_process": "Étapes",
+        "nav_adobe_pricing": "Tarif",
+        "nav_adobe_faq": "FAQ",
+        "nav_adobe_consult": "Conseil",
         "nav_finance": "Finance",
         "nav_faq": "FAQ",
         "nav_resume": "CV",
@@ -91,12 +654,20 @@ STRINGS = {
         "home_login": "Connexion",
         "home_signup": "Inscription",
         "resume_empty": "Aucun contenu n’a encore été publié.",
+        **_ADOBE_FR,
     },
     "ar": {
         "nav_home": "الصفحة الرئيسية",
         "nav_learn": "التعلم",
         "nav_download": "مركز التحميل",
         "nav_adobe": "أدوب كونكت",
+        "nav_adobe_sections": "أقسام أدوب كونكت",
+        "nav_adobe_features": "المزايا",
+        "nav_adobe_options": "طريقة التنفيذ",
+        "nav_adobe_process": "المراحل",
+        "nav_adobe_pricing": "السعر",
+        "nav_adobe_faq": "الأسئلة الشائعة",
+        "nav_adobe_consult": "استشارة",
         "nav_finance": "الاستثمار",
         "nav_faq": "الأسئلة الشائعة",
         "nav_resume": "السيرة الذاتية",
@@ -117,6 +688,7 @@ STRINGS = {
         "home_login": "تسجيل الدخول",
         "home_signup": "إنشاء حساب",
         "resume_empty": "لم يُنشر أي محتوى بعد.",
+        **_ADOBE_AR,
     },
 }
 

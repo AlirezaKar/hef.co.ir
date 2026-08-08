@@ -102,7 +102,7 @@ def set_language_view(request):
 
 @require_http_methods(["GET"])
 def adobe_connect_view(request):
-    return render(request, "account/stub.html", {"stub_key": "adobe"})
+    return render(request, "account/adobe_connect.html")
 
 
 @require_http_methods(["GET"])
