@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "tinymce",
     "parler",
+    "apps.app_main.apps.AppMainConfig",
     "apps.app_account.apps.AppAccountConfig",
     "apps.app_finance.apps.AppFinanceConfig",
     "apps.app_learn.apps.AppLearnConfig",
@@ -71,7 +72,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "apps.app_account.middleware.UILanguageMiddleware",
+    "apps.app_main.middleware.UILanguageMiddleware",
     "apps.app_account.middleware.ClickTrackingMiddleware",
     "config.middleware.FriendlyErrorMiddleware",
 ]
@@ -89,7 +90,7 @@ TEMPLATES = [
                 "django.template.context_processors.media",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "apps.app_account.context_processors.chrome_i18n",
+                "apps.app_main.context_processors.chrome_i18n",
             ],
         },
     },
@@ -258,8 +259,8 @@ _history_root = os.getenv("HISTORY_ROOT", "").strip()
 HISTORY_ROOT = Path(_history_root) if _history_root else (PROJECT_ROOT / "data" / "History")
 
 LOGIN_URL = "account:login"
-LOGIN_REDIRECT_URL = "account:home"
-LOGOUT_REDIRECT_URL = "account:home"
+LOGIN_REDIRECT_URL = "main:home"
+LOGOUT_REDIRECT_URL = "main:home"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

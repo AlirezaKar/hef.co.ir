@@ -16,14 +16,12 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.app_account.models import (
-    AboutPage,
     LoginAttempt,
     PageVisit,
-    ResumePage,
-    SiteContent,
     TradingAccount,
     User,
 )
+from apps.app_main.models import AboutPage, ResumePage, SiteContent
 
 try:
     from tqdm import tqdm
@@ -75,11 +73,11 @@ SITE_CONTENT_POOL = {
 }
 
 PAGE_ROUTES = [
-    ("/", "account:home", "صفحه اصلی"),
-    ("/about/", "account:about", "درباره ما"),
-    ("/faq/", "account:faq", "سؤالات متداول"),
-    ("/contact/", "account:contact", "تماس با ما"),
-    ("/resume/", "account:resume", "رزومه"),
+    ("/", "main:home", "صفحه اصلی"),
+    ("/about/", "main:about", "درباره ما"),
+    ("/faq/", "main:faq", "سؤالات متداول"),
+    ("/contact/", "main:contact", "تماس با ما"),
+    ("/resume/", "main:resume", "رزومه"),
     ("/login/", "account:login", "ورود"),
     ("/signup/", "account:signup", "ثبت‌نام"),
     ("/profile/", "account:profile", "پروفایل"),

@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="site-navbar">
   <div class="site-navbar-inner">
-    <a class="site-brand" href="{% url 'account:home' %}">
+    <a class="site-brand" href="{% url 'main:home' %}">
       <span class="site-brand-mark">
         <img
           src="{% static 'img/landing/logo.png' %}?v=6"
@@ -14,7 +14,7 @@
 
     <ul class="site-nav-links">
       <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'landing' %}is-active{% endif %}" href="{% url 'account:home' %}">{{ ui_t.nav_home }}</a>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'landing' %}is-active{% endif %}" href="{% url 'main:home' %}">{{ ui_t.nav_home }}</a>
       </li>
       <li >
         <a  class="site-nav-link {% if request.resolver_match.app_name == 'learn' %}is-active{% endif %}" href="{% url 'learn:index' %}">{{ ui_t.nav_learn }}</a>
@@ -25,7 +25,7 @@
       <li class="site-nav-dropdown">
         <a
           class="site-nav-link site-nav-dropdown-link {% if request.resolver_match.url_name == 'adobe_connect' %}is-active{% endif %}"
-          href="{% url 'account:adobe_connect' %}"
+          href="{% url 'main:adobe_connect' %}"
           aria-haspopup="true"
         >
           <span>{{ ui_t.nav_adobe }}</span>
@@ -33,23 +33,23 @@
         </a>
         <ul class="site-nav-submenu" role="menu" aria-label="{{ ui_t.nav_adobe_sections }}">
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#features">{{ ui_t.nav_adobe_features }}</a>
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'main:adobe_connect' %}#features">{{ ui_t.nav_adobe_features }}</a>
           </li>
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#options">{{ ui_t.nav_adobe_options }}</a>
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'main:adobe_connect' %}#options">{{ ui_t.nav_adobe_options }}</a>
           </li>
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#process">{{ ui_t.nav_adobe_process }}</a>
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'main:adobe_connect' %}#process">{{ ui_t.nav_adobe_process }}</a>
           </li>
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#pricing">{{ ui_t.nav_adobe_pricing }}</a>
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'main:adobe_connect' %}#pricing">{{ ui_t.nav_adobe_pricing }}</a>
           </li>
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink" href="{% url 'account:adobe_connect' %}#faq">{{ ui_t.nav_adobe_faq }}</a>
+            <a role="menuitem" class="site-nav-sublink" href="{% url 'main:adobe_connect' %}#faq">{{ ui_t.nav_adobe_faq }}</a>
           </li>
           <li class="site-nav-submenu-divider" role="separator"></li>
           <li role="none">
-            <a role="menuitem" class="site-nav-sublink site-nav-sublink-accent" href="{% url 'account:adobe_connect' %}#contact">{{ ui_t.nav_adobe_consult }}</a>
+            <a role="menuitem" class="site-nav-sublink site-nav-sublink-accent" href="{% url 'main:adobe_connect' %}#contact">{{ ui_t.nav_adobe_consult }}</a>
           </li>
         </ul>
       </li>
@@ -57,16 +57,16 @@
         <a  class="site-nav-link {% if request.resolver_match.app_name == 'finance' and request.resolver_match.url_name == 'hub' %}is-active{% endif %}" href="{% url 'finance:hub' %}">{{ ui_t.nav_finance }}</a>
       </li>
       <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'faq' %}is-active{% endif %}" href="{% url 'account:faq' %}">{{ ui_t.nav_faq }}</a>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'faq' %}is-active{% endif %}" href="{% url 'main:faq' %}">{{ ui_t.nav_faq }}</a>
       </li>
       <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'resume' %}is-active{% endif %}" href="{% url 'account:resume' %}">{{ ui_t.nav_resume }}</a>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'resume' %}is-active{% endif %}" href="{% url 'main:resume' %}">{{ ui_t.nav_resume }}</a>
       </li>
       <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}" href="{% url 'account:about' %}">{{ ui_t.nav_about }}</a>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'about' %}is-active{% endif %}" href="{% url 'main:about' %}">{{ ui_t.nav_about }}</a>
       </li>
       <li>
-        <a class="site-nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}" href="{% url 'account:contact' %}">{{ ui_t.nav_contact }}</a>
+        <a class="site-nav-link {% if request.resolver_match.url_name == 'contact' %}is-active{% endif %}" href="{% url 'main:contact' %}">{{ ui_t.nav_contact }}</a>
       </li>
     </ul>
 
@@ -104,7 +104,7 @@
             <li>
               <a
                 class="dropdown-item nav-lang-item {% if lang.code == ui_lang %}active{% endif %}"
-                href="{% url 'account:set_language' %}?lang={{ lang.code }}&next={{ request.get_full_path|urlencode }}"
+                href="{% url 'main:set_language' %}?lang={{ lang.code }}&next={{ request.get_full_path|urlencode }}"
               >
                 <span class="nav-lang-region">{{ lang.region }}</span>
                 <span class="nav-lang-name">{{ lang.label }}</span>

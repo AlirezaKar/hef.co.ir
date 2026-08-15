@@ -19,8 +19,11 @@ Persian Django portal for viewing pre-generated trading history `.htm` files.
 hef.co.ir/
   backend/           # Django project
     apps/
-      app_account/   # users, auth, landing/about, FAQ, contact, visits, trading accounts
-      app_report/    # home + history loading
+      app_main/      # public pages, CMS (About/FAQ/Contact/Resume), UI language
+      app_account/   # users, auth, trading accounts, page visits
+      app_finance/   # trading history
+      app_learn/
+      app_download/
     media/
     templates/
   data/History/History-{trading_acc_username}/
@@ -250,7 +253,7 @@ Users create or link **trading accounts**. Superusers see **all** trading accoun
 
 ## Content & tracking
 
-- **About / Resume / FAQ / Contact cards**: editable per language (FA / EN / FR / AR) in Django admin via **django-parler** language tabs. Existing Persian content was migrated as the default (`fa`). Adobe Connect and Download Center are separate (chrome strings / download app) and are not managed by parler.
+- **About / Resume / FAQ / Contact cards**: editable per language (FA / EN / FR / AR) in Django admin (`app_main`, django-parler tabs). Existing Persian content was migrated as the default (`fa`). Adobe Connect chrome strings live in `app_main.i18n_chrome`; Download Center is separate.
 - **About (landing + `/about/`)**: Django admin → **صفحه درباره ما** (TinyMCE per language).
 - **FAQ / Contact**: **Site content** items (translate `key` / `value` per language).
 - **Page visits**: path, URL name, and Persian page label are stored (`PageVisit`).

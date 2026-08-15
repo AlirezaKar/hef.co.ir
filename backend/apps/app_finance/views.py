@@ -117,7 +117,7 @@ def _open_account_index(request, account: TradingAccount):
 
 def home_view(request):
     """Legacy /home/ — redirect to public Main."""
-    return redirect("account:home")
+    return redirect("main:home")
 
 
 def finance_hub_view(request):

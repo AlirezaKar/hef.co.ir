@@ -1,28 +1,26 @@
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.urls import Resolver404, resolve
-from django.utils import translation
 from django.utils.deprecation import MiddlewareMixin
 
-from .i18n_chrome import DEFAULT_LANG, SESSION_KEY, get_ui_lang, set_ui_lang
 from .models import PageVisit
 from .utils import get_client_ip, _mac_from_ip
 
 # Persian labels for known named routes (namespace:name)
 PAGE_LABELS = {
-    "account:home": "صفحه اصلی",
-    "account:landing": "صفحه اصلی",
-    "account:adobe_connect": "ادوب کانکت",
-    "account:set_language": "تغییر زبان",
+    "main:home": "صفحه اصلی",
+    "main:landing": "صفحه اصلی",
+    "main:adobe_connect": "ادوب کانکت",
+    "main:set_language": "تغییر زبان",
+    "main:about": "درباره ما",
+    "main:faq": "سؤالات متداول",
+    "main:contact": "تماس با ما",
+    "main:resume": "رزومه",
+    "main:tinymce_upload": "آپلود TinyMCE",
     "account:login": "ورود",
     "account:signup": "ثبت‌نام",
     "account:logout": "خروج",
     "account:profile": "پروفایل",
-    "account:about": "درباره ما",
-    "account:faq": "سؤالات متداول",
-    "account:contact": "تماس با ما",
-    "account:resume": "رزومه",
-    "account:tinymce_upload": "آپلود TinyMCE",
     "learn:index": "آموزش",
     "download:index": "مرکز دانلود",
     "finance:hub": "سرمایه‌گذاری",
@@ -50,25 +48,6 @@ def resolve_page_location(path: str) -> tuple[str, str]:
     if not label:
         label = url_name or path[:200]
     return url_name[:200], label[:200]
-
-
-class UILanguageMiddleware(MiddlewareMixin):
-    """
-    Sync custom ui_lang (session/cookie) to Django's active language
-    so django-parler returns the correct CMS translations in views.
-    """
-
-    def process_request(self, request):
-        if SESSION_KEY not in request.session:
-            cookie_lang = request.COOKIES.get("ui_lang")
-            if cookie_lang:
-                set_ui_lang(request, cookie_lang)
-            else:
-                request.session[SESSION_KEY] = DEFAULT_LANG
-        lang = get_ui_lang(request)
-        translation.activate(lang)
-        request.LANGUAGE_CODE = lang
-        return None
 
 
 class ClickTrackingMiddleware(MiddlewareMixin):
