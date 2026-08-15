@@ -6,8 +6,6 @@
         <img
           src="{% static 'img/landing/logo.png' %}?v=6"
           alt="HEF"
-          width="80"
-          height="37"
           class="site-brand-logo"
         >
       </span>
@@ -18,11 +16,11 @@
       <li>
         <a class="site-nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'landing' %}is-active{% endif %}" href="{% url 'account:home' %}">{{ ui_t.nav_home }}</a>
       </li>
-      <li>
-        <a class="site-nav-link {% if request.resolver_match.app_name == 'learn' %}is-active{% endif %}" href="{% url 'learn:index' %}">{{ ui_t.nav_learn }}</a>
+      <li >
+        <a  class="site-nav-link {% if request.resolver_match.app_name == 'learn' %}is-active{% endif %}" href="{% url 'learn:index' %}">{{ ui_t.nav_learn }}</a>
       </li>
-      <li>
-        <a class="site-nav-link {% if request.resolver_match.app_name == 'download' %}is-active{% endif %}" href="{% url 'download:index' %}">{{ ui_t.nav_download }}</a>
+      <li >
+        <a  class="site-nav-link {% if request.resolver_match.app_name == 'download' %}is-active{% endif %}" href="{% url 'download:index' %}">{{ ui_t.nav_download }}</a>
       </li>
       <li class="site-nav-dropdown">
         <a
@@ -55,8 +53,8 @@
           </li>
         </ul>
       </li>
-      <li>
-        <a class="site-nav-link {% if request.resolver_match.app_name == 'finance' and request.resolver_match.url_name == 'hub' %}is-active{% endif %}" href="{% url 'finance:hub' %}">{{ ui_t.nav_finance }}</a>
+      <li >
+        <a  class="site-nav-link {% if request.resolver_match.app_name == 'finance' and request.resolver_match.url_name == 'hub' %}is-active{% endif %}" href="{% url 'finance:hub' %}">{{ ui_t.nav_finance }}</a>
       </li>
       <li>
         <a class="site-nav-link {% if request.resolver_match.url_name == 'faq' %}is-active{% endif %}" href="{% url 'account:faq' %}">{{ ui_t.nav_faq }}</a>

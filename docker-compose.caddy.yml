@@ -1,41 +1,57 @@
-# Production: Postgres + Gunicorn + Caddy (Let's Encrypt HTTPS)
+# Production: Postgres + Redis + Gunicorn + Caddy (Let's Encrypt HTTPS)
 # Usage:
-#   MY_DOMAIN=your.domain.com docker compose -f docker-compose.caddy.yml up -d --build
-# Or put MY_DOMAIN in .env and run:
 #   docker compose -f docker-compose.caddy.yml up -d --build
+# MY_DOMAIN must be set in backend/.env
+#
+# Auto-restart: every service uses restart: unless-stopped so Docker brings
+# containers back after crashes and after host/VM reboot (if docker.service is enabled).
+#
+# Responsibilities:
+#   - Caddy: reverse proxy, TLS/Let's Encrypt, static/media files
+#   - Gunicorn (django): WSGI app server
+#   - Postgres: primary database
+#   - Redis: Django cache (+ cached_db sessions)
 
 services:
   postgres:
     image: postgres:15
-    env_file: .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-hef}
-      POSTGRES_USER: ${POSTGRES_USER:-hef}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hef}
+    env_file: backend/.env
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hef} -d ${POSTGRES_DB:-hef}"]
+      test: ["CMD-SHELL", "pg_isready -U hef -d hef"]
       interval: 5s
       timeout: 5s
+      retries: 10
+
+  # In-memory cache for Django. Internal-only (no host port publish).
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
       retries: 10
 
   django:
     build: .
     image: hef-portal:latest
-    env_file: .env
+    env_file: backend/.env
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      POSTGRES_DB: ${POSTGRES_DB:-hef}
-      POSTGRES_USER: ${POSTGRES_USER:-hef}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hef}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "1"
+      REDIS_URL: redis://redis:6379/1
       DJANGO_STATIC_ROOT: /var/www/static
       DJANGO_MEDIA_ROOT: /var/www/media
       HISTORY_ROOT: /data/History
-      DJANGO_ALLOWED_HOSTS: ${MY_DOMAIN},${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
-      DJANGO_CSRF_TRUSTED_ORIGINS: https://${MY_DOMAIN}
       DJANGO_SESSION_COOKIE_SECURE: "true"
       DJANGO_CSRF_COOKIE_SECURE: "true"
       DJANGO_SECURE_SSL_REDIRECT: "true"
@@ -48,14 +64,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     expose:
       - "8000"
 
   caddy:
     image: caddy:2.7-alpine
-    env_file: .env
-    environment:
-      MY_DOMAIN: ${MY_DOMAIN}
+    env_file: backend/.env
     restart: unless-stopped
     ports:
       - "80:80"
@@ -77,6 +93,7 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
   media-data:
   staticfiles-data:
   caddy-data:

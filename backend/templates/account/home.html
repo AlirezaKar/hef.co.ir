@@ -7,16 +7,7 @@
 {% block body %}
 {% include "partials/navbar.html" %}
 
-<section class="py-4 bg-white">
-  <div class="container text-center">
-    <h1 class="display-5 fw-bold mb-2">HEF</h1>
-    <p class="lead mb-4">{{ about.title }}</p>
-    <div class="home-cta-row d-inline-flex align-items-center justify-content-center gap-2 flex-wrap">
-      <a href="{% url 'account:login' %}" class="btn btn-outline-dark btn-lg px-4 home-cta-btn">{{ ui_t.home_login }}</a>
-      <a href="{% url 'account:signup' %}" class="btn btn-dark btn-lg px-4 home-cta-btn">{{ ui_t.home_signup }}</a>
-    </div>
-  </div>
-</section>
+<br><br>
 
 <section class="home-carousel-section py-3 py-md-4" aria-label="Carousel">
   <div class="container home-carousel-pad">
@@ -36,7 +27,7 @@
         <div class="carousel-inner rounded overflow-hidden shadow-sm">
           {% for img in carousel_images %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-              <img src="{{ img }}" class="d-block w-100 home-carousel-img" alt="HEF {{ forloop.counter }}">
+              <img  src="{{ img }}" class="d-block w-100 home-carousel-img" alt="HEF {{ forloop.counter }}">
             </div>
           {% endfor %}
         </div>

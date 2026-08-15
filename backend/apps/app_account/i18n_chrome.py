@@ -1021,13 +1021,21 @@ def get_ui_lang(request) -> str:
 
 
 def set_ui_lang(request, code: str) -> str:
+    from django.utils import translation
+
     lang = normalize_lang(code)
     request.session[SESSION_KEY] = lang
+    translation.activate(lang)
+    request.LANGUAGE_CODE = lang
     return lang
 
 
 def ui_context(request) -> dict:
+    from django.utils import translation
+
     lang = get_ui_lang(request)
+    translation.activate(lang)
+    request.LANGUAGE_CODE = lang
     meta = LANG_META[lang]
     return {
         "ui_lang": lang,

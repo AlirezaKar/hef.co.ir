@@ -6,4 +6,6 @@ whitenoise>=6.6.0
 django-tinymce>=4.1.0
 psycopg[binary]>=3.1.0
 gunicorn>=22.0.0
+django-redis>=5.4.0
+django-parler>=2.3,<3
 tqdm>=4.66.0

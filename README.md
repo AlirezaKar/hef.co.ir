@@ -7,9 +7,11 @@ Persian Django portal for viewing pre-generated trading history `.htm` files.
 - Django 5.2 + Django templates
 - Tailwind CSS (CDN) + Bootstrap RTL (CDN)
 - PostgreSQL in Docker (SQLite still works for local non-Docker dev)
+- Redis in Docker (Django cache + cached_db sessions; LocMem without Redis)
 - Gunicorn + Caddy (HTTPS / Let's Encrypt)
 - Pillow (profile pictures → WebP)
 - django-tinymce (rich About page editor in admin)
+- django-parler (per-language About / Resume / FAQ / Contact CMS content)
 
 ## Project layout
 
@@ -54,13 +56,22 @@ python manage.py runserver
 
 Open `http://127.0.0.1:8000/` — public landing. After login you land on `/home/`.
 
-Sensitive settings live in `backend/.env` (local) or project-root `.env` (Docker) — never commit those files.
+Sensitive settings live in `backend/.env` — never commit that file. Docker Compose reads the same file.
 
 ---
 
-## Ubuntu server deployment (Docker + Caddy + Gunicorn + Postgres)
+## Ubuntu server deployment (Docker + Caddy + Gunicorn + Postgres + Redis)
 
-Containers use `restart: unless-stopped`, so after a VM / VMware reboot Docker will bring the stack back up automatically.
+Containers use `restart: unless-stopped`, so after a crash or a VM / VMware reboot Docker brings the stack back up automatically (as long as the Docker daemon itself is enabled: `sudo systemctl enable --now docker`).
+
+Stack roles:
+
+| Service | Role |
+|---------|------|
+| **Caddy** | Reverse proxy, HTTP→HTTPS, Let's Encrypt certificates, `/static` + `/media` |
+| **Gunicorn** (`django`) | Runs the Django app; talks to Caddy on internal port 8000 |
+| **Postgres** | Primary database |
+| **Redis** | Cache (and session cache via `cached_db`) |
 
 ### 1. Install Docker on Ubuntu
 
@@ -95,8 +106,8 @@ git clone <YOUR_GITHUB_REPO_URL> .
 ### 3. Configure environment
 
 ```bash
-cp .env.sample .env
-nano .env
+cp backend/.env.sample backend/.env
+nano backend/.env
 ```
 
 Set at least:
@@ -107,6 +118,7 @@ Set at least:
 | `DJANGO_SECRET_KEY` | Long random secret |
 | `POSTGRES_PASSWORD` | Strong password |
 | `DJANGO_ALLOWED_HOSTS` | Should include `MY_DOMAIN` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://` + your domain (production) |
 
 Generate a secret key:
 
@@ -120,7 +132,7 @@ python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 - Open ports **80** and **443**:
 
 ```bash
-sudo ufw allow OpenSSH
+sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw enable
@@ -130,7 +142,6 @@ sudo ufw enable
 
 ```bash
 cd /opt/hef
-# MY_DOMAIN can also live only in .env
 docker compose -f docker-compose.caddy.yml up -d --build
 ```
 
@@ -181,6 +192,7 @@ docker compose -f docker-compose.caddy.yml up -d --build
 
 ```bash
 # logs
+docker compose -f docker-compose.caddy.yml logs -f redis
 docker compose -f docker-compose.caddy.yml logs -f django
 docker compose -f docker-compose.caddy.yml logs -f caddy
 
@@ -196,7 +208,7 @@ docker compose -f docker-compose.caddy.yml start
 ### Local Docker (HTTP only, no TLS)
 
 ```bash
-cp .env.sample .env
+cp backend/.env.sample backend/.env
 # set DJANGO_SECRET_KEY, POSTGRES_PASSWORD; MY_DOMAIN can be localhost
 docker compose up -d --build
 # site on http://localhost/
@@ -238,8 +250,9 @@ Users create or link **trading accounts**. Superusers see **all** trading accoun
 
 ## Content & tracking
 
-- **About (landing + `/about/`)**: Django admin → **صفحه درباره ما** (TinyMCE).
-- **FAQ / Contact**: **Site content** items.
+- **About / Resume / FAQ / Contact cards**: editable per language (FA / EN / FR / AR) in Django admin via **django-parler** language tabs. Existing Persian content was migrated as the default (`fa`). Adobe Connect and Download Center are separate (chrome strings / download app) and are not managed by parler.
+- **About (landing + `/about/`)**: Django admin → **صفحه درباره ما** (TinyMCE per language).
+- **FAQ / Contact**: **Site content** items (translate `key` / `value` per language).
 - **Page visits**: path, URL name, and Persian page label are stored (`PageVisit`).
 - **Login**: optional «مرا به خاطر بسپار» — checked ≈ 1 year session; unchecked = 30-minute idle logout.
 

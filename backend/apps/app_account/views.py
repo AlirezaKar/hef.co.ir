@@ -210,7 +210,9 @@ def profile_view(request):
 
 def about_view(request):
     about = AboutPage.get_solo()
-    items = SiteContent.objects.filter(page=SiteContent.Page.ABOUT, is_active=True)
+    items = SiteContent.objects.filter(
+        page=SiteContent.Page.ABOUT, is_active=True
+    ).active_translations()
     return render(
         request,
         "account/about.html",
@@ -219,13 +221,17 @@ def about_view(request):
 
 
 def faq_view(request):
-    items = SiteContent.objects.filter(page=SiteContent.Page.FAQ, is_active=True)
+    items = SiteContent.objects.filter(
+        page=SiteContent.Page.FAQ, is_active=True
+    ).active_translations()
     return render(request, "account/faq.html", {"items": items})
 
 
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
-    items = SiteContent.objects.filter(page=SiteContent.Page.CONTACT, is_active=True)
+    items = SiteContent.objects.filter(
+        page=SiteContent.Page.CONTACT, is_active=True
+    ).active_translations()
     form = ContactMessageForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         messages.success(request, "پیام شما ثبت شد. سپاسگزاریم.")

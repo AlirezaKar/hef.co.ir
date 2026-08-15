@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.files.base import ContentFile
 from django.db import models
 from django.utils import timezone
+from parler.models import TranslatableModel, TranslatedFields
 from PIL import Image
 
 
@@ -90,18 +91,20 @@ class LoginAttempt(models.Model):
         return f"{self.username_tried} — {status}"
 
 
-class SiteContent(models.Model):
+class SiteContent(TranslatableModel):
     class Page(models.TextChoices):
         ABOUT = "about", "درباره ما"
         CONTACT = "contact", "تماس با ما"
         FAQ = "faq", "سؤالات متداول"
 
     page = models.CharField("صفحه", max_length=20, choices=Page.choices)
-    key = models.CharField("کلید", max_length=100)
-    value = models.TextField("مقدار")
     icon = models.CharField("آیکون (اختیاری)", max_length=50, blank=True)
     order = models.PositiveIntegerField("ترتیب", default=0)
     is_active = models.BooleanField("فعال", default=True)
+    translations = TranslatedFields(
+        key=models.CharField("کلید", max_length=100),
+        value=models.TextField("مقدار"),
+    )
 
     class Meta:
         verbose_name = "محتوای سایت"
@@ -109,14 +112,16 @@ class SiteContent(models.Model):
         ordering = ["page", "order", "id"]
 
     def __str__(self):
-        return f"{self.get_page_display()}: {self.key}"
+        return f"{self.get_page_display()}: {self.safe_translation_getter('key', any_language=True) or self.pk}"
 
 
-class AboutPage(models.Model):
+class AboutPage(TranslatableModel):
     """Singleton rich About content edited with TinyMCE (landing + /about/)."""
 
-    title = models.CharField("عنوان", max_length=200, default="درباره ما")
-    body = models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE")
+    translations = TranslatedFields(
+        title=models.CharField("عنوان", max_length=200, default="درباره ما"),
+        body=models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE"),
+    )
     updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
 
     class Meta:
@@ -124,7 +129,7 @@ class AboutPage(models.Model):
         verbose_name_plural = "صفحه درباره ما"
 
     def __str__(self):
-        return self.title
+        return self.safe_translation_getter("title", any_language=True) or "About"
 
     def save(self, *args, **kwargs):
         self.pk = 1
@@ -139,11 +144,13 @@ class AboutPage(models.Model):
         return obj
 
 
-class ResumePage(models.Model):
+class ResumePage(TranslatableModel):
     """Singleton Resume / CV content edited with TinyMCE."""
 
-    title = models.CharField("عنوان", max_length=200, default="رزومه")
-    body = models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE")
+    translations = TranslatedFields(
+        title=models.CharField("عنوان", max_length=200, default="رزومه"),
+        body=models.TextField("محتوا", blank=True, help_text="محتوای HTML با TinyMCE"),
+    )
     updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
 
     class Meta:
@@ -151,7 +158,7 @@ class ResumePage(models.Model):
         verbose_name_plural = "صفحه رزومه"
 
     def __str__(self):
-        return self.title
+        return self.safe_translation_getter("title", any_language=True) or "Resume"
 
     def save(self, *args, **kwargs):
         self.pk = 1

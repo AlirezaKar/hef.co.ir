@@ -1,38 +1,52 @@
-# Local / plain HTTP stack: Postgres + Django/Gunicorn (+ Caddy on :80 without TLS)
+# Local / plain HTTP stack: Postgres + Redis + Django/Gunicorn + Caddy (:80, no TLS)
 # Usage: docker compose up -d --build
-# Set MY_DOMAIN=localhost (or your LAN host) in .env
+# Set MY_DOMAIN=localhost (or your LAN host) in backend/.env
+#
+# Auto-restart: every service uses restart: unless-stopped so Docker brings
+# containers back after crashes and after host/VM reboot (if docker.service is enabled).
 
 services:
   postgres:
     image: postgres:15
-    env_file: .env
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-hef}
-      POSTGRES_USER: ${POSTGRES_USER:-hef}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hef}
+    env_file: backend/.env
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hef} -d ${POSTGRES_DB:-hef}"]
+      test: ["CMD-SHELL", "pg_isready -U hef -d hef"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  # In-memory cache for Django (sessions via cached_db, django.core.cache, etc.)
+  # Not published to the host — only reachable as hostname "redis" on the Compose network.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # No ports: section — Redis stays internal to Docker (safer).
+
   django:
     build: .
     image: hef-portal:latest
-    env_file: .env
+    env_file: backend/.env
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
-      POSTGRES_DB: ${POSTGRES_DB:-hef}
-      POSTGRES_USER: ${POSTGRES_USER:-hef}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hef}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "1"
+      REDIS_URL: redis://redis:6379/1
       DJANGO_STATIC_ROOT: /var/www/static
       DJANGO_MEDIA_ROOT: /var/www/media
       HISTORY_ROOT: /data/History
-      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
     restart: unless-stopped
     volumes:
       - staticfiles-data:/var/www/static
@@ -41,14 +55,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     expose:
       - "8000"
 
   caddy:
     image: caddy:2.7-alpine
-    env_file: .env
-    environment:
-      MY_DOMAIN: ${MY_DOMAIN:-localhost}
+    env_file: backend/.env
     restart: unless-stopped
     ports:
       - "80:80"
@@ -70,6 +84,7 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
   media-data:
   staticfiles-data:
   caddy-data:

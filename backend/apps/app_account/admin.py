@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from django.utils.html import format_html
+from parler.admin import TranslatableAdmin
 from tinymce.widgets import AdminTinyMCE
 
 from .admin_filters import DateTimeFromToFilter
@@ -175,15 +176,15 @@ class LoginAttemptAdmin(admin.ModelAdmin):
 
 
 @admin.register(SiteContent)
-class SiteContentAdmin(admin.ModelAdmin):
+class SiteContentAdmin(TranslatableAdmin):
     list_display = ("page", "key", "order", "is_active", "icon")
     list_filter = ("page", "is_active")
-    search_fields = ("key", "value")
+    search_fields = ("translations__key", "translations__value")
     list_editable = ("order", "is_active")
 
 
 @admin.register(AboutPage)
-class AboutPageAdmin(admin.ModelAdmin):
+class AboutPageAdmin(TranslatableAdmin):
     list_display = ("title", "updated_at")
     readonly_fields = ("updated_at",)
     fields = ("title", "body", "updated_at")
@@ -206,7 +207,7 @@ class AboutPageAdmin(admin.ModelAdmin):
 
 
 @admin.register(ResumePage)
-class ResumePageAdmin(admin.ModelAdmin):
+class ResumePageAdmin(TranslatableAdmin):
     list_display = ("title", "updated_at")
     readonly_fields = ("updated_at",)
     fields = ("title", "body", "updated_at")

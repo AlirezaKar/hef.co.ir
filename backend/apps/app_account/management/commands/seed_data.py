@@ -387,20 +387,22 @@ class Command(BaseCommand):
             page, key, value, icon = pool[i % len(pool)]
             if i >= len(pool):
                 key = f"{key} ({i + 1})"
-            SiteContent.objects.create(
-                page=page,
-                key=key[:100],
-                value=value,
-                icon=icon,
-                order=i,
-                is_active=True,
-            )
+            item = SiteContent()
+            item.set_current_language("fa")
+            item.page = page
+            item.key = key[:100]
+            item.value = value
+            item.icon = icon
+            item.order = i
+            item.is_active = True
+            item.save()
             created += 1
         return created
 
     def _seed_about_page(self, count: int) -> int:
         for _ in _progress(range(1), "AboutPage", total=1):
             page = AboutPage.get_solo()
+            page.set_current_language("fa")
             page.title = "درباره HEF"
             page.body = random.choice(ABOUT_BODIES)
             page.save()
@@ -409,6 +411,7 @@ class Command(BaseCommand):
     def _seed_resume_page(self, count: int) -> int:
         for _ in _progress(range(1), "ResumePage", total=1):
             page = ResumePage.get_solo()
+            page.set_current_language("fa")
             page.title = "رزومه"
             page.body = random.choice(RESUME_BODIES)
             page.save()

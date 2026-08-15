@@ -215,20 +215,20 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 88px;
+  width: auto;
   height: 44px;
   border-radius: var(--nav-radius);
   background: var(--nav-accent);
   overflow: hidden;
   flex-shrink: 0;
-  padding: 4px 6px;
+  padding: 4px 8px;
 }
 .site-brand-logo {
-  width: 80px !important;
-  max-width: 80px !important;
-  height: auto !important;
+  width: 120px !important;
+  max-width: none !important;
+  height: 36px !important;
   max-height: 36px !important;
-  object-fit: contain !important;
+  object-fit: fill !important;
   display: block !important;
 }
 .site-brand-text {
@@ -255,6 +255,9 @@ body {
   padding: 0 !important;
   list-style: none !important;
   flex-shrink: 0;
+}
+.site-nav-links > li[hidden] {
+  display: none !important;
 }
 .site-nav-link {
   display: inline-block !important;
@@ -575,6 +578,80 @@ html.theme-dark .py-5.bg-light {
   background: #0b1220 !important;
 }
 
+html.theme-dark .contact-page,
+body.theme-dark .contact-page {
+  background: #0f1b2d !important;
+  border-color: #243447 !important;
+  color: #e2e8f0 !important;
+}
+html.theme-dark .contact-hero,
+html.theme-dark .contact-hero h2,
+html.theme-dark .contact-hero p,
+body.theme-dark .contact-hero,
+body.theme-dark .contact-hero h2,
+body.theme-dark .contact-hero p {
+  color: #e2e8f0 !important;
+}
+html.theme-dark .contact-info-band,
+body.theme-dark .contact-info-band {
+  background: #162338 !important;
+  border-top-color: #e87522 !important;
+}
+html.theme-dark .contact-info-col h3,
+html.theme-dark .contact-info-col p,
+body.theme-dark .contact-info-col h3,
+body.theme-dark .contact-info-col p {
+  color: #e2e8f0 !important;
+}
+html.theme-dark .profile-field label,
+html.theme-dark .contact-form label,
+body.theme-dark .profile-field label,
+body.theme-dark .contact-form label {
+  color: #e2e8f0 !important;
+}
+html.theme-dark .profile-field input,
+html.theme-dark .profile-field textarea,
+html.theme-dark .profile-field select,
+html.theme-dark .contact-form input,
+html.theme-dark .contact-form textarea,
+body.theme-dark .profile-field input,
+body.theme-dark .profile-field textarea,
+body.theme-dark .profile-field select,
+body.theme-dark .contact-form input,
+body.theme-dark .contact-form textarea {
+  background: #162338 !important;
+  color: #e2e8f0 !important;
+  border-color: #243447 !important;
+}
+html.theme-dark .profile-field input::placeholder,
+html.theme-dark .profile-field textarea::placeholder,
+html.theme-dark .contact-form input::placeholder,
+html.theme-dark .contact-form textarea::placeholder,
+body.theme-dark .profile-field input::placeholder,
+body.theme-dark .profile-field textarea::placeholder,
+body.theme-dark .contact-form input::placeholder,
+body.theme-dark .contact-form textarea::placeholder {
+  color: #94a3b8 !important;
+}
+html.theme-dark .content-item,
+html.theme-dark .faq-item,
+body.theme-dark .content-item,
+body.theme-dark .faq-item {
+  background: #162338 !important;
+  border-color: #243447 !important;
+  color: #e2e8f0 !important;
+}
+html.theme-dark .content-item h3,
+html.theme-dark .content-item p,
+html.theme-dark .faq-item h3,
+html.theme-dark .faq-item p,
+body.theme-dark .content-item h3,
+body.theme-dark .content-item p,
+body.theme-dark .faq-item h3,
+body.theme-dark .faq-item p {
+  color: #e2e8f0 !important;
+}
+
 /* —— Footer —— */
 .app-footer {
   padding: 4px 12px;
@@ -615,9 +692,10 @@ html.theme-dark .py-5.bg-light {
   padding-right: clamp(12px, 4vw, 48px);
 }
 .home-carousel-img {
-  max-height: 70vh;
+  max-height: 80vh;
   min-height: 320px;
-  height: 48vh;
+  height: 100%;
+  width: 100%;
   object-fit: cover;
   background: #1e293b;
 }
@@ -1079,6 +1157,25 @@ html.theme-dark .py-5.bg-light {
   border-radius: 8px;
 }
 .rich-content a { color: #2563eb; }
+
+html.theme-dark .landing-about-body,
+html.theme-dark .rich-content,
+html.theme-dark .rich-content p,
+html.theme-dark .rich-content li,
+html.theme-dark .rich-content span,
+html.theme-dark .rich-content div,
+body.theme-dark .landing-about-body,
+body.theme-dark .rich-content,
+body.theme-dark .rich-content p,
+body.theme-dark .rich-content li,
+body.theme-dark .rich-content span,
+body.theme-dark .rich-content div {
+  color: #cbd5e1 !important;
+}
+html.theme-dark .rich-content a,
+body.theme-dark .rich-content a {
+  color: #fdba74 !important;
+}
 .faq-list { display: grid; gap: 12px; }
 .faq-item {
   background: #fff;

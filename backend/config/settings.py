@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "tinymce",
+    "parler",
     "apps.app_account.apps.AppAccountConfig",
     "apps.app_finance.apps.AppFinanceConfig",
     "apps.app_learn.apps.AppLearnConfig",
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.app_account.middleware.UILanguageMiddleware",
     "apps.app_account.middleware.ClickTrackingMiddleware",
     "config.middleware.FriendlyErrorMiddleware",
 ]
@@ -151,6 +153,37 @@ SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", default=False)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 
+# Cache: Redis when REDIS_URL / REDIS_HOST is set (Docker); LocMem otherwise (local runserver).
+_redis_url = os.getenv("REDIS_URL", "").strip()
+if not _redis_url:
+    _redis_host = os.getenv("REDIS_HOST", "").strip()
+    if _redis_host:
+        _redis_port = os.getenv("REDIS_PORT", "6379").strip() or "6379"
+        _redis_db = os.getenv("REDIS_DB", "1").strip() or "1"
+        _redis_url = f"redis://{_redis_host}:{_redis_port}/{_redis_db}"
+
+if _redis_url:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": _redis_url,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+            "KEY_PREFIX": "hef",
+            "TIMEOUT": 300,
+        }
+    }
+    # Fast reads from Redis; durable copy still in the DB if Redis restarts.
+    SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "hef-local",
+        }
+    }
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
@@ -168,7 +201,26 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "fa"
+LANGUAGES = [
+    ("fa", "فارسی"),
+    ("en", "English"),
+    ("fr", "Français"),
+    ("ar", "العربية"),
+]
+PARLER_DEFAULT_LANGUAGE_CODE = "fa"
+PARLER_LANGUAGES = {
+    None: (
+        {"code": "fa"},
+        {"code": "en"},
+        {"code": "fr"},
+        {"code": "ar"},
+    ),
+    "default": {
+        "fallbacks": ["fa"],
+        "hide_untranslated": False,
+    },
+}
 TIME_ZONE = "Asia/Tehran"
 USE_I18N = True
 USE_TZ = True
