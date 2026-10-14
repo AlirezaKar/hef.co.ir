@@ -49,6 +49,21 @@
     applyTheme(saved === "dark" || saved === "light" ? saved : "light");
   }
 
+  // Keep floating messages below the sticky navbar, including after resizing
+  // or font/language changes. Pages without a navbar retain a small top gap.
+  var navbar = document.querySelector(".site-navbar");
+  if (navbar && document.querySelector(".toast-stack")) {
+    function updateToastOffset() {
+      getRoot().style.setProperty("--site-navbar-height", navbar.getBoundingClientRect().height + "px");
+    }
+    updateToastOffset();
+    if (window.ResizeObserver) {
+      new ResizeObserver(updateToastOffset).observe(navbar, { box: "border-box" });
+    } else {
+      window.addEventListener("resize", updateToastOffset);
+    }
+  }
+
   // Toasts
   document.querySelectorAll(".toast-item").forEach(function (el) {
     setTimeout(function () {

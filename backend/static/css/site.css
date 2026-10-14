@@ -218,10 +218,12 @@ body {
   width: auto;
   height: 44px;
   border-radius: var(--nav-radius);
-  background: var(--nav-accent);
+  background: transparent;
+  border: 1px solid transparent;
+  box-sizing: border-box;
   overflow: hidden;
   flex-shrink: 0;
-  padding: 4px 8px;
+  padding: 3px 8px;
 }
 .site-brand-logo {
   width: 120px !important;
@@ -364,7 +366,8 @@ body {
   flex-wrap: nowrap !important;
   align-items: center !important;
   gap: 0.4rem !important;
-  margin-inline-start: auto;
+  margin-left: 0;
+  margin-right: auto;
   flex-shrink: 0;
 }
 .nav-icon-btn,
@@ -559,7 +562,9 @@ html.theme-dark .display-5 {
 }
 html.theme-dark .app-footer,
 html.theme-dark .panel-frame,
-html.theme-dark .content-page {
+html.theme-dark .content-page,
+html.theme-dark .profile-form-panel,
+html.theme-dark .profile-media {
   background: #0f1b2d !important;
   border-color: #243447 !important;
   color: #e2e8f0 !important;
@@ -609,26 +614,16 @@ body.theme-dark .profile-field label,
 body.theme-dark .contact-form label {
   color: #e2e8f0 !important;
 }
-html.theme-dark .profile-field input,
-html.theme-dark .profile-field textarea,
-html.theme-dark .profile-field select,
 html.theme-dark .contact-form input,
 html.theme-dark .contact-form textarea,
-body.theme-dark .profile-field input,
-body.theme-dark .profile-field textarea,
-body.theme-dark .profile-field select,
 body.theme-dark .contact-form input,
 body.theme-dark .contact-form textarea {
   background: #162338 !important;
   color: #e2e8f0 !important;
   border-color: #243447 !important;
 }
-html.theme-dark .profile-field input::placeholder,
-html.theme-dark .profile-field textarea::placeholder,
 html.theme-dark .contact-form input::placeholder,
 html.theme-dark .contact-form textarea::placeholder,
-body.theme-dark .profile-field input::placeholder,
-body.theme-dark .profile-field textarea::placeholder,
 body.theme-dark .contact-form input::placeholder,
 body.theme-dark .contact-form textarea::placeholder {
   color: #94a3b8 !important;
@@ -650,6 +645,18 @@ body.theme-dark .content-item p,
 body.theme-dark .faq-item h3,
 body.theme-dark .faq-item p {
   color: #e2e8f0 !important;
+}
+
+/* A full-height shell keeps short pages' footers at the viewport bottom.
+   Auth screens retain their separate centered layout. */
+.site-body:not(.auth-body) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.site-body:not(.auth-body) > * {
+  flex-shrink: 0;
 }
 
 /* —— Footer —— */
@@ -687,6 +694,21 @@ body.theme-dark .faq-item p {
 }
 
 /* —— Home carousel —— */
+#homeCarousel.carousel-fade .carousel-item {
+  transition: opacity .35s ease-in-out;
+}
+#homeCarousel.carousel-fade .active.carousel-item-start,
+#homeCarousel.carousel-fade .active.carousel-item-end {
+  transition: opacity 0s .35s;
+}
+@media (prefers-reduced-motion: reduce) {
+  #homeCarousel.carousel-fade .carousel-item,
+  #homeCarousel.carousel-fade .active.carousel-item-start,
+  #homeCarousel.carousel-fade .active.carousel-item-end {
+    transition: none;
+  }
+}
+
 .home-carousel-pad {
   padding-left: clamp(12px, 4vw, 48px);
   padding-right: clamp(12px, 4vw, 48px);
@@ -1010,6 +1032,20 @@ body.theme-dark .faq-item p {
   width: auto !important;
   padding: 10px 14px !important;
 }
+.profile-field input,
+.profile-field textarea,
+.profile-field select {
+  color-scheme: light;
+}
+.profile-field input::placeholder,
+.profile-field textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+.profile-field :is(input, textarea, select):focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
 .profile-field { margin-bottom: 14px; }
 .profile-field label { display: block; font-weight: 600; margin-bottom: 6px; }
 .profile-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
@@ -1018,6 +1054,14 @@ body.theme-dark .faq-item p {
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 18px;
+}
+
+/* Panel titles need breathing room even without Bootstrap spacing utilities. */
+:is(.profile-form-panel, .content-page, .settings-panel, .home-hint, .panel-frame) > :is(h2, h3) {
+  margin-block: 0 1.25rem;
+}
+.content-item > h3 {
+  margin-block: 0 .75rem;
 }
 
 .content-grid {
@@ -1091,12 +1135,17 @@ body.theme-dark .faq-item p {
 
 .toast-stack {
   position: fixed;
-  top: 16px;
+  top: calc(var(--site-navbar-height, 0px) + 12px);
   left: 16px;
+  max-width: calc(100vw - 32px);
   z-index: 1080;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+/* Reserve navbar clearance before JavaScript measures its exact height. */
+.site-body:has(.site-navbar) .toast-stack {
+  top: calc(var(--site-navbar-height, 64px) + 12px);
 }
 .toast-item {
   background: #0f172a;
