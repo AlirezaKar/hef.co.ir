@@ -1,6 +1,7 @@
 {% load static %}
 <nav class="site-navbar">
-  <div class="site-navbar-inner">
+  <!-- Keep chrome positions stable; only navigation text follows the UI language. -->
+  <div class="site-navbar-inner" dir="rtl">
     <a class="site-brand" href="{% url 'main:home' %}">
       <span class="site-brand-mark">
         <img
@@ -12,7 +13,7 @@
       <span class="site-brand-text">HEF</span>
     </a>
 
-    <ul class="site-nav-links">
+    <ul class="site-nav-links" dir="{{ ui_dir|default:'rtl' }}">
       <li>
         <a class="site-nav-link {% if request.resolver_match.url_name == 'home' or request.resolver_match.url_name == 'landing' %}is-active{% endif %}" href="{% url 'main:home' %}">{{ ui_t.nav_home }}</a>
       </li>
