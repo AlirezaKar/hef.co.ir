@@ -15,6 +15,9 @@ from .forms import ContactMessageForm
 from .i18n_chrome import set_ui_lang
 from .models import AboutPage, ResumePage, SiteContent
 
+# Expose carousel interval from settings for the template
+_CAROUSEL_INTERVAL = getattr(settings, "CAROUSEL_INTERVAL", 4000)
+
 CAROUSEL_DIR_NAME = "main_page_carousel_img"
 CAROUSEL_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 CAROUSEL_STATIC_FALLBACK = (
@@ -47,6 +50,7 @@ def home_view(request):
         {
             "about": about,
             "carousel_images": _carousel_image_urls(),
+            "carousel_interval": _CAROUSEL_INTERVAL,
         },
     )
 

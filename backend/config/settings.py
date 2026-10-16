@@ -33,6 +33,16 @@ def env_bool(name: str, default: bool = False) -> bool:
     return str(raw).strip().lower() in ("1", "true", "yes", "on")
 
 
+def env_int(name: str, default: int) -> int:
+    raw = os.getenv(name)
+    if raw is None or not str(raw).strip():
+        return default
+    try:
+        return int(raw.strip())
+    except (ValueError, TypeError):
+        return default
+
+
 SECRET_KEY = env_required("DJANGO_SECRET_KEY")
 DEBUG = env_bool("DJANGO_DEBUG", default=False)
 
@@ -269,6 +279,9 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 
 # Profile picture constraints
 PROFILE_PICTURE_MAX_SIZE = 5 * 1024 * 1024  # 5 MB
+
+# Carousel auto-advance interval in milliseconds (default: 4000 = 4 seconds)
+CAROUSEL_INTERVAL = env_int("CAROUSEL_INTERVAL", 4000)
 
 # Friendly CSRF error page (no technical details)
 CSRF_FAILURE_VIEW = "config.error_views.csrf_failure"
