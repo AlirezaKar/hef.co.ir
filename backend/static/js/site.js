@@ -69,6 +69,102 @@
     toggleTheme();
   });
 
+  // ── Notification bell ──
+  (function () {
+    var bellBtn = document.getElementById("notifBellBtn");
+    var badge = document.getElementById("notifBadge");
+    var body = document.getElementById("notifDropdownBody");
+    var markReadBtn = document.getElementById("notifMarkReadBtn");
+    if (!bellBtn || !body) return;
+
+    var MARK_READ_URL = bellBtn.closest(".dropdown")
+      ? "" : "";
+    // Find URLs from the page context
+    var notifApiUrl = document.querySelector('meta[name="notif-api-url"]');
+    var markReadUrl = document.querySelector('meta[name="notif-mark-read-url"]');
+    if (notifApiUrl) notifApiUrl = notifApiUrl.getAttribute("content");
+    if (markReadUrl) markReadUrl = markReadUrl.getAttribute("content");
+
+    function timeAgo(iso) {
+      try {
+        var d = new Date(iso);
+        var now = new Date();
+        var diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return diff + "s";
+        if (diff < 3600) return Math.floor(diff / 60) + "m";
+        if (diff < 86400) return Math.floor(diff / 3600) + "h";
+        return Math.floor(diff / 86400) + "d";
+      } catch (e) { return ""; }
+    }
+
+    function renderNotifications(data) {
+      // Badge
+      if (data.unread_count > 0) {
+        badge.textContent = data.unread_count > 99 ? "99+" : data.unread_count;
+        badge.classList.remove("d-none");
+      } else {
+        badge.classList.add("d-none");
+      }
+      // Body
+      if (!data.notifications.length) {
+        body.innerHTML = '<p class="notif-empty">' +
+          (bellBtn.getAttribute("data-no-notif") || "No notifications") +
+          "</p>";
+        return;
+      }
+      var html = "";
+      data.notifications.forEach(function (n) {
+        var cls = n.is_read ? "read" : "unread";
+        var href = "#";
+        html += '<a class="notif-item ' + cls + '" href="' + href + '">';
+        html += '<span class="notif-dot"></span>';
+        html += '<span class="notif-msg">' + escapeHtml(n.message);
+        html += '<span class="notif-time">' + timeAgo(n.created_at) + "</span>";
+        html += "</span></a>";
+      });
+      body.innerHTML = html;
+    }
+
+    function escapeHtml(s) {
+      var div = document.createElement("div");
+      div.appendChild(document.createTextNode(s));
+      return div.innerHTML;
+    }
+
+    function fetchNotifications() {
+      if (!notifApiUrl) return;
+      fetch(notifApiUrl, { credentials: "same-origin" })
+        .then(function (r) { return r.json(); })
+        .then(renderNotifications)
+        .catch(function () {});
+    }
+
+    // Fetch on page load, then every 60s
+    fetchNotifications();
+    setInterval(fetchNotifications, 60000);
+
+    // Mark all read
+    if (markReadBtn && markReadUrl) {
+      markReadBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        fetch(markReadUrl, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "X-CSRFToken": getCsrfToken() },
+        })
+          .then(function () { fetchNotifications(); })
+          .catch(function () {});
+      });
+    }
+
+    function getCsrfToken() {
+      var m = document.querySelector("[name=csrfmiddlewaretoken]");
+      if (m) return m.value;
+      var c = document.cookie.match(/csrftoken=([^;]+)/);
+      return c ? c[1] : "";
+    }
+  })();
+
   // Adobe Connect FAQ accordion
   document.addEventListener("click", function (e) {
     var question = e.target.closest(".adobe-faq-question");

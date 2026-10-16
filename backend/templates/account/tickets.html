@@ -1,0 +1,44 @@
+{% extends "base_app.html" %}
+{% load static %}
+
+{% block title %}{{ ui_t.tickets_title }} | HEF{% endblock %}
+{% block page_heading %}{{ ui_t.tickets_title }}{% endblock %}
+
+{% block content %}
+<section class="tickets-page">
+  {% if tickets %}
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>{{ ui_t.ticket_col_id }}</th>
+          <th>{{ ui_t.ticket_col_subject }}</th>
+          <th>{{ ui_t.ticket_col_status }}</th>
+          <th>{{ ui_t.ticket_col_date }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ticket in tickets %}
+          <tr>
+            <td class="ticket-id">#{{ ticket.pk }}</td>
+            <td class="ticket-subject">{{ ticket.subject }}</td>
+            <td>
+              {% if ticket.status == "pending" %}
+                <span class="ticket-status ticket-status-pending">{{ ui_t.ticket_status_pending }}</span>
+              {% elif ticket.status == "approved" %}
+                <span class="ticket-status ticket-status-approved">{{ ui_t.ticket_status_approved }}</span>
+              {% else %}
+                <span class="ticket-status ticket-status-rejected">{{ ui_t.ticket_status_rejected }}</span>
+              {% endif %}
+            </td>
+            <td class="ticket-date">{{ ticket.created_at|date:"Y/m/d H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="tickets-empty-box">
+      <p>{{ ui_t.tickets_empty }}</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

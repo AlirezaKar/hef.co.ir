@@ -1,127 +1,167 @@
-# HEF History Portal
+# HEF Portal — [hef.co.ir](https://hef.co.ir)
 
-Persian Django portal for viewing pre-generated trading history `.htm` files.
+A full-stack Persian (RTL) web portal for **HEF**, an educational and financial holding specializing in trading market instruction and account history tracking. Built with Django, it provides authentication, a multi-language CMS, a download center, a ticketing system, and a finance dashboard for per-user trading history reports.
 
-## Stack
+---
 
-- Django 5.2 + Django templates
-- Tailwind CSS (CDN) + Bootstrap RTL (CDN)
-- PostgreSQL in Docker (SQLite still works for local non-Docker dev)
-- Redis in Docker (Django cache + cached_db sessions; LocMem without Redis)
-- Gunicorn + Caddy (HTTPS / Let's Encrypt)
-- Pillow (profile pictures → WebP)
-- django-tinymce (rich About page editor in admin)
-- django-parler (per-language About / Resume / FAQ / Contact CMS content)
+## Features
 
-## Project layout
+- **Authentication & profiles** — signup, login (username or email), session management, profile editing with avatar cropping (WebP), and MAC/IP identity capture
+- **Notification center** — bell icon in the navbar with real-time unread badge, dropdown for recent notifications, and a dedicated tickets page (PENDING / APPROVED / REJECTED)
+- **Ticketing system** — contact form submissions create tickets; admins review, approve, or reject with reasons; users are notified automatically
+- **Multi-language CMS** — About, Resume, FAQ, and Contact pages editable per-language (FA / EN / FR / AR) via Django admin with django-parler
+- **Adobe Connect page** — dedicated product page for private Adobe Connect server deployments, with pricing and consultation routed to a "Coming Soon" stub
+- **Download center** — file upload, tagging, password protection, and visibility control (public/private), with per-file download tracking
+- **Finance hub** — trading account linking and per-user trading history reports generated from pre-processed `.htm` files
+- **Admin dashboard** — full Django admin with ticket management, page-visit analytics, login-attempt audit logs, and TinyMCE rich-text editing
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Django 5.2, Gunicorn |
+| **Database** | PostgreSQL (production), SQLite (local dev) |
+| **Cache** | Redis / django-redis (production), LocMem (local dev) |
+| **Frontend** | Django templates, Bootstrap 5.3 (RTL), Tailwind CSS (CDN) |
+| **Reverse proxy** | Caddy (auto TLS via Let's Encrypt) |
+| **Image processing** | Pillow (profile pictures → WebP) |
+| **Rich text** | django-tinymce (About/Resume admin editors) |
+| **i18n CMS** | django-parler (per-language content) |
+| **Containerization** | Docker + Docker Compose |
+
+---
+
+## Project Layout
 
 ```
 hef.co.ir/
-  backend/           # Django project
-    apps/
-      app_main/      # public pages, CMS (About/FAQ/Contact/Resume), UI language
-      app_account/   # users, auth, trading accounts, page visits
-      app_finance/   # trading history
-      app_learn/
-      app_download/
-    media/
-    templates/
-  data/History/History-{trading_acc_username}/
-  scripts/           # entrypoint.sh, update.sh
-  docker-compose.yml
-  docker-compose.caddy.yml
-  Caddyfile
-  Dockerfile
-  example/           # UI / sample references (local only)
+├── backend/                # Django project root
+│   ├── apps/
+│   │   ├── app_main/       # Public pages, CMS, i18n chrome, Adobe Connect
+│   │   ├── app_account/    # Users, auth, tickets, notifications, trading accounts
+│   │   ├── app_finance/    # Trading history viewer
+│   │   ├── app_learn/      # Learning section
+│   │   └── app_download/   # Download center
+│   ├── config/             # Django settings, URLs, middleware, error views
+│   ├── templates/          # HTML templates (Jinja2/Django templates)
+│   ├── static/             # CSS, JS, fonts, images
+│   ├── media/              # User uploads (profile pictures)
+│   └── manage.py
+├── data/History/           # Trading history .htm files per account
+├── scripts/                # Entrypoint, update, dev/prod helpers
+├── docker-compose.yml      # Local Docker (HTTP)
+├── docker-compose.caddy.yml # Production Docker (Caddy + Gunicorn + Postgres + Redis)
+├── Caddyfile               # Caddy config for production TLS
+├── Dockerfile              # Application container image
+└── README.md
 ```
 
 ---
 
-## Local development (without Docker)
+## Getting Started
+
+### Prerequisites
+
+- Python 3.11+
+- pip
+
+### Local Development (without Docker)
 
 ```bash
 cd backend
 python -m venv .venv
 
-# Windows
+# Activate
+# Windows:
 .venv\Scripts\activate
-
-# Linux / macOS
+# Linux / macOS:
 source .venv/bin/activate
 
 pip install -r requirements.txt
-copy .env.sample .env   # or: cp .env.sample .env
-# Edit backend/.env — set DJANGO_SECRET_KEY (required). Keep DEBUG=True only for local use.
+cp .env.sample .env          # edit .env — set DJANGO_SECRET_KEY (required)
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/` — public landing. After login you land on `/home/`.
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
 
-Sensitive settings live in `backend/.env` — never commit that file. Docker Compose reads the same file.
+> **Note:** When `DJANGO_DEBUG=True`, Django's default yellow debug pages appear on errors. When `DJANGO_DEBUG=False`, custom error pages (404, 403, 400, 500) are displayed instead.
+
+### Local Docker (HTTP only, no TLS)
+
+```bash
+cp backend/.env.sample backend/.env
+# Set at least: DJANGO_SECRET_KEY, POSTGRES_PASSWORD
+docker compose up -d --build
+# Site available at http://localhost/
+```
 
 ---
 
-## Ubuntu server deployment (Docker + Caddy + Gunicorn + Postgres + Redis)
+## Production Deployment
 
-Containers use `restart: unless-stopped`, so after a crash or a VM / VMware reboot Docker brings the stack back up automatically (as long as the Docker daemon itself is enabled: `sudo systemctl enable --now docker`).
-
-Stack roles:
+### Stack
 
 | Service | Role |
 |---------|------|
-| **Caddy** | Reverse proxy, HTTP→HTTPS, Let's Encrypt certificates, `/static` + `/media` |
-| **Gunicorn** (`django`) | Runs the Django app; talks to Caddy on internal port 8000 |
-| **Postgres** | Primary database |
-| **Redis** | Cache (and session cache via `cached_db`) |
+| **Caddy** | Reverse proxy, HTTP → HTTPS, Let's Encrypt certificates |
+| **Gunicorn** | WSGI application server (port 8000 internally) |
+| **PostgreSQL** | Primary database |
+| **Redis** | Cache backend + cached_db sessions |
 
-### 1. Install Docker on Ubuntu
+### Steps
+
+#### 1. Install Docker on Ubuntu
 
 ```bash
 sudo apt update
 sudo apt install -y ca-certificates curl git
 sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt install -y docker-ce docker-ce-cli containerd.io \
+  docker-buildx-plugin docker-compose-plugin
 sudo usermod -aG docker "$USER"
-# log out and back in so the docker group applies
+# Log out and back in
 ```
 
-### 2. Clone the repository (once)
+#### 2. Clone the Repository
 
 ```bash
-cd /opt   # or any directory you prefer
 sudo mkdir -p /opt/hef && sudo chown "$USER":"$USER" /opt/hef
 cd /opt/hef
-git clone <YOUR_GITHUB_REPO_URL> .
-# example: git clone https://github.com/your-org/hef.co.ir.git .
+git clone <YOUR_REPO_URL> .
 ```
 
-### 3. Configure environment
+#### 3. Configure Environment
 
 ```bash
 cp backend/.env.sample backend/.env
 nano backend/.env
 ```
 
-Set at least:
+Required settings:
 
-| Variable | Notes |
-|----------|--------|
-| `MY_DOMAIN` | Your public domain (e.g. `portal.example.com`). Use this placeholder name until DNS is ready. |
-| `DJANGO_SECRET_KEY` | Long random secret |
-| `POSTGRES_PASSWORD` | Strong password |
-| `DJANGO_ALLOWED_HOSTS` | Should include `MY_DOMAIN` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://` + your domain (production) |
+| Variable | Example |
+|----------|---------|
+| `MY_DOMAIN` | `portal.example.com` |
+| `DJANGO_SECRET_KEY` | *(long random string)* |
+| `POSTGRES_PASSWORD` | *(strong password)* |
+| `DJANGO_ALLOWED_HOSTS` | `portal.example.com,www.portal.example.com` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://portal.example.com` |
+| `DJANGO_DEBUG` | `False` |
 
 Generate a secret key:
 
@@ -129,10 +169,9 @@ Generate a secret key:
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-### 4. DNS and firewall
+#### 4. DNS & Firewall
 
-- Point `MY_DOMAIN` A/AAAA records to this server’s public IP.
-- Open ports **80** and **443**:
+Point your domain's A/AAAA records to the server's public IP, then:
 
 ```bash
 sudo ufw allow 22/tcp
@@ -141,36 +180,42 @@ sudo ufw allow 443/tcp
 sudo ufw enable
 ```
 
-### 5. Start production stack (Caddy TLS)
+#### 5. Start the Stack
 
 ```bash
 cd /opt/hef
 docker compose -f docker-compose.caddy.yml up -d --build
 ```
 
-Caddy obtains and renews Let's Encrypt certificates automatically for `MY_DOMAIN`.
+Caddy obtains and renews Let's Encrypt certificates automatically.
 
-Wait a few seconds, then open `https://MY_DOMAIN`.
-
-### 6. Create a Django superuser
+#### 6. Create Superuser
 
 ```bash
 docker compose -f docker-compose.caddy.yml exec django python manage.py createsuperuser
 ```
 
-### 7. History files
+#### 7. Trading History Files
 
-Put account folders on the host under:
+Place files on the host at:
 
-```text
+```
 /opt/hef/data/History/History-{trading_acc_username}/
 ```
 
-This path is mounted into the container as `/data/History`.
+Expected files per account:
 
-### 8. Updating code after you push to GitHub
+```
+Index_{username}.htm
+Daily_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm
+Weekly_{username}_Week{N}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm
+Monthly_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm
+Yearly_{username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm    # optional
+```
 
-You do **not** need to re-clone. On the server:
+---
+
+## Updating the Application
 
 ```bash
 cd /opt/hef
@@ -178,90 +223,75 @@ chmod +x scripts/update.sh
 ./scripts/update.sh
 ```
 
-That script runs:
-
-1. `git pull` (fast-forward) from `main`
-2. `docker compose -f docker-compose.caddy.yml up -d --build`
+The update script pulls the latest code from `main` and rebuilds the Docker containers.
 
 Manual equivalent:
 
 ```bash
-cd /opt/hef
 git pull origin main
 docker compose -f docker-compose.caddy.yml up -d --build
 ```
 
-### 9. Useful commands
+---
+
+## Useful Commands
 
 ```bash
-# logs
-docker compose -f docker-compose.caddy.yml logs -f redis
+# View logs
 docker compose -f docker-compose.caddy.yml logs -f django
 docker compose -f docker-compose.caddy.yml logs -f caddy
+docker compose -f docker-compose.caddy.yml logs -f redis
 
-# Django shell / migrate
+# Django shell
 docker compose -f docker-compose.caddy.yml exec django python manage.py shell
+
+# Run migrations
 docker compose -f docker-compose.caddy.yml exec django python manage.py migrate
 
-# stop / start
+# Stop / start
 docker compose -f docker-compose.caddy.yml stop
 docker compose -f docker-compose.caddy.yml start
 ```
 
-### Local Docker (HTTP only, no TLS)
+---
 
-```bash
-cp backend/.env.sample backend/.env
-# set DJANGO_SECRET_KEY, POSTGRES_PASSWORD; MY_DOMAIN can be localhost
-docker compose up -d --build
-# site on http://localhost/
-```
+## Content Management
 
-### Migrating existing SQLite data to Postgres (optional, one-time)
+All editable content is managed through Django admin at `/admin/`:
 
-On a machine that still has `backend/db.sqlite3`:
-
-```bash
-cd backend
-python manage.py dumpdata --natural-foreign --natural-primary \
-  -e contenttypes -e auth.permission -e sessions \
-  -o ../data_dump.json
-```
-
-Copy `data_dump.json` to the server, then:
-
-```bash
-docker compose -f docker-compose.caddy.yml exec -T django \
-  python manage.py loaddata /usr/src/backend/data_dump.json
-```
-
-(Place the dump inside the image/build context or mount it before loading.)
+| Content | Admin Section | Notes |
+|---------|--------------|-------|
+| About page | **صفحه درباره ما** | TinyMCE rich editor, per-language tabs |
+| Resume page | **صفحه رزومه** | TinyMCE rich editor, per-language tabs |
+| FAQ items | **محتوای سایت** (page=FAQ) | Translate key/value per language |
+| Contact cards | **محتوای سایت** (page=CONTACT) | Translate key/value per language |
+| Tickets | **تیکت‌ها** | Approve or reject with reason; user notified automatically |
+| Navigation strings | `app_main/i18n_chrome.py` | Hardcoded per-language dicts (FA/EN/FR/AR) |
 
 ---
 
-## History files
+## Configuration Reference
 
-Place files under `data/History/History-{trading_acc_username}/` matching:
+All settings are controlled via `backend/.env`. See [`.env.sample`](backend/.env.sample) for the full list with descriptions.
 
-- `Index_{trading_acc_username}.htm`
-- `Daily_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Weekly_{trading_acc_username}_Week{N}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Monthly_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm`
-- `Yearly_{trading_acc_username}_{YYYY-MM-DD}_to_{YYYY-MM-DD}.htm` (optional)
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `DJANGO_SECRET_KEY` | ✅ | — | Django secret key |
+| `DJANGO_DEBUG` | ✅ | `False` | Debug mode (`True` shows Django debug pages) |
+| `DJANGO_ALLOWED_HOSTS` | ✅ | — | Comma-separated hostnames |
+| `POSTGRES_PASSWORD` | ✅ (Docker) | — | Database password |
+| `MY_DOMAIN` | ✅ (Caddy) | — | Public domain for TLS |
+| `REDIS_URL` | — | — | Redis connection string |
+| `HISTORY_ROOT` | — | `<project>/data/History` | Path to trading history files |
 
-Users create or link **trading accounts**. Superusers see **all** trading accounts on the History page.
+---
 
-## Content & tracking
+## License
 
-- **About / Resume / FAQ / Contact cards**: editable per language (FA / EN / FR / AR) in Django admin (`app_main`, django-parler tabs). Existing Persian content was migrated as the default (`fa`). Adobe Connect chrome strings live in `app_main.i18n_chrome`; Download Center is separate.
-- **About (landing + `/about/`)**: Django admin → **صفحه درباره ما** (TinyMCE per language).
-- **FAQ / Contact**: **Site content** items (translate `key` / `value` per language).
-- **Page visits**: path, URL name, and Persian page label are stored (`PageVisit`).
-- **Login**: optional «مرا به خاطر بسپار» — checked ≈ 1 year session; unchecked = 30-minute idle logout.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-## Notes
+---
 
-- UI language is Persian (RTL). Dates stay Gregorian. Django CLI commands stay in English.
-- Signup requires: username, email, password, confirm password, phone number.
-- Login accepts username **or** email.
-- Profile picture uploads are stored as `.webp` in `backend/media/profile_picture/`.
+<p align="center">
+  Built with ❤️ for the Persian trading community.
+</p>

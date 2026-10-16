@@ -1,23 +1,54 @@
 {% extends "base_app.html" %}
 
-{% block title %}سؤالات متداول | پورتال تاریخچه HEF{% endblock %}
+{% block title %}سؤالات متداول | HEF{% endblock %}
 {% block page_heading %}سؤالات متداول{% endblock %}
 
 {% block content %}
-<section class="content-page">
-  <h2>سؤالات متداول</h2>
+<section class="faq-page">
   {% if items %}
-    <div class="faq-list">
+    <div class="faq-toggle-list">
       {% for item in items %}
-        <article class="content-item faq-item">
-          {% if item.icon %}<div class="content-icon">{{ item.icon }}</div>{% endif %}
-          <h3>{{ item.key }}</h3>
-          <p>{{ item.value|linebreaksbr }}</p>
-        </article>
+        <div class="faq-toggle-item">
+          <button type="button" class="faq-toggle-question">
+            {% if item.icon %}<span class="faq-toggle-icon">{{ item.icon }}</span>{% endif %}
+            <span class="faq-toggle-text">{{ item.key }}</span>
+            <span class="faq-toggle-arrow" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </span>
+          </button>
+          <div class="faq-toggle-answer">
+            <p>{{ item.value|linebreaksbr }}</p>
+          </div>
+        </div>
       {% endfor %}
     </div>
   {% else %}
-    <p class="muted">هنوز پرسشی از پنل مدیریت ثبت نشده است.</p>
+    <div class="tickets-empty-box">
+      <p>هنوز پرسشی از پنل مدیریت ثبت نشده است.</p>
+    </div>
   {% endif %}
 </section>
+{% endblock %}
+
+{% block app_extra_js %}
+<script>
+(function () {
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".faq-toggle-question");
+    if (!btn) return;
+    var item = btn.closest(".faq-toggle-item");
+    if (!item) return;
+    // Close others
+    var list = item.closest(".faq-toggle-list");
+    if (list) {
+      list.querySelectorAll(".faq-toggle-item.open").forEach(function (other) {
+        if (other !== item) other.classList.remove("open");
+      });
+    }
+    item.classList.toggle("open");
+  });
+})();
+</script>
 {% endblock %}

@@ -16,10 +16,16 @@ logger = logging.getLogger(__name__)
 class FriendlyErrorMiddleware(MiddlewareMixin):
     """
     Show friendly Persian error pages instead of yellow technical screens,
-    including when DEBUG=True. Never includes traceback or file paths.
+    but ONLY when DEBUG=False.  When DEBUG=True the default Django debug
+    screens (yellow traceback) are preserved so developers can debug.
     """
 
     def process_exception(self, request, exception):
+        # Let Django's built-in debug views handle everything in dev mode.
+        from django.conf import settings
+        if settings.DEBUG:
+            return None
+
         if isinstance(exception, Http404):
             return error_views.not_found(request, exception)
 

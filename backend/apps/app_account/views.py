@@ -3,11 +3,12 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 
 from .forms import LoginForm, ProfileForm, SignupForm
-from .models import LoginAttempt, User
+from .models import LoginAttempt, Notification, Ticket, User
 from .utils import apply_network_identity, get_client_ip
 
 AUTH_BACKEND = settings.AUTHENTICATION_BACKENDS[0]
@@ -131,3 +132,43 @@ def profile_view(request):
         messages.success(request, "پروفایل به‌روزرسانی شد.")
         return redirect("account:profile")
     return render(request, "account/profile.html", {"form": form})
+
+
+@login_required
+@require_http_methods(["GET"])
+def tickets_view(request):
+    """List the authenticated user's submitted tickets."""
+    tickets = Ticket.objects.filter(user=request.user)
+    return render(request, "account/tickets.html", {"tickets": tickets})
+
+
+@login_required
+@require_GET
+def notifications_api(request):
+    """Return recent notifications as JSON for the navbar bell dropdown."""
+    recent = Notification.objects.filter(user=request.user)[:20]
+    unread_count = Notification.objects.filter(
+        user=request.user, is_read=False
+    ).count()
+    data = {
+        "unread_count": unread_count,
+        "notifications": [
+            {
+                "id": n.pk,
+                "message": n.message,
+                "ticket_id": n.ticket_id,
+                "is_read": n.is_read,
+                "created_at": n.created_at.isoformat(),
+            }
+            for n in recent
+        ],
+    }
+    return JsonResponse(data)
+
+
+@login_required
+@require_POST
+def mark_notifications_read(request):
+    """Mark all the user's unread notifications as read."""
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return JsonResponse({"ok": True})

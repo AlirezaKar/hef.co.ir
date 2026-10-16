@@ -1930,3 +1930,474 @@ body.theme-dark .dl-page .border-stone-100,
 body.theme-dark .dl-page .border-stone-200 {
   border-color: #27272a !important;
 }
+
+/* ═══════════════════════════════════════════════════════
+   Notification Bell & Dropdown
+   ═══════════════════════════════════════════════════════ */
+.notif-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+.notif-bell-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.notif-bell-btn:hover {
+  background: rgba(0,0,0,.06);
+}
+html.theme-dark .notif-bell-btn:hover {
+  background: rgba(255,255,255,.08);
+}
+.notif-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 4px;
+  pointer-events: none;
+}
+html[dir="ltr"] .notif-badge {
+  right: 0;
+  left: auto;
+}
+html[dir="rtl"] .notif-badge {
+  left: 0;
+  right: auto;
+}
+.notif-dropdown-menu {
+  width: 320px;
+  max-height: 400px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+html.theme-dark .notif-dropdown-menu {
+  background: #1e1e22;
+  border-color: #333;
+  color: #e4e4e7;
+}
+.notif-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: .88rem;
+}
+html.theme-dark .notif-dropdown-header {
+  border-color: #333;
+}
+.notif-mark-read-btn {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-size: .78rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+.notif-mark-read-btn:hover {
+  text-decoration: underline;
+}
+.notif-dropdown-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 280px;
+  padding: 0;
+}
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: .85rem;
+  line-height: 1.5;
+  text-decoration: none;
+  color: inherit;
+  transition: background .15s;
+}
+.notif-item:hover {
+  background: #f9fafb;
+}
+html.theme-dark .notif-item {
+  border-color: #2a2a2e;
+}
+html.theme-dark .notif-item:hover {
+  background: #27272a;
+}
+.notif-item.unread {
+  background: #eff6ff;
+}
+html.theme-dark .notif-item.unread {
+  background: rgba(44,180,201,.08);
+}
+.notif-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.notif-item.read .notif-dot {
+  background: transparent;
+}
+.notif-msg {
+  flex: 1;
+  word-break: break-word;
+}
+.notif-time {
+  display: block;
+  font-size: .72rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+.notif-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: .85rem;
+  margin: 0;
+}
+.notif-dropdown-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 10px 16px;
+  text-align: center;
+}
+html.theme-dark .notif-dropdown-footer {
+  border-color: #333;
+}
+.notif-view-all-link {
+  color: var(--teal);
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.notif-view-all-link:hover {
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Tickets Page
+   ═══════════════════════════════════════════════════════ */
+.tickets-page {
+  max-width: 860px;
+}
+.tickets-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: .9rem;
+}
+.tickets-table th,
+.tickets-table td {
+  padding: 12px 16px;
+  text-align: start;
+  border-bottom: 1px solid #e5e7eb;
+}
+.tickets-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: .82rem;
+  color: #374151;
+}
+html.theme-dark .tickets-table {
+  border-color: #27272a;
+}
+html.theme-dark .tickets-table th {
+  background: #1e1e22;
+  color: #a1a1aa;
+  border-color: #27272a;
+}
+html.theme-dark .tickets-table td {
+  border-color: #27272a;
+}
+.tickets-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.ticket-id {
+  font-weight: 600;
+  color: var(--teal);
+  white-space: nowrap;
+}
+.ticket-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.ticket-status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.ticket-status-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+.ticket-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+html.theme-dark .ticket-status-pending {
+  background: rgba(230,168,23,.15);
+  color: #e6a817;
+}
+html.theme-dark .ticket-status-approved {
+  background: rgba(10,119,102,.15);
+  color: #34d399;
+}
+html.theme-dark .ticket-status-rejected {
+  background: rgba(239,68,68,.15);
+  color: #f87171;
+}
+.ticket-date {
+  color: #6b7280;
+  font-size: .82rem;
+  white-space: nowrap;
+}
+.tickets-empty-box {
+  text-align: center;
+  padding: 48px 24px;
+  color: #9ca3af;
+  font-size: .95rem;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+}
+html.theme-dark .tickets-empty-box {
+  border-color: #3f3f46;
+  color: #71717a;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FAQ — Toggle Boxes (new design)
+   ═══════════════════════════════════════════════════════ */
+.faq-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.faq-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.faq-toggle-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow .2s, border-color .2s;
+}
+.faq-toggle-item:hover {
+  border-color: #cbd5e1;
+}
+.faq-toggle-item.open {
+  border-color: var(--teal);
+  box-shadow: 0 4px 16px rgba(44,180,201,.08);
+}
+.faq-toggle-question {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 16px 18px;
+  font-size: .95rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: start;
+  transition: background .15s;
+}
+.faq-toggle-question:hover {
+  background: #f8fafc;
+}
+.faq-toggle-icon {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+.faq-toggle-text {
+  flex: 1;
+}
+.faq-toggle-arrow {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  transition: transform .25s ease, background .15s;
+}
+.faq-toggle-item.open .faq-toggle-arrow {
+  transform: rotate(180deg);
+  background: rgba(44,180,201,.12);
+  color: var(--teal);
+}
+.faq-toggle-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  padding: 0 18px;
+}
+.faq-toggle-item.open .faq-toggle-answer {
+  max-height: 500px;
+  padding: 0 18px 16px;
+}
+.faq-toggle-answer p {
+  margin: 0;
+  font-size: .9rem;
+  line-height: 1.8;
+  color: #475569;
+}
+
+/* FAQ dark mode */
+html.theme-dark .faq-toggle-item {
+  background: #1e1e22;
+  border-color: #2a2a2e;
+}
+html.theme-dark .faq-toggle-item:hover {
+  border-color: #3f3f46;
+}
+html.theme-dark .faq-toggle-item.open {
+  border-color: var(--teal);
+  box-shadow: 0 4px 16px rgba(44,180,201,.12);
+}
+html.theme-dark .faq-toggle-question {
+  color: #e4e4e7;
+}
+html.theme-dark .faq-toggle-question:hover {
+  background: #27272a;
+}
+html.theme-dark .faq-toggle-arrow {
+  background: #27272a;
+  color: #a1a1aa;
+}
+html.theme-dark .faq-toggle-answer p {
+  color: #a1a1aa;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Contact Page — New Design
+   ═══════════════════════════════════════════════════════ */
+.contact-page-new {
+  max-width: 900px;
+}
+.contact-intro {
+  margin-bottom: 20px;
+}
+.contact-intro p {
+  font-size: .95rem;
+  color: #475569;
+  line-height: 1.7;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.contact-form-card,
+.contact-info-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+}
+.contact-form-card h3,
+.contact-info-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+  color: #0f172a;
+}
+.contact-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.contact-info-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(44,180,201,.1);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+}
+.contact-info-item strong {
+  display: block;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+.contact-info-item span {
+  color: #475569;
+}
+
+@media (max-width: 700px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contact dark mode */
+html.theme-dark .contact-intro p {
+  color: #a1a1aa;
+}
+html.theme-dark .contact-form-card,
+html.theme-dark .contact-info-card {
+  background: #1e1e22;
+  border-color: #2a2a2e;
+}
+html.theme-dark .contact-form-card h3,
+html.theme-dark .contact-info-card h3 {
+  color: #e4e4e7;
+}
+html.theme-dark .contact-info-icon {
+  background: rgba(44,180,201,.15);
+}
+html.theme-dark .contact-info-item strong {
+  color: #e4e4e7;
+}
+html.theme-dark .contact-info-item span {
+  color: #a1a1aa;
+}

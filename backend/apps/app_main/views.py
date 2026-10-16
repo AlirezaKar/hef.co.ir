@@ -71,6 +71,12 @@ def adobe_connect_view(request):
 
 
 @require_http_methods(["GET"])
+def adobe_soon_view(request):
+    """Stub page shown when purchase/pricing is not yet available."""
+    return render(request, "main/stub.html", {"stub_key": "adobe_pricing"})
+
+
+@require_http_methods(["GET"])
 def resume_view(request):
     resume = ResumePage.get_solo()
     return render(request, "main/resume.html", {"resume": resume})
@@ -102,6 +108,19 @@ def contact_view(request):
     ).active_translations()
     form = ContactMessageForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
+        if request.user.is_authenticated:
+            from apps.app_account.models import Notification, Ticket
+
+            ticket = Ticket.objects.create(
+                user=request.user,
+                subject=form.cleaned_data["name"],
+                message=form.cleaned_data["message"] or "(بدون پیام)",
+            )
+            Notification.objects.create(
+                user=request.user,
+                ticket=ticket,
+                message=f"تیکت «{ticket.subject}» با موفقیت ثبت شد.",
+            )
         messages.success(request, "پیام شما ثبت شد. سپاسگزاریم.")
         return redirect("main:contact")
     return render(request, "main/contact.html", {"form": form, "items": items})

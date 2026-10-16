@@ -134,7 +134,21 @@
   }
 
   trigger.addEventListener("click", openPicker);
-  editBtn.addEventListener("click", openPicker);
+  editBtn.addEventListener("click", function () {
+    // Crop/reposition the existing image — no upload
+    var src = preview.src;
+    if (!src || preview.hidden) return;
+    cropImg.src = src;
+    modal.hidden = false;
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(cropImg, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 1,
+      background: false,
+      responsive: true,
+    });
+  });
   closeBtn.addEventListener("click", closeModal);
   cancelBtn.addEventListener("click", closeModal);
   modal.addEventListener("click", function (e) {

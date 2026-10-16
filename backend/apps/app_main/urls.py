@@ -9,6 +9,7 @@ urlpatterns = [
     path("landing/", views.home_view, name="landing"),
     path("set-language/", views.set_language_view, name="set_language"),
     path("adobe-connect/", views.adobe_connect_view, name="adobe_connect"),
+    path("adobe-connect/pricing/", views.adobe_soon_view, name="adobe_soon"),
     path("resume/", views.resume_view, name="resume"),
     path("about/", views.about_view, name="about"),
     path("faq/", views.faq_view, name="faq"),

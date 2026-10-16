@@ -1,4 +1,8 @@
 {% load static %}
+{% if user.is_authenticated %}
+<meta name="notif-api-url" content="{% url 'account:notifications_api' %}">
+<meta name="notif-mark-read-url" content="{% url 'account:notifications_mark_read' %}">
+{% endif %}
 <nav class="site-navbar">
   <div class="site-navbar-inner">
     <a class="site-brand" href="{% url 'main:home' %}">
@@ -117,6 +121,36 @@
       <span class="nav-actions-divider" aria-hidden="true"></span>
 
       {% if user.is_authenticated %}
+        <div class="dropdown notif-dropdown" id="notifDropdown">
+          <button
+            type="button"
+            class="nav-icon-btn notif-bell-btn"
+            data-bs-toggle="dropdown"
+            data-display="static"
+            aria-expanded="false"
+            aria-label="{{ ui_t.nav_notifications }}"
+            title="{{ ui_t.nav_notifications }}"
+            id="notifBellBtn"
+            data-no-notif="{{ ui_t.nav_no_notifications }}"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="notif-badge d-none" id="notifBadge">0</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end notif-dropdown-menu" id="notifDropdownMenu">
+            <div class="notif-dropdown-header">
+              <strong>{{ ui_t.nav_notifications }}</strong>
+              <button type="button" class="notif-mark-read-btn" id="notifMarkReadBtn">{{ ui_t.nav_mark_read }}</button>
+            </div>
+            <div class="notif-dropdown-body" id="notifDropdownBody">
+              <p class="notif-empty">{{ ui_t.nav_no_notifications }}</p>
+            </div>
+            <div class="notif-dropdown-footer">
+              <a href="{% url 'account:tickets' %}" class="notif-view-all-link">{{ ui_t.nav_view_all_tickets }}</a>
+            </div>
+          </div>
+        </div>
         <form method="post" action="{% url 'account:logout' %}" class="m-0">
           {% csrf_token %}
           <button type="submit" class="nav-btn nav-btn-ghost">{{ ui_t.nav_logout }}</button>

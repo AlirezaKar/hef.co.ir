@@ -125,6 +125,72 @@ class PageVisit(models.Model):
         return f"{self.visitor_label} — {where}"
 
 
+class Ticket(models.Model):
+    """User-submitted support / purchase ticket."""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "در انتظار بررسی"
+        APPROVED = "approved", "تأیید شده"
+        REJECTED = "rejected", "رد شده"
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="tickets",
+        verbose_name="کاربر",
+    )
+    subject = models.CharField("موضوع", max_length=200)
+    message = models.TextField("پیام")
+    status = models.CharField(
+        "وضعیت",
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+        db_index=True,
+    )
+    admin_reply = models.TextField("پاسخ ادمین", blank=True)
+    created_at = models.DateTimeField("زمان ایجاد", default=timezone.now)
+    updated_at = models.DateTimeField("زمان به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "تیکت"
+        verbose_name_plural = "تیکت‌ها"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"#{self.pk} — {self.subject}"
+
+
+class Notification(models.Model):
+    """In-app notification for a user (tied to a ticket or standalone)."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+        verbose_name="کاربر",
+    )
+    ticket = models.ForeignKey(
+        Ticket,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications",
+        verbose_name="تیکت",
+    )
+    message = models.CharField("پیام", max_length=300)
+    is_read = models.BooleanField("خوانده‌شده", default=False, db_index=True)
+    created_at = models.DateTimeField("زمان", default=timezone.now)
+
+    class Meta:
+        verbose_name = "اعلان"
+        verbose_name_plural = "اعلان‌ها"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.user} — {self.message[:50]}"
+
+
 class TradingAccount(models.Model):
     trading_acc_username = models.CharField(
         "شماره حساب",

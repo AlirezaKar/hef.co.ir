@@ -4,7 +4,7 @@
 {% block page_heading %}
   {% if stub_key == 'learn' %}{{ ui_t.nav_learn }}
   {% elif stub_key == 'download' %}{{ ui_t.nav_download }}
-  {% elif stub_key == 'adobe' %}{{ ui_t.nav_adobe }}
+  {% elif stub_key == 'adobe' or stub_key == 'adobe_pricing' %}{{ ui_t.nav_adobe }}
   {% else %}{{ ui_t.coming_soon }}{% endif %}
 {% endblock %}
 

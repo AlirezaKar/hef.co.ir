@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
+from django.db import models
 from django.utils.html import format_html
 
 from .admin_filters import DateTimeFromToFilter
-from .models import LoginAttempt, PageVisit, TradingAccount, User
+from .models import LoginAttempt, Notification, PageVisit, Ticket, TradingAccount, User
 
 
 admin.site.unregister(Group)
@@ -229,3 +230,132 @@ class TradingAccountAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
     list_filter = (("created_at", admin.DateFieldListFilter),)
     date_hierarchy = "created_at"
+
+
+@admin.register(Ticket)
+class TicketAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "subject",
+        "status_badge",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("status", ("created_at", admin.DateFieldListFilter))
+    search_fields = ("subject", "message", "user__username", "user__email")
+    readonly_fields = ("user", "subject", "message", "created_at", "updated_at")
+    ordering = (
+        # PENDING first, then REJECTED, then APPROVED
+        models.Case(
+            models.When(status="pending", then=models.Value(0)),
+            models.When(status="rejected", then=models.Value(1)),
+            models.When(status="approved", then=models.Value(2)),
+            output_field=models.IntegerField(),
+        ),
+        "-created_at",
+    )
+    fieldsets = (
+        (None, {
+            "fields": ("user", "subject", "message", "status"),
+        }),
+        ("پاسخ ادمین", {
+            "description": (
+                "برای وضعیت «رد شده» دلیل رد و برای «تأیید شده» پاسخ را بنویسید. "
+                "در هر دو حالت فیلد پاسخ ادمین الزامی است."
+            ),
+            "fields": ("admin_reply",),
+        }),
+        ("زمان‌ها", {
+            "fields": ("created_at", "updated_at"),
+        }),
+    )
+
+    @admin.display(description="وضعیت")
+    def status_badge(self, obj):
+        colors = {
+            "pending": "#e6a817",
+            "approved": "#0a7",
+            "rejected": "#c00",
+        }
+        labels = {
+            "pending": "در انتظار",
+            "approved": "تأیید",
+            "rejected": "رد شده",
+        }
+        c = colors.get(obj.status, "#888")
+        return format_html(
+            '<span style="color:{};font-weight:600;">{}</span>',
+            c,
+            labels.get(obj.status, obj.status),
+        )
+
+    def save_model(self, request, obj, form, change):
+        """Create a notification when admin changes ticket status."""
+        from .models import Notification
+
+        old_status = None
+        if change:
+            old_status = Ticket.objects.filter(pk=obj.pk).values_list(
+                "status", flat=True
+            ).first()
+        super().save_model(request, obj, form, change)
+        if change and old_status and old_status != obj.status:
+            status_labels = {
+                "pending": "در انتظار بررسی",
+                "approved": "تأیید شده",
+                "rejected": "رد شده",
+            }
+            if obj.status == "rejected":
+                reason = obj.admin_reply or "(بدون دلیل مشخص)"
+                Notification.objects.create(
+                    user=obj.user,
+                    ticket=obj,
+                    message=f"تیکت «{obj.subject}» رد شد. دلیل: {reason}",
+                )
+            elif obj.status == "approved":
+                reply = obj.admin_reply or ""
+                Notification.objects.create(
+                    user=obj.user,
+                    ticket=obj,
+                    message=f"تیکت «{obj.subject}» تأیید شد. پاسخ: {reply}",
+                )
+
+    def clean(self):
+        """Validate at form level — admin_reply required for approved/rejected."""
+        pass
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        return form
+
+    def save_form(self, request, form, change):
+        obj = super().save_form(request, form, change)
+        # Enforce: admin_reply required when status is approved or rejected
+        if change and obj.status in ("approved", "rejected"):
+            if not (obj.admin_reply or "").strip():
+                label = "پاسخ" if obj.status == "approved" else "دلیل رد"
+                from django.contrib import messages
+                messages.error(
+                    request,
+                    f"لطفاً {label} را وارد کنید.",
+                )
+                # Revert status change to prevent saving without reply
+                original = Ticket.objects.filter(pk=obj.pk).first()
+                if original:
+                    obj.status = original.status
+                    obj.admin_reply = original.admin_reply
+        return obj
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ("user", "message_short", "ticket", "is_read", "created_at")
+    list_filter = ("is_read", ("created_at", admin.DateFieldListFilter))
+    search_fields = ("message", "user__username")
+    readonly_fields = ("created_at",)
+    ordering = ("-created_at",)
+
+    @admin.display(description="پیام")
+    def message_short(self, obj):
+        return (obj.message[:80] + "…") if len(obj.message) > 80 else obj.message
