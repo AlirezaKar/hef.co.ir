@@ -65,10 +65,13 @@ class CarouselImageAdmin(admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == "image":
-            kwargs["widget"].attrs.update({
-                "class": "carousel-image-upload",
-                "accept": "image/*",
-            })
+            formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+            if formfield and formfield.widget:
+                formfield.widget.attrs.update({
+                    "class": "carousel-image-upload",
+                    "accept": "image/*",
+                })
+            return formfield
         return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     class Media:
