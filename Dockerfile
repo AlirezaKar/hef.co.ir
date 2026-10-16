@@ -1,29 +1,61 @@
-# HEF History Portal — production image
-FROM python:3.12-slim-bookworm
+# Production Dockerfile for HEF
+# Multi-stage build for optimized image size
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    DJANGO_BASE_DIR=/usr/src/backend \
-    DJANGO_STATIC_ROOT=/var/www/static \
-    DJANGO_MEDIA_ROOT=/var/www/media \
-    GUNICORN_PORT=8000 \
-    GUNICORN_WORKERS=2 \
-    GUNICORN_TIMEOUT=60
+# Stage 1: Build dependencies
+FROM python:3.11-slim as builder
 
-WORKDIR /usr/src/backend
+WORKDIR /app
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq5 \
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Install Python dependencies
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-COPY backend/ /usr/src/backend/
-COPY scripts/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh \
-    && mkdir -p /var/www/static /var/www/media /data/History
+# Stage 2: Production image
+FROM python:3.11-slim
 
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python dependencies from builder
+COPY --from=builder /install /usr/local
+
+# Copy application code
+COPY backend/ ./backend/
+
+# Create non-root user
+RUN groupadd -r hef && useradd -r -g hef -d /app -s /sbin/nologin hef
+
+# Create necessary directories
+RUN mkdir -p /app/backend/staticfiles \
+    /app/backend/media \
+    /app/data/History \
+    /app/cdn \
+    && chown -R hef:hef /app
+
+# Switch to non-root user
+USER hef
+
+# Expose port
 EXPOSE 8000
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "60", "--access-logfile", "-", "--error-logfile", "-"]
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD python backend/manage.py check --deploy || exit 1
+
+# Start Gunicorn
+CMD ["gunicorn", "config.wsgi:application", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "4", \
+     "--timeout", "120", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-"]

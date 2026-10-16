@@ -13,13 +13,11 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from .forms import ContactMessageForm
 from .i18n_chrome import set_ui_lang
-from .models import AboutPage, ResumePage, SiteContent
+from .models import AboutPage, CarouselImage, ResumePage, SiteContent
 
 # Expose carousel interval from settings for the template
 _CAROUSEL_INTERVAL = getattr(settings, "CAROUSEL_INTERVAL", 4000)
 
-CAROUSEL_DIR_NAME = "main_page_carousel_img"
-CAROUSEL_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 CAROUSEL_STATIC_FALLBACK = (
     "img/landing/hero.jpg",
     "img/landing/accent.jpg",
@@ -27,14 +25,11 @@ CAROUSEL_STATIC_FALLBACK = (
 
 
 def _carousel_image_urls():
-    """List image URLs from MEDIA_ROOT/main_page_carousel_img/; fall back to static."""
-    folder = Path(settings.MEDIA_ROOT) / CAROUSEL_DIR_NAME
-    folder.mkdir(parents=True, exist_ok=True)
+    """List image URLs from CarouselImage model; fall back to static."""
     urls = []
-    for path in sorted(folder.iterdir()):
-        if path.is_file() and path.suffix.lower() in CAROUSEL_EXTENSIONS:
-            rel = f"{CAROUSEL_DIR_NAME}/{path.name}".replace("\\", "/")
-            urls.append(settings.MEDIA_URL + rel)
+    for img in CarouselImage.objects.filter(is_active=True):
+        if img.image:
+            urls.append(img.image.url)
     if not urls:
         urls = [static(name) for name in CAROUSEL_STATIC_FALLBACK]
     return urls

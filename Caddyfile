@@ -1,20 +1,39 @@
+# Production Caddy configuration
+# Auto-start, reverse proxy to Django, TLS with Let's Encrypt
+
 {$MY_DOMAIN} {
-	encode gzip
+    # Enable gzip compression
+    encode gzip
 
-	handle_path /static/* {
-		root * /usr/share/caddy/static
-		file_server
-	}
+    # Serve static files
+    handle_path /static/* {
+        root * /home/hef/backend/staticfiles
+        file_server
+    }
 
-	handle_path /media/* {
-		root * /usr/share/caddy/media
-		file_server
-	}
+    # Serve media files
+    handle_path /media/* {
+        root * /home/hef/backend/media
+        file_server
+    }
 
-	handle {
-		reverse_proxy django:8000 {
-			header_up X-Forwarded-Proto {scheme}
-			header_up X-Forwarded-Host {host}
-		}
-	}
+    # Serve CDN files
+    handle_path /cdn/* {
+        root * /home/hef/cdn
+        file_server
+    }
+
+    # Reverse proxy to Django (Gunicorn)
+    handle {
+        reverse_proxy localhost:8000 {
+            header_up X-Forwarded-Proto {scheme}
+            header_up X-Forwarded-Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
 }
+
+# Optional: Redirect www to non-www
+# www.{$MY_DOMAIN} {
+#     redir https://{$MY_DOMAIN}{uri}
+# }

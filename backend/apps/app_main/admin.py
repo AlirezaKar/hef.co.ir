@@ -2,7 +2,7 @@ from django.contrib import admin
 from parler.admin import TranslatableAdmin
 from tinymce.widgets import AdminTinyMCE
 
-from .models import AboutPage, ResumePage, SiteContent
+from .models import AboutPage, CarouselImage, ResumePage, SiteContent
 
 
 @admin.register(SiteContent)
@@ -51,3 +51,28 @@ class ResumePageAdmin(TranslatableAdmin):
                 attrs={"cols": 100, "rows": 36, "style": "width:100%; min-height:620px;"},
             )
         return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+@admin.register(CarouselImage)
+class CarouselImageAdmin(admin.ModelAdmin):
+    list_display = ("title", "order", "is_active", "created_at", "updated_at")
+    list_filter = ("is_active",)
+    list_editable = ("order", "is_active")
+    search_fields = ("title",)
+    readonly_fields = ("created_at", "updated_at")
+    fields = ("image", "title", "order", "is_active", "created_at", "updated_at")
+    ordering = ("order", "created_at")
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "image":
+            kwargs["widget"].attrs.update({
+                "class": "carousel-image-upload",
+                "accept": "image/*",
+            })
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+    class Media:
+        css = {
+            "all": ("css/carousel_admin.css",)
+        }
+        js = ("js/carousel_admin.js",)

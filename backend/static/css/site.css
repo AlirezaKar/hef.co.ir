@@ -793,6 +793,15 @@ body.theme-dark .faq-item p {
   object-fit: cover;
   background: #1e293b;
 }
+
+/* Carousel fade transition animation */
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+.carousel-fade .carousel-item.active {
+  opacity: 1;
+}
 .home-carousel-fallback {
   min-height: 320px;
   display: flex;

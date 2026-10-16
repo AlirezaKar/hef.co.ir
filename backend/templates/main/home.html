@@ -79,8 +79,10 @@
           </div>
         {% endif %}
         <div class="home-cta-row d-inline-flex align-items-center gap-2 flex-wrap mt-3">
-          <a href="{% url 'account:login' %}" class="btn btn-outline-dark home-cta-btn">{{ ui_t.home_login }}</a>
-          <a href="{% url 'account:signup' %}" class="btn btn-dark home-cta-btn">{{ ui_t.home_signup }}</a>
+          {% if not user.is_authenticated %}
+            <a href="{% url 'account:login' %}" class="btn btn-outline-dark home-cta-btn">{{ ui_t.home_login }}</a>
+            <a href="{% url 'account:signup' %}" class="btn btn-dark home-cta-btn">{{ ui_t.home_signup }}</a>
+          {% endif %}
         </div>
       </div>
     </div>

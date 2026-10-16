@@ -3,6 +3,13 @@ from django.db import models
 from parler.models import TranslatableModel, TranslatedFields
 
 
+def carousel_image_upload_to(instance, filename):
+    """Upload carousel images to media/carousel/."""
+    import os
+    ext = os.path.splitext(filename)[1]
+    return f"carousel/{instance.pk or 'new'}{ext}"
+
+
 class SiteContent(TranslatableModel):
     class Page(models.TextChoices):
         ABOUT = "about", "درباره ما"
@@ -89,3 +96,39 @@ class ResumePage(TranslatableModel):
     def get_solo(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class CarouselImage(models.Model):
+    """Carousel image for the homepage hero section."""
+
+    image = models.ImageField(
+        "تصویر",
+        upload_to="carousel/",
+        help_text="تصویر اسلایدر صفحه اصلی",
+    )
+    title = models.CharField(
+        "عنوان",
+        max_length=200,
+        blank=True,
+        help_text="عنوان اختیاری برای تصویر",
+    )
+    order = models.PositiveIntegerField(
+        "ترتیب",
+        default=0,
+        help_text="ترتیب نمایش (اعداد کوچکتر اول نمایش داده می‌شوند)",
+    )
+    is_active = models.BooleanField(
+        "فعال",
+        default=True,
+        help_text="آیا این تصویر در اسلایدر نمایش داده شود",
+    )
+    created_at = models.DateTimeField("تاریخ ایجاد", auto_now_add=True)
+    updated_at = models.DateTimeField("تاریخ به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "تصویر اسلایدر"
+        verbose_name_plural = "تصاویر اسلایدر"
+        ordering = ["order", "created_at"]
+
+    def __str__(self):
+        return self.title or f"تصویر اسلایدر #{self.pk}"
