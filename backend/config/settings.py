@@ -259,7 +259,7 @@ MEDIA_ROOT = Path(_media_root) if _media_root else (BASE_DIR / "media")
 
 # Local CDN for download-center files (swap CDN_URL to an external host later).
 _cdn_root = os.getenv("DJANGO_CDN_ROOT", "").strip()
-CDN_ROOT = Path(_cdn_root) if _cdn_root else (BASE_DIR / "cdn")
+CDN_ROOT = Path(_cdn_root) if _cdn_root else (PROJECT_ROOT / "cdn")
 CDN_URL = os.getenv("DJANGO_CDN_URL", "/cdn/").strip() or "/cdn/"
 if not CDN_URL.endswith("/"):
     CDN_URL = f"{CDN_URL}/"

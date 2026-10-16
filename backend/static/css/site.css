@@ -676,13 +676,14 @@ body.theme-dark .profile-field label,
 body.theme-dark .contact-form label {
   color: #e2e8f0 !important;
 }
-/* Profile form panel in dark mode: dark background, light input boxes */
+/* Profile form panel in dark mode: distinct card background, light input boxes */
 html.theme-dark .profile-form-panel,
 html.theme-dark .profile-media,
 body.theme-dark .profile-form-panel,
 body.theme-dark .profile-media {
-  background: #162338 !important;
-  border-color: #243447 !important;
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 html.theme-dark .profile-field input,
 html.theme-dark .profile-field textarea,
