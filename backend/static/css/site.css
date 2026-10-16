@@ -72,6 +72,18 @@ body {
   justify-content: center;
   padding: 24px;
 }
+html[dir="rtl"] .auth-body,
+html[dir="rtl"] .auth-card,
+html[dir="rtl"] .auth-card input,
+html[dir="rtl"] .auth-card textarea {
+  font-family: Vazirmatn, Tahoma, "Segoe UI", system-ui, sans-serif;
+}
+html[dir="ltr"] .auth-body,
+html[dir="ltr"] .auth-card,
+html[dir="ltr"] .auth-card input,
+html[dir="ltr"] .auth-card textarea {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 
 .auth-wrap { width: 100%; max-width: 420px; }
 .auth-card {
@@ -129,6 +141,30 @@ body {
 .auth-card input:focus { border-color: #a1a1aa; }
 .field-help { color: #a1a1aa; font-size: .8rem; margin: 6px 0 0; }
 .field-error, .form-error { color: #f87171; font-size: .85rem; margin-top: 6px; }
+
+/* RTL labels and placeholders for auth pages */
+html[dir="rtl"] .field-label,
+html[dir="rtl"] .auth-card input::placeholder,
+html[dir="rtl"] .auth-card textarea::placeholder {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="rtl"] .auth-card input,
+html[dir="rtl"] .auth-card textarea {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="ltr"] .field-label,
+html[dir="ltr"] .auth-card input::placeholder,
+html[dir="ltr"] .auth-card textarea::placeholder {
+  direction: ltr;
+  text-align: left;
+}
+html[dir="ltr"] .auth-card input,
+html[dir="ltr"] .auth-card textarea {
+  direction: ltr;
+  text-align: left;
+}
 
 /* Checkbox on visual left, label to its right (LTR row inside RTL page) */
 .remember-me {
@@ -816,12 +852,14 @@ body.theme-dark .faq-item p {
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1.3;
+  font-family: Vazirmatn, Tahoma, sans-serif;
 }
 .home-card-desc {
   font-size: .88rem;
   color: #64748b;
   line-height: 1.45;
   margin-top: auto;
+  font-family: Vazirmatn, Tahoma, sans-serif;
 }
 
 .btn-primary-light, .btn-outline, .btn-outline-sm, .btn-teal, .btn-danger {
@@ -2454,4 +2492,307 @@ html.theme-dark .contact-info-item strong {
 }
 html.theme-dark .contact-info-item span {
   color: #a1a1aa;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Trading Account Form — Presets & Card
+   ═══════════════════════════════════════════════════════ */
+.trading-create-page {
+  max-width: 640px;
+}
+.btn-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: color .15s;
+}
+.btn-back-link:hover {
+  color: #0f172a;
+}
+html.theme-dark .btn-back-link {
+  color: #94a3b8;
+}
+html.theme-dark .btn-back-link:hover {
+  color: #e4e4e7;
+}
+.preset-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.preset-box h3 {
+  font-size: .95rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+.preset-hint {
+  font-size: .82rem;
+  color: #64748b;
+  margin: 0 0 12px;
+}
+.preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: .85rem;
+  font-weight: 500;
+  color: #334155;
+  transition: all .15s;
+  font-family: Vazirmatn, Tahoma, sans-serif;
+}
+.preset-chip:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+.preset-chip.preset-selected {
+  background: rgba(44,180,201,.12);
+  border-color: var(--teal);
+  color: #0e7490;
+}
+.preset-chip-name {
+  font-weight: 600;
+}
+.preset-chip-broker {
+  color: #64748b;
+  font-weight: 400;
+  font-size: .8rem;
+}
+.form-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+}
+.form-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+  color: #0f172a;
+}
+.btn-submit {
+  width: 100%;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: var(--teal);
+  color: #fff;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  transition: background .2s;
+  font-family: Vazirmatn, Tahoma, sans-serif;
+  margin-top: 8px;
+}
+.btn-submit:hover {
+  background: #249aab;
+}
+
+/* Trading account form dark mode */
+html.theme-dark .preset-box {
+  background: #1e1e22;
+  border-color: #2a2a2e;
+}
+html.theme-dark .preset-box h3 {
+  color: #e4e4e7;
+}
+html.theme-dark .preset-hint {
+  color: #a1a1aa;
+}
+html.theme-dark .preset-chip {
+  background: #27272a;
+  border-color: #3f3f46;
+  color: #d4d4d8;
+}
+html.theme-dark .preset-chip:hover {
+  background: #3f3f46;
+}
+html.theme-dark .preset-chip.preset-selected {
+  background: rgba(44,180,201,.15);
+  border-color: var(--teal);
+  color: #5eead4;
+}
+html.theme-dark .preset-chip-broker {
+  color: #a1a1aa;
+}
+html.theme-dark .form-card {
+  background: #1e1e22;
+  border-color: #2a2a2e;
+}
+html.theme-dark .form-card h3 {
+  color: #e4e4e7;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Finance / Accounts Pages — Polished
+   ══════════════════════════════════════════════════════ */
+.accounts-page {
+  max-width: 720px;
+}
+.accounts-intro {
+  font-size: .92rem;
+  color: #475569;
+  margin-bottom: 18px;
+  line-height: 1.7;
+}
+.accounts-main {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+}
+.accounts-main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.accounts-main-header h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0f172a;
+}
+.btn-create {
+  display: inline-flex;
+  align-items: center;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: .85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .2s;
+  font-family: Vazirmatn, Tahoma, sans-serif;
+}
+.btn-create:hover {
+  background: #249aab;
+  color: #fff;
+}
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  transition: all .15s;
+}
+.account-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.account-card-active:hover {
+  border-color: var(--teal);
+  box-shadow: 0 2px 12px rgba(44,180,201,.1);
+}
+.account-card-name {
+  font-weight: 700;
+  font-size: .95rem;
+  color: #0f172a;
+}
+.account-card-broker {
+  font-size: .82rem;
+  color: #64748b;
+}
+.account-card-badge {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: .72rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.accounts-empty {
+  color: #94a3b8;
+  font-size: .9rem;
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+}
+
+/* Finance hub */
+.finance-hub-page {
+  max-width: 600px;
+}
+.finance-hub-intro {
+  font-size: .95rem;
+  color: #475569;
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+.btn-enter {
+  display: inline-flex;
+  align-items: center;
+  background: var(--teal);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: .95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .2s;
+  font-family: Vazirmatn, Tahoma, sans-serif;
+}
+.btn-enter:hover {
+  background: #249aab;
+  color: #fff;
+}
+
+/* Finance dark mode */
+html.theme-dark .accounts-intro,
+html.theme-dark .finance-hub-intro {
+  color: #a1a1aa;
+}
+html.theme-dark .accounts-main {
+  background: #1e1e22;
+  border-color: #2a2a2e;
+}
+html.theme-dark .accounts-main-header h2 {
+  color: #e4e4e7;
+}
+html.theme-dark .account-card {
+  background: #27272a;
+  border-color: #3f3f46;
+}
+html.theme-dark .account-card:hover {
+  border-color: #52525b;
+}
+html.theme-dark .account-card-active:hover {
+  border-color: var(--teal);
+}
+html.theme-dark .account-card-name {
+  color: #e4e4e7;
+}
+html.theme-dark .account-card-broker {
+  color: #a1a1aa;
+}
+html.theme-dark .accounts-empty {
+  color: #71717a;
 }

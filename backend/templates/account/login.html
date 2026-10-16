@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}ورود | پورتال تاریخچه HEF{% endblock %}
+{% block title %}{{ ui_t.auth_login_title }} | HEF{% endblock %}
 {% block body_class %}auth-body{% endblock %}
 
 {% block body %}
 <div class="auth-wrap">
   <div class="auth-card">
-    <h1>ورود به حساب کاربری</h1>
-    <p class="auth-sub">نام کاربری یا ایمیل و رمز عبور خود را وارد کنید</p>
+    <h1>{{ ui_t.auth_login_title }}</h1>
+    <p class="auth-sub">{{ ui_t.auth_login_sub }}</p>
 
     <form method="post" novalidate>
       {% csrf_token %}
@@ -15,25 +15,25 @@
         <div class="form-error">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <label class="field-label" for="id_username">{{ form.username.label }}</label>
+      <label class="field-label" for="id_username" dir="{{ ui_dir }}">{{ form.username.label }}</label>
       {{ form.username }}
       {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
 
-      <label class="field-label" for="id_password">{{ form.password.label }}</label>
+      <label class="field-label" for="id_password" dir="{{ ui_dir }}">{{ form.password.label }}</label>
       {{ form.password }}
       {% for e in form.password.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
 
       <label class="remember-me" for="id_remember_me">
         {{ form.remember_me }}
-        <span>{{ form.remember_me.label }}</span>
+        <span dir="{{ ui_dir }}">{{ form.remember_me.label }}</span>
       </label>
       {% for e in form.remember_me.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
 
-      <button type="submit" class="btn-primary">ورود</button>
+      <button type="submit" class="btn-primary">{{ ui_t.auth_login_btn }}</button>
     </form>
 
     <p class="auth-footer">
-      حساب ندارید؟ <a href="{% url 'account:signup' %}">ثبت‌نام</a>
+      {{ ui_t.auth_login_footer }} <a href="{% url 'account:signup' %}">{{ ui_t.auth_login_footer_link }}</a>
     </p>
   </div>
 </div>

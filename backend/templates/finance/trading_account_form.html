@@ -1,43 +1,46 @@
 {% extends "base_app.html" %}
 
-{% block title %}ایجاد حساب ترید | پورتال تاریخچه HEF{% endblock %}
+{% block title %}ایجاد حساب ترید | HEF{% endblock %}
 {% block page_heading %}ایجاد حساب ترید{% endblock %}
 
 {% block content %}
-<section class="trading-create-page max-w-xl">
-  <a class="btn btn-outline-secondary btn-sm mb-3" href="{% url 'finance:index' %}">
+<section class="trading-create-page">
+  <a class="btn-back-link" href="{% url 'finance:index' %}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     بازگشت به تاریخچه
   </a>
 
-  <div class="panel-frame">
-    {% if accounts %}
-      <div class="mb-4">
-        <h2 class="h6 mb-2">حساب‌های ذخیره‌شده</h2>
-        <div class="d-flex flex-wrap gap-2">
-          {% for acc in accounts %}
-            <a
-              class="btn-primary-light account-btn-sm"
-              href="{% url 'finance:history_account' acc.pk %}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ acc.trading_acc_username }} — {{ acc.broker }}
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-      <hr class="my-3">
-    {% endif %}
+  {% if accounts %}
+  <div class="preset-box">
+    <h3>حساب‌های ذخیره‌شده</h3>
+    <p class="preset-hint">روی یک حساب کلیک کنید تا فیلدها پر شوند.</p>
+    <div class="preset-list">
+      {% for acc in accounts %}
+        <button
+          type="button"
+          class="preset-chip"
+          data-username="{{ acc.trading_acc_username }}"
+          data-broker="{{ acc.broker }}"
+        >
+          <span class="preset-chip-name">{{ acc.trading_acc_username }}</span>
+          <span class="preset-chip-broker">{{ acc.broker }}</span>
+        </button>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 
-    <form method="post" novalidate>
+  <div class="form-card">
+    <h3>ثبت حساب جدید</h3>
+    <form method="post" novalidate id="tradingAccountForm">
       {% csrf_token %}
 
       {% for field in form %}
-        <div class="mb-3">
-          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <div class="profile-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
           {{ field }}
           {% if field.errors %}
-            <div class="invalid-feedback d-block">
+            <div class="field-error">
               {% for error in field.errors %}{{ error }}{% endfor %}
             </div>
           {% endif %}
@@ -45,13 +48,36 @@
       {% endfor %}
 
       {% if form.non_field_errors %}
-        <div class="alert alert-danger py-2">
+        <div class="form-error">
           {% for error in form.non_field_errors %}{{ error }}{% endfor %}
         </div>
       {% endif %}
 
-      <button type="submit" class="btn-primary-light w-100">ثبت حساب ترید</button>
+      <button type="submit" class="btn-submit">ثبت حساب ترید</button>
     </form>
   </div>
 </section>
+
+{% block app_extra_js %}
+<script>
+(function () {
+  var chips = document.querySelectorAll(".preset-chip");
+  var usernameInput = document.getElementById("id_trading_acc_username");
+  var brokerInput = document.getElementById("id_broker");
+  chips.forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      if (usernameInput) {
+        usernameInput.value = chip.getAttribute("data-username") || "";
+      }
+      if (brokerInput) {
+        brokerInput.value = chip.getAttribute("data-broker") || "";
+      }
+      // Visual feedback
+      chips.forEach(function (c) { c.classList.remove("preset-selected"); });
+      chip.classList.add("preset-selected");
+    });
+  });
+})();
+</script>
+{% endblock %}
 {% endblock %}
