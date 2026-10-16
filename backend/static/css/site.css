@@ -58,6 +58,9 @@
 
 body {
   font-family: Tahoma, "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* —— Auth —— */
@@ -218,7 +221,8 @@ body {
   width: auto;
   height: 44px;
   border-radius: var(--nav-radius);
-  background: var(--nav-accent);
+  background: transparent;
+  border: 1px solid transparent;
   overflow: hidden;
   flex-shrink: 0;
   padding: 4px 8px;
@@ -364,8 +368,18 @@ body {
   flex-wrap: nowrap !important;
   align-items: center !important;
   gap: 0.4rem !important;
-  margin-inline-start: auto;
   flex-shrink: 0;
+  /* Force LTR reading order so button order stays the same regardless of page direction */
+  direction: ltr;
+}
+/* Trailing-edge placement: right in LTR, left in RTL */
+html[dir="ltr"] .site-navbar-actions {
+  margin-left: auto;
+  margin-right: 0;
+}
+html[dir="rtl"] .site-navbar-actions {
+  margin-right: auto;
+  margin-left: 0;
 }
 .nav-icon-btn,
 .nav-lang-btn,
@@ -609,14 +623,32 @@ body.theme-dark .profile-field label,
 body.theme-dark .contact-form label {
   color: #e2e8f0 !important;
 }
+/* Profile form panel in dark mode: dark background, light input boxes */
+html.theme-dark .profile-form-panel,
+html.theme-dark .profile-media,
+body.theme-dark .profile-form-panel,
+body.theme-dark .profile-media {
+  background: #162338 !important;
+  border-color: #243447 !important;
+}
 html.theme-dark .profile-field input,
 html.theme-dark .profile-field textarea,
 html.theme-dark .profile-field select,
-html.theme-dark .contact-form input,
-html.theme-dark .contact-form textarea,
 body.theme-dark .profile-field input,
 body.theme-dark .profile-field textarea,
-body.theme-dark .profile-field select,
+body.theme-dark .profile-field select {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+html.theme-dark .profile-field input::placeholder,
+html.theme-dark .profile-field textarea::placeholder,
+body.theme-dark .profile-field input::placeholder,
+body.theme-dark .profile-field textarea::placeholder {
+  color: #64748b !important;
+}
+html.theme-dark .contact-form input,
+html.theme-dark .contact-form textarea,
 body.theme-dark .contact-form input,
 body.theme-dark .contact-form textarea {
   background: #162338 !important;
@@ -673,6 +705,14 @@ body.theme-dark .faq-item p {
 }
 .landing-app-footer {
   background: #f8f9fa;
+}
+
+/* Main content area grows so footer is pushed to the bottom on short pages */
+.container.py-4,
+.home-carousel-section,
+.py-5.bg-light,
+.adobe-page {
+  flex: 1;
 }
 
 /* —— Site fonts (no Google Fonts) —— */
@@ -1019,6 +1059,20 @@ body.theme-dark .faq-item p {
   border-radius: 14px;
   padding: 18px;
 }
+/* Space between card/frame title and its content */
+.profile-form-panel > h2,
+.profile-form-panel > h3,
+.profile-media > h2,
+.profile-media > h3,
+.content-page > h2,
+.content-page > h3,
+.settings-panel > h2,
+.settings-panel > h3,
+.home-hint > h2,
+.home-hint > h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
 
 .content-grid {
   display: grid;
@@ -1091,7 +1145,7 @@ body.theme-dark .faq-item p {
 
 .toast-stack {
   position: fixed;
-  top: 16px;
+  top: 80px;
   left: 16px;
   z-index: 1080;
   display: flex;
